@@ -16,8 +16,7 @@
  * limitations under the License.
  */
 
-
-
+import org.grails.plugins.atmosphere2.ApplicationContextHolder
 import org.grails.plugins.atmosphere2.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere2.MeteorServletArtefactHandler
 import org.springframework.util.ClassUtils
@@ -56,24 +55,25 @@ You can also download the plugin source code and run it as a standalone app. You
 	def license = "APACHE"
 
 	// Details of company behind the plugin (if there is one)
-	// def organization = [ name: "flexnex, Inc.", url: "http://www.flexnex.com/" ]
+	// def organization = [ name: "Example, Inc.", url: "http://www.example.com/" ]
 
 	// Any additional developers beyond the author specified above.
 	// def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
 
 	// Location of the plugin's issue tracker.
-	// def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
+	def issueManagement = [ system: "github", url: "https://github.com/kensiprell/grails-atmosphere2/issues" ]
 
 	// Online location of the plugin's browseable source code.
-	def scm = [ url: "https://github.com/kensiprell/grails-atmosphere2" ]
+	def scm = [url: "https://github.com/kensiprell/grails-atmosphere2"]
 
 	def artefacts = [MeteorHandlerArtefactHandler, MeteorServletArtefactHandler]
 
 	def watchedResources = [
 			"file:./grails-app/atmosphere/**/*MeteorHandler.groovy",
 			"file:./grails-app/atmosphere/**/*MeteorServlet.groovy",
-			"file:../../plugins/*/atmosphere/**/*MeteorHandler.groovy",
-			"file:../../plugins/*/atmosphere/**/*MeteorServlet.groovy"
+			"file:./grails-app/conf/Atmosphere2Config.groovy"
+			//"file:../../plugins/*/atmosphere/**/*MeteorHandler.groovy",
+			//"file:../../plugins/*/atmosphere/**/*MeteorServlet.groovy"
 	]
 
 	def onChange = { event ->
@@ -84,8 +84,28 @@ You can also download the plugin source code and run it as a standalone app. You
 		event.application - The GrailsApplication instance
 		event.manager - The GrailsPluginManager instance
 		*/
-		// Reload MeteorHandler
-		if (application.isArtefactOfType(MeteorHandlerArtefactHandler.TYPE, event.source)) {
+
+/*
+		println ""
+		println "event.source: ${event.source}"
+		println "event.source.name: ${event.source.name}"
+		println "event.ctx: ${event.ctx}"
+		println "event.plugin: ${event.plugin}"
+		println "event.application: ${event.application}"
+		println "event.manager: ${event.manager}"
+		println ""
+*/
+
+		// Change in Atmosphere2Config.groovy
+		if (event.source.name == "Atmosphere2Config") {
+			application.meteorServletClasses.each {
+				def newClass = application.classLoader.loadClass(it.clazz.name)
+				application.addArtefact(MeteorServletArtefactHandler.TYPE, newClass)
+			}
+		}
+
+		// Change in a MeteorHandler
+		if (application.isArtefactOfType(MeteorHandlerArtefactHandler.TYPE, event.source.name)) {
 			def oldClass = application.getMeteorHandlerClass(event.source.name)
 			application.addArtefact(MeteorHandlerArtefactHandler.TYPE, event.source)
 			application.meteorHandlerClasses.each {
@@ -95,8 +115,9 @@ You can also download the plugin source code and run it as a standalone app. You
 				}
 			}
 		}
-		// Reload MeteorServlet
-		if (application.isArtefactOfType(MeteorServletArtefactHandler.TYPE, event.source)) {
+
+		// Change in a MeteorServlet
+		if (application.isArtefactOfType(MeteorServletArtefactHandler.TYPE, event.source.name)) {
 			def oldClass = application.getMeteorServletClass(event.source.name)
 			application.addArtefact(MeteorServletArtefactHandler.TYPE, event.source)
 			application.meteorServletClasses.each {
@@ -111,7 +132,7 @@ You can also download the plugin source code and run it as a standalone app. You
 	def doWithWebDescriptor = { xml ->
 		def servlets = xml.'servlet'
 		def mappings = xml.'servlet-mapping'
-		def config = new ConfigSlurper().parse(Atmosphere2Config)
+		def config = ApplicationContextHolder.atmosphere2Config
 
 		config.servlets.each { name, parameters ->
 			servlets[servlets.size() - 1] + {

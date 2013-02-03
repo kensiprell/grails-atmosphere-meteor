@@ -1,21 +1,4 @@
-@artifact.package@
-/*
- * Copyright (c) 2013. the original author or authors:
- *
- *    Ken Siprell (ken.siprell@gmail.com)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+@artifact.package @
 
 import org.atmosphere.cpr.Meteor
 import org.grails.plugins.atmosphere2.ApplicationContextHolder
@@ -39,7 +22,7 @@ import org.json.simple.JSONObject
 import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.LONG_POLLING
 import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.WEBSOCKET
 
-class @artifact.name@ extends HttpServlet{
+class @artifact.name @extends HttpServlet {
 
 	ApplicationContext applicationContext = ApplicationContextHolder.applicationContext
 
@@ -81,7 +64,7 @@ class @artifact.name@ extends HttpServlet{
 			} else {
 				Broadcaster b = BroadcasterFactory.getDefault().lookup(mapping)
 				b.broadcast(data)
-				jabberTestService.recordChat(data)
+				//meteorService.recordChat(data)
 			}
 		}
 	}

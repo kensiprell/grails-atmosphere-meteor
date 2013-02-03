@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-
-
 package org.grails.plugins.atmosphere2
 
 class AtmosphereTestService {

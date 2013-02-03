@@ -7,7 +7,7 @@ ReflectorServletProcessor (http://atmosphere.github.com/atmosphere/apidocs/org/a
 DefaultBroadcaster (http://atmosphere.github.com/atmosphere/apidocs/org/atmosphere/cpr/DefaultBroadcaster.html)
 SimpleBroadcaster (http://atmosphere.github.com/atmosphere/apidocs/org/atmosphere/util/SimpleBroadcaster.html)
 
-The plugin source can be downloaded and used as a standalone Grails application. I suggest running it first before installing the plugin. I suggest reviewing the files below to understand how it all works. Note that many of the files are not packaged into the finished plugin.
+The plugin source can be downloaded and used as a standalone Grails application. I suggest running it first before installing the plugin and reviewing the files below to understand how it all works. Note that many of the files are not packaged into the finished plugin.
 
 grails-app/atmosphere/org/grails/plugins/atmosphere2/DefaultMeteorHandler.groovy
 grails-app/atmosphere/org/grails/plugins/atmosphere2/DefaultMeteorServlet.groovy

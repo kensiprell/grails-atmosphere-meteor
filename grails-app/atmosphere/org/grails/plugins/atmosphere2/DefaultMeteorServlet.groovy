@@ -16,16 +16,14 @@
  * limitations under the License.
  */
 
-
-
 package org.grails.plugins.atmosphere2
 
-import grails.util.BuildSettingsHolder
 import javax.servlet.http.HttpServlet
 import javax.servlet.ServletConfig
 import javax.servlet.ServletException
 import org.atmosphere.cpr.MeteorServlet
 import org.atmosphere.handler.ReflectorServletProcessor
+import org.grails.plugins.atmosphere2.ApplicationContextHolder
 
 class DefaultMeteorServlet extends MeteorServlet {
 
@@ -37,8 +35,7 @@ class DefaultMeteorServlet extends MeteorServlet {
 		String mapping
 		String servletClass
 		String servletName = sc.servletName
-		def basedir = BuildSettingsHolder.settings.baseDir
-		def config = new ConfigSlurper().parse(new File("${basedir}/grails-app/conf/Atmosphere2Config.groovy").toURI().toURL())
+		def config = ApplicationContextHolder.atmosphere2Config
 		def servlet = config.servlets.get(servletName)
 
 		handler = servlet.handler.newInstance() as HttpServlet

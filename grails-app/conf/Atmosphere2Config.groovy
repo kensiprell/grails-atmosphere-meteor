@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-
-
 import org.grails.plugins.atmosphere2.DefaultMeteorHandler
 
 defaultUrl = "/jabber/*"

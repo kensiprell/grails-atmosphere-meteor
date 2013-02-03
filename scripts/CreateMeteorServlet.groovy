@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-
-
 includeTargets << grailsScript("_GrailsInit")
 includeTargets << grailsScript("_GrailsCreateArtifacts")
 

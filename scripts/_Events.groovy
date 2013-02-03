@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-
-
 import groovy.xml.StreamingMarkupBuilder
 
 eventCompileEnd = {
@@ -27,12 +25,11 @@ eventCompileEnd = {
 }
 
 def buildConfiguration(basedir) {
-	def config = new ConfigSlurper().parse(Atmosphere2Config)
-
+	def config = new ConfigSlurper().parse(new File("${basedir}/grails-app/conf/Atmosphere2Config.groovy").toURI().toURL())
 	def sitemeshXml = new File("$basedir/web-app/WEB-INF/sitemesh.xml")
 	def defaultUrl = config.defaultUrl ?: '/jabber/*'
 
-	// Generate the atmosphere2-decorators.xml file in WEB-INF
+	// Create atmosphere2-decorators.xml in WEB-INF
 	def decoratorsDotXml = """\
 <decorators>
     <excludes>

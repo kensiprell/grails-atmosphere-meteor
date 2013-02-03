@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-
-
 //
 // This script is executed by Grails during application upgrade ('grails upgrade'
 // command). This script is a Gant script so you can use all special variables

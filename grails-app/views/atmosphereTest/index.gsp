@@ -16,8 +16,6 @@
   - limitations under the License.
   --}%
 
-
-
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
@@ -176,7 +174,7 @@
 			console.log('message: ' + message.message);
 			if (type == 'chat') {
 				var $chat = $('#chat-window');
-				$chat.append(new Date() + ': ' + message.message);
+				$chat.append('message: ' + message.message + '<br/>');
 				$chat.scrollTop($chat.height());
 			}
 			if (type == 'notification') {
@@ -218,6 +216,7 @@
 
 		$('#chat-subscribe').on('click', function () {
 			Jabber.subscribe({type: 'chat'});
+			$(this).attr('disabled', 'disabled');
 		});
 
 		$('#chat-input').keypress(function (event) {
@@ -235,22 +234,25 @@
 
 		$('#notification-subscribe').on('click', function () {
 			Jabber.subscribe({type: 'notification'});
+			$(this).attr('disabled', 'disabled');
 		});
 
 		$('#notification-send').on('click', function () {
 			Jabber.publish({
 				type: 'notification',
 				resource: '/jabber/notification/userName',
-				message: 'This is a notification message.'
+				message: 'This is a notification message sent at ' + new Date() + '.'
 			});
 		});
 
 		$('#public-subscribe').on('click', function () {
 			Jabber.subscribe({type: 'public'});
+			$(this).attr('disabled', 'disabled');
 		});
 
 		$('#public-trigger').on('click', function () {
 			$.ajax('http://localhost:8080/atmosphere2/atmosphereTest/triggerPublic');
+			$(this).attr('disabled', 'disabled');
 		});
 
 		$('#unsubscribe').on('click', function () {
@@ -258,6 +260,9 @@
 			$('#chat-window').html('');
 			$('#notification').html('');
 			$('#public-update').html('');
+			$('button').each(function() {
+				$(this).removeAttr('disabled');
+			})
 		});
 	});
 </script>

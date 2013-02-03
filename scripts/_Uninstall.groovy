@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-
-
 //
 // This script is executed by Grails when the plugin is uninstalled from project.
 // Use this script if you intend to do any additional clean-up on uninstall, but
