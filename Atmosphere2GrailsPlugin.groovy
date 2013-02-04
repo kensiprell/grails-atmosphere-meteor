@@ -23,7 +23,7 @@ import org.springframework.util.ClassUtils
 
 class Atmosphere2GrailsPlugin {
 	// the plugin version
-	def version = "0.1.9"
+	def version = "0.2.1"
 	// the version or versions of Grails the plugin is designed for
 	def grailsVersion = "2.1 > *"
 	// the other plugins this plugin depends on
@@ -38,18 +38,17 @@ class Atmosphere2GrailsPlugin {
 			"grails-app/views/error.gsp"
 	]
 
-	// TODO Fill in these fields
 	def title = "Atmosphere2 Plugin"
 	def author = "Ken Siprell"
 	def authorEmail = "ken.siprell@gmail.com"
 	def description = '''
-This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere/atmosphere/wiki). It can form the basis for a traditional XMPP server and browser-based client without the limitations of BOSH.
+This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere/atmosphere/wiki). It can form the basis for a traditional XMPP server with a browser-based client without the limitations of BOSH.
 
-You can also download the plugin source code and run it as a standalone app. You can take the plugin for a test drive before installing.
+You can also download the plugin source code and run it as a standalone app and take the plugin for a test drive before installing.
 '''
 
 	// URL to the plugin's documentation
-	def documentation = "https://github.com/kensiprell/grails-atmosphere2/blob/master/README.md"
+	def documentation = "https://github.com/kensiprell/grails-atmosphere2/blob/master/README.md.md"
 
 	// License: one of 'APACHE', 'GPL2', 'GPL3'
 	def license = "APACHE"
@@ -98,6 +97,8 @@ You can also download the plugin source code and run it as a standalone app. You
 
 		// Change in Atmosphere2Config.groovy
 		if (event.source.name == "Atmosphere2Config") {
+
+			// TODO restart container
 			application.meteorServletClasses.each {
 				def newClass = application.classLoader.loadClass(it.clazz.name)
 				application.addArtefact(MeteorServletArtefactHandler.TYPE, newClass)
@@ -164,23 +165,23 @@ You can also download the plugin source code and run it as a standalone app. You
 	}
 
 	def doWithDynamicMethods = { applicationContext ->
-		// TODO Implement registering dynamic methods to classes (optional)
+		// Implement registering dynamic methods to classes (optional)
 	}
 
 	def doWithSpring = {
-		// TODO Implement runtime spring config (optional)
+		// Implement runtime spring config (optional)
 	}
 
 	def doWithApplicationContext = { applicationContext ->
-		// TODO Implement post initialization spring config (optional)
+		// Implement post initialization spring config (optional)
 	}
 
 	def onConfigChange = { event ->
-		// TODO Implement code that is executed when the project configuration changes.
+		// Implement code that is executed when the project configuration changes.
 		// The event is the same as for 'onChange'.
 	}
 
 	def onShutdown = { event ->
-		// TODO Implement code that is executed when the application shuts down (optional)
+		// Implement code that is executed when the application shuts down (optional)
 	}
 }

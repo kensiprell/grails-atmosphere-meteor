@@ -1,4 +1,4 @@
-@artifact.package @
+@artifact.package@
 
 import org.atmosphere.cpr.Meteor
 import org.grails.plugins.atmosphere2.ApplicationContextHolder
@@ -22,7 +22,7 @@ import org.json.simple.JSONObject
 import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.LONG_POLLING
 import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.WEBSOCKET
 
-class @artifact.name @extends HttpServlet {
+class @artifact.name@ extends HttpServlet {
 
 	ApplicationContext applicationContext = ApplicationContextHolder.applicationContext
 
