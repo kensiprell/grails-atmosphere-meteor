@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+
+
+import org.codehaus.groovy.grails.cli.fork.ForkedGrailsProcess
 import org.grails.plugins.atmosphere2.ApplicationContextHolder
 import org.grails.plugins.atmosphere2.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere2.MeteorServletArtefactHandler
@@ -60,7 +63,7 @@ You can also download the plugin source code and run it as a standalone app and 
 	// def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
 
 	// Location of the plugin's issue tracker.
-	def issueManagement = [ system: "github", url: "https://github.com/kensiprell/grails-atmosphere2/issues" ]
+	def issueManagement = [system: "github", url: "https://github.com/kensiprell/grails-atmosphere2/issues"]
 
 	// Online location of the plugin's browseable source code.
 	def scm = [url: "https://github.com/kensiprell/grails-atmosphere2"]
@@ -97,12 +100,12 @@ You can also download the plugin source code and run it as a standalone app and 
 
 		// Change in Atmosphere2Config.groovy
 		if (event.source.name == "Atmosphere2Config") {
-
-			// TODO restart container
+			/*
 			application.meteorServletClasses.each {
 				def newClass = application.classLoader.loadClass(it.clazz.name)
 				application.addArtefact(MeteorServletArtefactHandler.TYPE, newClass)
 			}
+			*/
 		}
 
 		// Change in a MeteorHandler
@@ -135,7 +138,7 @@ You can also download the plugin source code and run it as a standalone app and 
 		def mappings = xml.'servlet-mapping'
 		def config = ApplicationContextHolder.atmosphere2Config
 
-		config.servlets.each { name, parameters ->
+		config?.servlets?.each { name, parameters ->
 			servlets[servlets.size() - 1] + {
 				'servlet' {
 					'description'(parameters.description)
