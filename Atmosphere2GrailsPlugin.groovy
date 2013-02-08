@@ -24,9 +24,11 @@ import org.grails.plugins.atmosphere2.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere2.MeteorServletArtefactHandler
 import org.springframework.util.ClassUtils
 
+import javax.servlet.ServletRegistration
+
 class Atmosphere2GrailsPlugin {
 	// the plugin version
-	def version = "0.2.1"
+	def version = "0.3.1"
 	// the version or versions of Grails the plugin is designed for
 	def grailsVersion = "2.1 > *"
 	// the other plugins this plugin depends on
@@ -68,6 +70,8 @@ You can also download the plugin source code and run it as a standalone app and 
 	// Online location of the plugin's browseable source code.
 	def scm = [url: "https://github.com/kensiprell/grails-atmosphere2"]
 
+	def appContext
+
 	def artefacts = [MeteorHandlerArtefactHandler, MeteorServletArtefactHandler]
 
 	def watchedResources = [
@@ -100,6 +104,7 @@ You can also download the plugin source code and run it as a standalone app and 
 
 		// Change in Atmosphere2Config.groovy
 		if (event.source.name == "Atmosphere2Config") {
+			println "\nChanges to Atmosphere2Config.groovy will not be implemented until the application is restarted.\n"
 			/*
 			application.meteorServletClasses.each {
 				def newClass = application.classLoader.loadClass(it.clazz.name)
@@ -134,6 +139,7 @@ You can also download the plugin source code and run it as a standalone app and 
 	}
 
 	def doWithWebDescriptor = { xml ->
+/*
 		def servlets = xml.'servlet'
 		def mappings = xml.'servlet-mapping'
 		def config = ApplicationContextHolder.atmosphere2Config
@@ -141,7 +147,6 @@ You can also download the plugin source code and run it as a standalone app and 
 		config?.servlets?.each { name, parameters ->
 			servlets[servlets.size() - 1] + {
 				'servlet' {
-					'description'(parameters.description)
 					'servlet-name'(name)
 					'servlet-class'(parameters.className)
 					if (ClassUtils.isPresent("javax.servlet.AsyncContext", Thread.currentThread().getContextClassLoader())) {
@@ -161,14 +166,28 @@ You can also download the plugin source code and run it as a standalone app and 
 			mappings[mappings.size() - 1] + {
 				'servlet-mapping' {
 					'servlet-name'(name)
-					'url-pattern'(parameters.urlPattern)
+					'url-pattern'(parameters.mapping)
 				}
 			}
 		}
+*/
 	}
 
 	def doWithDynamicMethods = { applicationContext ->
 		// Implement registering dynamic methods to classes (optional)
+		appContext = applicationContext
+		def config = ApplicationContextHolder.atmosphere2Config
+		def servletContext = applicationContext.servletContext
+
+		config?.servlets?.each { name, parameters ->
+			ServletRegistration servletRegistration = servletContext.addServlet(name, parameters.className)
+			servletRegistration.addMapping(parameters.mapping)
+			servletRegistration.setLoadOnStartup(1)
+			def initParams = parameters.initParams ?: config?.defaultInitParams
+			initParams?.each { param, value ->
+				servletRegistration.setInitParameter(param, value)
+			}
+		}
 	}
 
 	def doWithSpring = {

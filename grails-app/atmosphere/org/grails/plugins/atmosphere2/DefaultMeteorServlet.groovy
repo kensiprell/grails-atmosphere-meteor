@@ -39,7 +39,7 @@ class DefaultMeteorServlet extends MeteorServlet {
 		def servlet = config.servlets.get(servletName)
 
 		handler = servlet.handler.newInstance() as HttpServlet
-		mapping = servlet.urlPattern
+		mapping = servlet.mapping
 		servletClass = handler.class.getName()
 		ReflectorServletProcessor r = new ReflectorServletProcessor(handler)
 		r.setServletClassName(servletClass)

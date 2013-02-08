@@ -27,13 +27,13 @@ eventCompileEnd = {
 def buildConfiguration(basedir) {
 	def config = new ConfigSlurper().parse(new File("${basedir}/grails-app/conf/Atmosphere2Config.groovy").toURI().toURL())
 	def sitemeshXml = new File("$basedir/web-app/WEB-INF/sitemesh.xml")
-	def defaultUrl = config.defaultUrl ?: '/jabber/*'
+	def defaultMapping = config.defaultMapping ?: '/jabber/*'
 
 	// Create atmosphere2-decorators.xml in WEB-INF
 	def decoratorsDotXml = """\
 <decorators>
     <excludes>
-        <pattern>$defaultUrl</pattern>
+        <pattern>$defaultMapping</pattern>
     </excludes>
 </decorators>"""
 
