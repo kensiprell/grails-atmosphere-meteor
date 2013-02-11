@@ -23,7 +23,7 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils;
 
 public class DefaultMeteorServletClass extends AbstractGrailsClass implements MeteorServletClass {
 
-	public DefaultMeteorServletClass(Class clazz) {
+	public DefaultMeteorServletClass(Class<?> clazz) {
 		super(clazz, MeteorServletArtefactHandler.SUFFIX);
 	}
 

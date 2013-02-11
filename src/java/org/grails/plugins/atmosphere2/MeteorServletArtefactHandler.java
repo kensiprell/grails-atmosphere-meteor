@@ -22,9 +22,9 @@ import org.codehaus.groovy.grails.commons.ArtefactHandlerAdapter;
 
 public class MeteorServletArtefactHandler extends ArtefactHandlerAdapter {
 
-	static public final String TYPE = "MeteorServlet";
+	public static final String TYPE = "MeteorServlet";
 
-	static public final String SUFFIX = "MeteorServlet";
+	public static final String SUFFIX = "MeteorServlet";
 
 	public MeteorServletArtefactHandler() {
 		super(TYPE, MeteorServletClass.class, DefaultMeteorServletClass.class, SUFFIX);

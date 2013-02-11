@@ -23,7 +23,7 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils;
 
 public class DefaultMeteorHandlerClass extends AbstractGrailsClass implements MeteorHandlerClass {
 
-	public DefaultMeteorHandlerClass(Class clazz) {
+	public DefaultMeteorHandlerClass(Class<?> clazz) {
 		super(clazz, MeteorHandlerArtefactHandler.SUFFIX);
 	}
 

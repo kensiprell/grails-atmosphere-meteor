@@ -22,9 +22,9 @@ import org.codehaus.groovy.grails.commons.ArtefactHandlerAdapter;
 
 public class MeteorHandlerArtefactHandler extends ArtefactHandlerAdapter {
 
-	static public final String TYPE = "MeteorHandler";
+	public static final String TYPE = "MeteorHandler";
 
-	static public final String SUFFIX = "MeteorHandler";
+	public static final String SUFFIX = "MeteorHandler";
 
 	public MeteorHandlerArtefactHandler() {
 		super(TYPE, MeteorHandlerClass.class, DefaultMeteorHandlerClass.class, SUFFIX);
