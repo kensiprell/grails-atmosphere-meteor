@@ -30,7 +30,10 @@ class Atmosphere2GrailsPlugin {
 			"**/atmosphereTest/**",
 			"grails-app/conf/Atmosphere2Config.groovy",
 			"grails-app/controllers/org/grails/plugins/atmosphere2/AtmosphereTestController.groovy",
-			"grails-app/services/org/grails/plugins/atmosphere2/AtmosphereTestService.groovy"
+			"grails-app/services/org/grails/plugins/atmosphere2/AtmosphereTestService.groovy",
+			"web-app/css/**",
+			"web-app/images/**",
+			"web-app/js/application.js"
 	]
 
 	def title = "Atmosphere2 Plugin"
