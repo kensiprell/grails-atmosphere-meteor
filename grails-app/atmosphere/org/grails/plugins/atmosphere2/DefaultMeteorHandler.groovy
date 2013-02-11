@@ -18,8 +18,9 @@
 
 package org.grails.plugins.atmosphere2
 
+import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.LONG_POLLING
+import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.WEBSOCKET
 import grails.converters.JSON
-import org.springframework.context.ApplicationContext
 
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
@@ -33,9 +34,7 @@ import org.atmosphere.cpr.Meteor
 import org.atmosphere.util.SimpleBroadcaster
 import org.atmosphere.websocket.WebSocketEventListenerAdapter
 import org.json.simple.JSONObject
-
-import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.LONG_POLLING
-import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.WEBSOCKET
+import org.springframework.context.ApplicationContext
 
 class DefaultMeteorHandler extends HttpServlet {
 
@@ -43,7 +42,7 @@ class DefaultMeteorHandler extends HttpServlet {
 	def jabberTestService = applicationContext.getBean("atmosphereTestService")
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		String mapping = request.getHeader("mapping")
 
@@ -64,7 +63,7 @@ class DefaultMeteorHandler extends HttpServlet {
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		def data = JSON.parse(request.getReader().readLine()) as JSONObject
 		String mapping = request.getHeader("mapping")

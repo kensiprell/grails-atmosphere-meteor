@@ -21,15 +21,10 @@ def processFileInplace(file, Closure processText) {
 	def text = file.text
 	file.write(processText(text))
 }
-def buildConfigFile = new File("${basedir}/grails-app/conf/BuildConfig.groovy")
+def buildConfigFile = new File(basedir, "grails-app/conf/BuildConfig.groovy")
 def grailsServletVersion = buildConfig.grails.servlet.version
 def grailsTomcatNio = buildConfig.grails.tomcat.nio
-def isTomcat = false
-buildConfigFile.eachLine { line ->
-	if (line =~ /tomcat/ && !(line =~ /\/\/.*tomcat/)) {
-		isTomcat = true
-	}
-}
+boolean isTomcat = buildConfigFile.text.readLines().any { it =~ /tomcat/ && !(it =~ /\/\/.*tomcat/) }
 
 // Create the directory for Atmosphere artefacts
 ant.mkdir(dir: "${basedir}/grails-app/atmosphere")
@@ -74,12 +69,12 @@ processFileInplace(buildConfigFile) { text ->
 
 // Create context.xml in META-INF and WEB-INF
 def contextDotXml = """\
-<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Context>
-	<Loader delegate=\"true\"/>
+	<Loader delegate="true"/>
 </Context>"""
-def metaInf = new File("$basedir/web-app/META-INF/")
-def webInf = new File("$basedir/web-app/WEB-INF/")
+def metaInf = new File(basedir, "web-app/META-INF/")
+def webInf = new File(basedir, "web-app/WEB-INF/")
 if (!metaInf.exists())
 	metaInf.mkdirs()
 if (!webInf.exists())
