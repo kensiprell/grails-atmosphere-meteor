@@ -21,12 +21,20 @@ grails.project.dependency.resolution = {
 	}
 
 	plugins {
-		build	":tomcat:$grailsVersion"
-		build	":release:2.2.0"
+		runtime ":jquery:1.8.0"
 
-		compile	":hibernate:$grailsVersion"
+		runtime ":resources:1.2.RC3"
 
-		runtime	":jquery:1.8.0"
-		runtime	":resources:1.2.RC3"
+		build ':release:2.2.0', ':rest-client-builder:1.0.3', {
+			export = false
+		}
+
+		build ":tomcat:$grailsVersion", {
+			export = false
+		}
+
+		compile  ":hibernate:$grailsVersion", {
+			export = false
+		}
 	}
 }
