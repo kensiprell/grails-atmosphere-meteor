@@ -16,31 +16,24 @@
  * limitations under the License.
  */
 
+import javax.servlet.ServletRegistration
 
-
-import org.codehaus.groovy.grails.cli.fork.ForkedGrailsProcess
 import org.grails.plugins.atmosphere2.ApplicationContextHolder
 import org.grails.plugins.atmosphere2.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere2.MeteorServletArtefactHandler
-import org.springframework.util.ClassUtils
-
-import javax.servlet.ServletRegistration
 
 class Atmosphere2GrailsPlugin {
-	// the plugin version
 	def version = "0.3.1"
-	// the version or versions of Grails the plugin is designed for
 	def grailsVersion = "2.1 > *"
-	// the other plugins this plugin depends on
-	def dependsOn = [:]
-	// resources that are excluded from plugin packaging
 	def pluginExcludes = [
 			"**/atmosphere/**",
 			"**/atmosphereTest/**",
 			"grails-app/conf/Atmosphere2Config.groovy",
 			"grails-app/controllers/org/grails/plugins/atmosphere2/AtmosphereTestController.groovy",
 			"grails-app/services/org/grails/plugins/atmosphere2/AtmosphereTestService.groovy",
-			"grails-app/views/error.gsp"
+			"web-app/css/**",
+			"web-app/images/**",
+			"web-app/js/application.js"
 	]
 
 	def title = "Atmosphere2 Plugin"
@@ -52,22 +45,10 @@ This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere
 You can also download the plugin source code and run it as a standalone app and take the plugin for a test drive before installing.
 '''
 
-	// URL to the plugin's documentation
-	def documentation = "https://github.com/kensiprell/grails-atmosphere2/blob/master/README.md.md"
+	def documentation = "https://github.com/kensiprell/grails-atmosphere2/blob/master/README.md"
 
-	// License: one of 'APACHE', 'GPL2', 'GPL3'
 	def license = "APACHE"
-
-	// Details of company behind the plugin (if there is one)
-	// def organization = [ name: "Example, Inc.", url: "http://www.example.com/" ]
-
-	// Any additional developers beyond the author specified above.
-	// def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
-
-	// Location of the plugin's issue tracker.
 	def issueManagement = [system: "github", url: "https://github.com/kensiprell/grails-atmosphere2/issues"]
-
-	// Online location of the plugin's browseable source code.
 	def scm = [url: "https://github.com/kensiprell/grails-atmosphere2"]
 
 	def appContext
@@ -188,22 +169,5 @@ You can also download the plugin source code and run it as a standalone app and 
 				servletRegistration.setInitParameter(param, value)
 			}
 		}
-	}
-
-	def doWithSpring = {
-		// Implement runtime spring config (optional)
-	}
-
-	def doWithApplicationContext = { applicationContext ->
-		// Implement post initialization spring config (optional)
-	}
-
-	def onConfigChange = { event ->
-		// Implement code that is executed when the project configuration changes.
-		// The event is the same as for 'onChange'.
-	}
-
-	def onShutdown = { event ->
-		// Implement code that is executed when the application shuts down (optional)
 	}
 }

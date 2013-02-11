@@ -18,17 +18,17 @@
 
 package org.grails.plugins.atmosphere2
 
-import javax.servlet.http.HttpServlet
 import javax.servlet.ServletConfig
 import javax.servlet.ServletException
+import javax.servlet.http.HttpServlet
+
 import org.atmosphere.cpr.MeteorServlet
 import org.atmosphere.handler.ReflectorServletProcessor
-import org.grails.plugins.atmosphere2.ApplicationContextHolder
 
 class DefaultMeteorServlet extends MeteorServlet {
 
 	@Override
-	public void init(ServletConfig sc) throws ServletException {
+	void init(ServletConfig sc) throws ServletException {
 		super.init(sc)
 
 		HttpServlet handler
@@ -38,7 +38,7 @@ class DefaultMeteorServlet extends MeteorServlet {
 		def config = ApplicationContextHolder.atmosphere2Config
 		def servlet = config.servlets.get(servletName)
 
-		handler = servlet.handler.newInstance() as HttpServlet
+		handler = servlet.handler.newInstance()
 		mapping = servlet.mapping
 		servletClass = handler.class.getName()
 		ReflectorServletProcessor r = new ReflectorServletProcessor(handler)
