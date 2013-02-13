@@ -40,9 +40,7 @@ class Atmosphere2GrailsPlugin {
 	def author = "Ken Siprell"
 	def authorEmail = "ken.siprell@gmail.com"
 	def description = '''
-This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere/atmosphere/wiki). It can form the basis for a traditional XMPP server with a browser-based client without the limitations of BOSH.
-
-You can also download the plugin source code and run it as a standalone app and take the plugin for a test drive before installing.
+This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere/atmosphere/wiki). It can form the basis for a traditional XMPP server with a browser-based client without the limitations of BOSH. You can also download the plugin source code and run it as a standalone application and take the plugin for a test drive before installing.
 '''
 
 	def documentation = "https://github.com/kensiprell/grails-atmosphere2/blob/master/README.md"

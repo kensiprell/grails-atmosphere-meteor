@@ -134,21 +134,21 @@
 			switch (options.type) {
 				case 'chat':
 					jabberRequest = $.extend({}, defaults, {
-						headers: {mapping: '/jabber/chat/12345'},
+						headers: {atmosphere2-mapping: '/jabber/chat/12345'},
 						url: 'http://localhost:8080/atmosphere2/jabber/chat/12345'
 					});
 					Jabber.chatSubscription = Jabber.socket.subscribe(jabberRequest);
 					break;
 				case 'notification':
 					jabberRequest = $.extend({}, defaults, {
-						headers: {mapping: '/jabber/notification/userName'},
+						headers: {atmosphere2-mapping: '/jabber/notification/userName'},
 						url: 'http://localhost:8080/atmosphere2/jabber/notification/userName'
 					});
 					Jabber.notificationSubscription = Jabber.socket.subscribe(jabberRequest);
 					break;
 				case 'public':
 					jabberRequest = $.extend({}, defaults, {
-						headers: {mapping: '/jabber/public'},
+						headers: {atmosphere2-mapping: '/jabber/public'},
 						url: 'http://localhost:8080/atmosphere2/jabber/public'
 					});
 					Jabber.publicSubscription = Jabber.socket.subscribe(jabberRequest);
