@@ -38,7 +38,7 @@ class @artifact.name@ extends HttpServlet {
 			m.addListener(new AtmosphereResourceEventListenerAdapter())
 		}
 
-		response.setContentType("application/javascript charset=UTF-8")
+		response.setContentType("text/html;charset=UTF-8")
 
 		Broadcaster b = BroadcasterFactory.getDefault().lookup(SimpleBroadcaster.class, mapping, true)
 		//m.setBroadcaster(b)

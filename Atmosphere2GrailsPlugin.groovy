@@ -5,7 +5,7 @@ import org.grails.plugins.atmosphere2.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere2.MeteorServletArtefactHandler
 
 class Atmosphere2GrailsPlugin {
-	def version = "0.3.1"
+	def version = "0.3.2"
 	def grailsVersion = "2.1 > *"
 	def pluginExcludes = [
 			"**/atmosphere/**",
@@ -51,17 +51,6 @@ This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere
 		event.application - The GrailsApplication instance
 		event.manager - The GrailsPluginManager instance
 		*/
-
-/*
-		println ""
-		println "event.source: ${event.source}"
-		println "event.source.name: ${event.source.name}"
-		println "event.ctx: ${event.ctx}"
-		println "event.plugin: ${event.plugin}"
-		println "event.application: ${event.application}"
-		println "event.manager: ${event.manager}"
-		println ""
-*/
 
 		// Change in Atmosphere2Config.groovy
 		if (event.source.name == "Atmosphere2Config") {
