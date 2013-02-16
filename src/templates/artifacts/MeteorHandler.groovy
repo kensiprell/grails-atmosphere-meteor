@@ -41,9 +41,9 @@ class @artifact.name@ extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8")
 
 		Broadcaster b = BroadcasterFactory.getDefault().lookup(SimpleBroadcaster.class, mapping, true)
-		//m.setBroadcaster(b)
-		AtmosphereResource resource = m.getAtmosphereResource()
-		b.addAtmosphereResource(resource)
+		m.setBroadcaster(b)
+		//AtmosphereResource resource = m.getAtmosphereResource()
+		//b.addAtmosphereResource(resource)
 		m.resumeOnBroadcast(m.transport() == LONG_POLLING).suspend(-1)
 	}
 
