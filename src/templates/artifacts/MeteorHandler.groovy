@@ -1,7 +1,7 @@
 @artifact.package@
 
 import org.atmosphere.cpr.Meteor
-import org.grails.plugins.atmosphere2.ApplicationContextHolder
+import org.grails.plugins.atmosphere_meteor.ApplicationContextHolder
 import org.springframework.context.ApplicationContext
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
@@ -29,7 +29,7 @@ class @artifact.name@ extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		String mapping = request.getHeader("Atmosphere2-Mapping")
+		String mapping = request.getHeader("AtmosphereMeteor-Mapping")
 
 		Meteor m = Meteor.build(request)
 		if (m.transport().equals(WEBSOCKET)) {
@@ -51,7 +51,7 @@ class @artifact.name@ extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		def data = JSON.parse(request.getReader().readLine()) as JSONObject
-		String mapping = request.getHeader("Atmosphere2-Mapping")
+		String mapping = request.getHeader("AtmosphereMeteor-Mapping")
 		String type = data.containsKey("type") ? data.type.toString() : null
 		String resource = data.containsKey("resource") ? data.resource.toString() : null
 		String message = data.containsKey("message") ? data.message.toString() : null

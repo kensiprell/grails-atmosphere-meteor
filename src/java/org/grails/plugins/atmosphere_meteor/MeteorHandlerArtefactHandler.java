@@ -1,4 +1,4 @@
-package org.grails.plugins.atmosphere2;
+package org.grails.plugins.atmosphere_meteor;
 
 import org.codehaus.groovy.grails.commons.AbstractGrailsClass;
 import org.codehaus.groovy.grails.commons.ArtefactHandlerAdapter;

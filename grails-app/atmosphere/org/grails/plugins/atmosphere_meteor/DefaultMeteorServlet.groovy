@@ -1,4 +1,4 @@
-package org.grails.plugins.atmosphere2
+package org.grails.plugins.atmosphere_meteor
 
 import javax.servlet.ServletConfig
 import javax.servlet.ServletException
@@ -17,7 +17,7 @@ class DefaultMeteorServlet extends MeteorServlet {
 		String mapping
 		String servletClass
 		String servletName = sc.servletName
-		def config = ApplicationContextHolder.atmosphere2Config
+		def config = ApplicationContextHolder.atmosphereMeteorConfig
 		def servlet = config.servlets.get(servletName)
 
 		handler = servlet.handler.newInstance()

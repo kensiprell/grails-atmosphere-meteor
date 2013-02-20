@@ -12,10 +12,10 @@ boolean isTomcat = buildConfigFile.text.readLines().any { it =~ /tomcat/ && !(it
 ant.mkdir(dir: "${basedir}/grails-app/atmosphere")
 
 // Copy the default plugin configuration file
-ant.copy(file: "${pluginBasedir}/grails-app/conf/Atmosphere2ConfigDefault.groovy", tofile: "${basedir}/grails-app/conf/Atmosphere2Config.groovy")
+ant.copy(file: "${pluginBasedir}/grails-app/conf/AtmosphereMeteorConfigDefault.groovy", tofile: "${basedir}/grails-app/conf/AtmosphereMeteorConfig.groovy")
 
 // Copy the default plugin resources file
-ant.copy(file: "${pluginBasedir}/grails-app/conf/Atmosphere2Resources.groovy", toDir: "${basedir}/grails-app/conf")
+ant.copy(file: "${pluginBasedir}/grails-app/conf/AtmosphereMeteorResources.groovy", toDir: "${basedir}/grails-app/conf")
 
 // Modify BuildConfig.groovy
 ant.copy(file: "${basedir}/grails-app/conf/BuildConfig.groovy", tofile: "${basedir}/grails-app/conf/BuildConfig_ORIG.groovy")
@@ -23,7 +23,7 @@ ant.copy(file: "${basedir}/grails-app/conf/BuildConfig.groovy", tofile: "${based
 // Change grails.servlet.version to 3.0 in BuildConfig.groovy if necessary
 if (grailsServletVersion != "3") {
 	processFileInplace(buildConfigFile) { text ->
-		text.replaceAll(/(?m)^grails\.servlet\.version.*"(.*)".*$/, """grails.servlet.version = "3" // Modified by Atmosphere2 plugin on ${new Date()}. Previous version was ${grailsServletVersion}.""")
+		text.replaceAll(/(?m)^grails\.servlet\.version.*"(.*)".*$/, """grails.servlet.version = "3" // Modified by atmosphere-meteor plugin on ${new Date()}. Previous version was ${grailsServletVersion}.""")
 	}
 }
 
@@ -31,12 +31,12 @@ if (grailsServletVersion != "3") {
 if (isTomcat) {
 	if (grailsTomcatNio != true && grailsTomcatNio.size() != 0) {
 		processFileInplace(buildConfigFile) { text ->
-			text.replaceAll(/(?m)^grails\.tomcat\.nio.*=(.*)$/, """grails.tomcat.nio = true // Modified by Atmosphere2 plugin on ${new Date()}. Previous value was ${grailsTomcatNio}.""")
+			text.replaceAll(/(?m)^grails\.tomcat\.nio.*=(.*)$/, """grails.tomcat.nio = true // Modified by atmosphere-meteor plugin on ${new Date()}. Previous value was ${grailsTomcatNio}.""")
 		}
 	}
 	if (grailsTomcatNio.size() == 0) {
 		processFileInplace(buildConfigFile) { text ->
-			text.replaceAll(/(?m)(^grails\.servlet\.version.*$)/, """\$1\ngrails.tomcat.nio = true // Added by Atmosphere2 plugin on ${new Date()}.""")
+			text.replaceAll(/(?m)(^grails\.servlet\.version.*$)/, """\$1\ngrails.tomcat.nio = true // Added by atmosphere-meteor plugin on ${new Date()}.""")
 		}
 	}
 }
@@ -44,7 +44,7 @@ if (isTomcat) {
 // Add atmosphere-runtime dependency in BuildConfig.groovy
 processFileInplace(buildConfigFile) { text ->
 	text.replaceAll(/(?m)(^\s*dependencies\s*\{.*$)/, """\$1
-        compile('org.atmosphere:atmosphere-runtime:1.0.9') {  // Added by Atmosphere2 plugin on ${new Date()}.
+        compile('org.atmosphere:atmosphere-runtime:1.0.9') {  // Added by atmosphere-meteor plugin on ${new Date()}.
             excludes 'slf4j-api', 'atmosphere-ping'
         }
 """)
@@ -66,20 +66,20 @@ new File(metaInf, "context.xml").write contextDotXml
 new File(webInf, "context.xml").write contextDotXml
 
 println '''
-*******************************************************
-* You have installed the Atmosphere2 plugin.          *
-*                                                     *
-* Documentation:                                      *
-* https://github.com/kensiprell/grails-atmosphere2    *
-*                                                     *
-* BuildConfig.groovy was modified.                    *
-* The original was copied to BuildConfig_ORIG.groovy  *
-*                                                     *
-* Next steps:                                         *
-* grails create-meteor-handler com.example.Default    *
-* grails create-meteor-servlet com.example.Default    *
-* Edit grails-app/conf/Atmosphere2Config.groovy       *
-* Create controller, view, JavaScript client, etc.    *
-*                                                     *
-*******************************************************
+***********************************************************
+* You have installed the atmosphere-meteor plugin.        *
+*                                                         *
+* Documentation:                                          *
+* https://github.com/kensiprell/grails-atmosphere-meteor  *
+*                                                         *
+* BuildConfig.groovy was modified.                        *
+* The original was copied to BuildConfig_ORIG.groovy      *
+*                                                         *
+* Next steps:                                             *
+* grails create-meteor-handler com.example.Default        *
+* grails create-meteor-servlet com.example.Default        *
+* Edit grails-app/conf/AtmosphereMeteorConfig.groovy      *
+* Create controller, view, JavaScript client, etc.        *
+*                                                         *
+***********************************************************
 '''

@@ -1,4 +1,4 @@
-package org.grails.plugins.atmosphere2
+package org.grails.plugins.atmosphere_meteor
 
 class AtmosphereTestService {
 

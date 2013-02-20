@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>Atmosphere Test</title>
-	<r:require module="atmosphere2"/>
+	<r:require module="atmosphere-meteor"/>
 	<r:layoutResources/>
 	<style>
 	#chat-window {
@@ -116,22 +116,22 @@
 			switch (options.type) {
 				case 'chat':
 					jabberRequest = $.extend({}, defaults, {
-						headers: {'Atmosphere2-Mapping': '/jabber/chat/12345'},
-						url: 'http://localhost:8080/atmosphere2/jabber/chat/12345'
+						headers: {'AtmosphereMeteor-Mapping': '/jabber/chat/12345'},
+						url: 'http://localhost:8080/grails-atmosphere-meteor/jabber/chat/12345'
 					});
 					Jabber.chatSubscription = Jabber.socket.subscribe(jabberRequest);
 					break;
 				case 'notification':
 					jabberRequest = $.extend({}, defaults, {
-						headers: {'Atmosphere2-Mapping': '/jabber/notification/userName'},
-						url: 'http://localhost:8080/atmosphere2/jabber/notification/userName'
+						headers: {'AtmosphereMeteor-Mapping': '/jabber/notification/userName'},
+						url: 'http://localhost:8080/grails-atmosphere-meteor/jabber/notification/userName'
 					});
 					Jabber.notificationSubscription = Jabber.socket.subscribe(jabberRequest);
 					break;
 				case 'public':
 					jabberRequest = $.extend({}, defaults, {
-						headers: {'Atmosphere2-Mapping': '/jabber/public'},
-						url: 'http://localhost:8080/atmosphere2/jabber/public'
+						headers: {'AtmosphereMeteor-Mapping': '/jabber/public'},
+						url: 'http://localhost:8080/grails-atmosphere-meteor/jabber/public'
 					});
 					Jabber.publicSubscription = Jabber.socket.subscribe(jabberRequest);
 					break;
@@ -233,7 +233,7 @@
 		});
 
 		$('#public-trigger').on('click', function () {
-			$.ajax('http://localhost:8080/atmosphere2/atmosphereTest/triggerPublic');
+			$.ajax('http://localhost:8080/grails-atmosphere-meteor/atmosphereTest/triggerPublic');
 			$(this).attr('disabled', 'disabled');
 		});
 

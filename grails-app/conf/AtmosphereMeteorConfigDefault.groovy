@@ -6,14 +6,14 @@
 
 /*
  defaultMapping is used by _Events.groovy to create
- atmosphere2-decorators.xml and update sitemesh.xml
+ atmosphere-meteor-decorators.xml and update sitemesh.xml
  in web-app/WEB-INF.
  */
 defaultMapping = "/jabber/*"
 
 /*
  name (index), description, className, and mapping are used by
- Atmosphere2GrailsPlugin.doWithWebDescriptor to create the servlets in web.xml.
+ AtmosphereMeteorGrailsPlugin.doWithWebDescriptor to create the servlets in web.xml.
 
  mapping and handler are used by the DefaultMeteorServlet class
  to add each AtmosphereHandler to the AtmosphereFramework.

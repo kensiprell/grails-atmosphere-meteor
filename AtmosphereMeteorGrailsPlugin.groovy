@@ -1,35 +1,35 @@
 import javax.servlet.ServletRegistration
 
-import org.grails.plugins.atmosphere2.ApplicationContextHolder
-import org.grails.plugins.atmosphere2.MeteorHandlerArtefactHandler
-import org.grails.plugins.atmosphere2.MeteorServletArtefactHandler
+import org.grails.plugins.atmosphere_meteor.ApplicationContextHolder
+import org.grails.plugins.atmosphere_meteor.MeteorHandlerArtefactHandler
+import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
-class Atmosphere2GrailsPlugin {
-	def version = "0.3.2"
+class AtmosphereMeteorGrailsPlugin {
+	def version = "0.4.0"
 	def grailsVersion = "2.1 > *"
 	def pluginExcludes = [
 			"**/atmosphere/**",
 			"**/atmosphereTest/**",
-			"grails-app/conf/Atmosphere2Config.groovy",
-			"grails-app/controllers/org/grails/plugins/atmosphere2/AtmosphereTestController.groovy",
-			"grails-app/services/org/grails/plugins/atmosphere2/AtmosphereTestService.groovy",
+			"grails-app/conf/AtmosphereMeteorConfig.groovy",
+			"grails-app/controllers/org/grails/plugins/atmosphere_meteor/AtmosphereTestController.groovy",
+			"grails-app/services/org/grails/plugins/atmosphere_meteor/AtmosphereTestService.groovy",
 			"web-app/css/**",
 			"web-app/images/**",
 			"web-app/js/application.js"
 	]
 
-	def title = "Atmosphere2 Plugin"
+	def title = "Atmosphere Meteor Plugin"
 	def author = "Ken Siprell"
 	def authorEmail = "ken.siprell@gmail.com"
 	def description = '''
 This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere/atmosphere/wiki). It can form the basis for a traditional XMPP server with a browser-based client without the limitations of BOSH. You can also download the plugin source code and run it as a standalone application and take the plugin for a test drive before installing.
 '''
 
-	def documentation = "https://github.com/kensiprell/grails-atmosphere2/blob/master/README.md"
+	def documentation = "https://github.com/kensiprell/grails-atmosphere-meteor/blob/master/README.md"
 
 	def license = "APACHE"
-	def issueManagement = [system: "github", url: "https://github.com/kensiprell/grails-atmosphere2/issues"]
-	def scm = [url: "https://github.com/kensiprell/grails-atmosphere2"]
+	def issueManagement = [system: "github", url: "https://github.com/kensiprell/grails-atmosphere-meteor/issues"]
+	def scm = [url: "https://github.com/kensiprell/grails-atmosphere-meteor"]
 
 	def appContext
 
@@ -38,7 +38,7 @@ This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere
 	def watchedResources = [
 			"file:./grails-app/atmosphere/**/*MeteorHandler.groovy",
 			"file:./grails-app/atmosphere/**/*MeteorServlet.groovy",
-			"file:./grails-app/conf/Atmosphere2Config.groovy"
+			"file:./grails-app/conf/AtmosphereMeteorConfig.groovy"
 			//"file:../../plugins/*/atmosphere/**/*MeteorHandler.groovy",
 			//"file:../../plugins/*/atmosphere/**/*MeteorServlet.groovy"
 	]
@@ -52,9 +52,9 @@ This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere
 		event.manager - The GrailsPluginManager instance
 		*/
 
-		// Change in Atmosphere2Config.groovy
-		if (event.source.name == "Atmosphere2Config") {
-			println "\nChanges to Atmosphere2Config.groovy will not be implemented until the application is restarted.\n"
+		// Change in AtmosphereMeteorConfig.groovy
+		if (event.source.name == "AtmosphereMeteorConfig") {
+			println "\nChanges to AtmosphereMeteorConfig.groovy will not be implemented until the application is restarted.\n"
 			/*
 			application.meteorServletClasses.each {
 				def newClass = application.classLoader.loadClass(it.clazz.name)
@@ -92,7 +92,7 @@ This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere
 /*
 		def servlets = xml.'servlet'
 		def mappings = xml.'servlet-mapping'
-		def config = ApplicationContextHolder.atmosphere2Config
+		def config = ApplicationContextHolder.atmosphereMeteorConfig
 
 		config?.servlets?.each { name, parameters ->
 			servlets[servlets.size() - 1] + {
@@ -126,7 +126,7 @@ This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere
 	def doWithDynamicMethods = { applicationContext ->
 		// Implement registering dynamic methods to classes (optional)
 		appContext = applicationContext
-		def config = ApplicationContextHolder.atmosphere2Config
+		def config = ApplicationContextHolder.atmosphereMeteorConfig
 		def servletContext = applicationContext.servletContext
 
 		config?.servlets?.each { name, parameters ->

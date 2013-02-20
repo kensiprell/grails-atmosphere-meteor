@@ -1,4 +1,4 @@
-import org.grails.plugins.atmosphere2.ApplicationContextHolder
+import org.grails.plugins.atmosphere_meteor.ApplicationContextHolder
 
 beans = {
    applicationContextHolder(ApplicationContextHolder) { bean ->

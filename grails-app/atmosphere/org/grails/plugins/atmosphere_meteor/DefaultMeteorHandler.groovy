@@ -1,4 +1,4 @@
-package org.grails.plugins.atmosphere2
+package org.grails.plugins.atmosphere_meteor
 
 import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.LONG_POLLING
 import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.WEBSOCKET
@@ -26,7 +26,7 @@ class DefaultMeteorHandler extends HttpServlet {
 	@Override
 	void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		String mapping = request.getHeader("Atmosphere2-Mapping")
+		String mapping = request.getHeader("AtmosphereMeteor-Mapping")
 
 		Meteor m = Meteor.build(request)
 		if (m.transport().equals(WEBSOCKET)) {
@@ -48,7 +48,7 @@ class DefaultMeteorHandler extends HttpServlet {
 	void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		def data = JSON.parse(request.getReader().readLine()) as JSONObject
-		String mapping = request.getHeader("Atmosphere2-Mapping")
+		String mapping = request.getHeader("AtmosphereMeteor-Mapping")
 		String type = data.containsKey("type") ? data.type.toString() : null
 		String resource = data.containsKey("resource") ? data.resource.toString() : null
 		String message = data.containsKey("message") ? data.message.toString() : null

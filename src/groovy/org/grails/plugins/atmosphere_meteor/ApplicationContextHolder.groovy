@@ -1,4 +1,4 @@
-package org.grails.plugins.atmosphere2
+package org.grails.plugins.atmosphere_meteor
 
 import grails.util.Environment
 
@@ -48,13 +48,13 @@ class ApplicationContextHolder implements ApplicationContextAware {
 		getBean("pluginManager")
 	}
 
-	static ConfigObject getAtmosphere2Config() {
+	static ConfigObject getAtmosphereMeteorConfig() {
 		ConfigObject config
 		GroovyClassLoader classLoader = new GroovyClassLoader()
 		String environment = Environment.getCurrent().toString()
 		def slurper = new ConfigSlurper(environment)
 		try {
-			config = slurper.parse(classLoader.loadClass('Atmosphere2Config'))
+			config = slurper.parse(classLoader.loadClass('AtmosphereMeteorConfig'))
 		}
 		catch (e) {
 		}

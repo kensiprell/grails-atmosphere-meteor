@@ -30,7 +30,7 @@ The servlets are created programmatically using ServletContext.addServlet and ar
 
 ### Configuration
 
-The configuration file, grails-app/conf/Atmosphere2Config.groovy, is used to tie the MeteorServlet and MeteorHandler classes together.
+The configuration file, grails-app/conf/AtmosphereMeteorConfig.groovy, is used to tie the MeteorServlet and MeteorHandler classes together.
 
 ### MeteorServlet Class
 
@@ -48,7 +48,7 @@ The plugin source can be downloaded and used as a standalone Grails application.
 
  1. Clone the plugin repository
 
- 2. cd /path/to/grails-atmosphere2
+ 2. cd /path/to/grails-atmosphere-meteor
 
  3. grails run-app
 
@@ -62,19 +62,19 @@ You will have a simple application that performs the following tasks out of the 
 
 You can review the files below to understand how it all works. Note that many of the files are not packaged into the finished plugin.
 
-* grails-app/atmosphere/org/grails/plugins/atmosphere2/DefaultMeteorHandler.groovy
+* grails-app/atmosphere/org/grails/plugins/atmosphere_meteor/DefaultMeteorHandler.groovy
 
-* grails-app/atmosphere/org/grails/plugins/atmosphere2/DefaultMeteorServlet.groovy
+* grails-app/atmosphere/org/grails/plugins/atmosphere_meteor/DefaultMeteorServlet.groovy
 
-* grails-app/conf/Atmosphere2Config.groovy
+* grails-app/conf/AtmosphereMeteorConfig.groovy
 
-* grails-app/controllers/org/grails/plugins/atmosphere2/AtmosphereTestController.groovy
+* grails-app/controllers/org/grails/plugins/atmosphere_meteor/AtmosphereTestController.groovy
 
-* grails-app/services/org/grails/plugins/atmosphere2/AtmosphereTestService.groovy
+* grails-app/services/org/grails/plugins/atmosphere_meteor/AtmosphereTestService.groovy
 
 * grails-app/views/AtmosphereTest/index.gsp: This file contains all internal JavaScript.
 
-* src/groovy/org/grails/plugins/atmosphere2/ApplicationContextHolder (Burt Beckwith)
+* src/groovy/org/grails/plugins/atmosphere_meteor/ApplicationContextHolder (Burt Beckwith)
 
 ## Plugin Installation
 
@@ -82,13 +82,13 @@ The instructions assume you are using Tomcat as the servlet container. Since the
 
 1. Clone the plugin repository
 
-2. cd /path/to/grails-atmosphere2
+2. cd /path/to/grails-atmosphere-meteor
 
 3. grails package-plugin
 
 4. cd /path/to/your/application
 
-5. grails install-plugin /path/to/grails-atmosphere2/grails-atmosphere2-x.x.x.zip
+5. grails install-plugin /path/to/grails-atmosphere-meteor/grails-atmosphere-meteor-x.x.x.zip
 
 6. Create a MeteorServlet. Changes to these classes are reloaded automatically.
 ```groovy
@@ -100,7 +100,7 @@ The instructions assume you are using Tomcat as the servlet container. Since the
     grails create-meteor-handler com.example.Default
 ```
 
-8. Edit grails-app/conf/Atmosphere2Config.groovy. Changes to this file will be implemented when the application is restarted.
+8. Edit grails-app/conf/AtmosphereMeteorConfig.groovy. Changes to this file will be implemented when the application is restarted.
 ```groovy
     import com.example.DefaultMeteorHandler
 
