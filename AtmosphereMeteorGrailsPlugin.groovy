@@ -5,7 +5,7 @@ import org.grails.plugins.atmosphere_meteor.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
 class AtmosphereMeteorGrailsPlugin {
-	def version = "0.4.0"
+	def version = "0.4.1"
 	def grailsVersion = "2.1 > *"
 	def pluginExcludes = [
 			"**/atmosphere/**",
@@ -88,43 +88,8 @@ This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere
 		}
 	}
 
-	def doWithWebDescriptor = { xml ->
-/*
-		def servlets = xml.'servlet'
-		def mappings = xml.'servlet-mapping'
-		def config = ApplicationContextHolder.atmosphereMeteorConfig
-
-		config?.servlets?.each { name, parameters ->
-			servlets[servlets.size() - 1] + {
-				'servlet' {
-					'servlet-name'(name)
-					'servlet-class'(parameters.className)
-					if (ClassUtils.isPresent("javax.servlet.AsyncContext", Thread.currentThread().getContextClassLoader())) {
-						'async-supported'(true)
-					}
-					config.initParams.each { initParam ->
-						if (initParam.key && initParam.value) {
-							'init-param' {
-								'param-name'(initParam.key)
-								'param-value'(initParam.value)
-							}
-						}
-					}
-					'load-on-startup'('0')
-				}
-			}
-			mappings[mappings.size() - 1] + {
-				'servlet-mapping' {
-					'servlet-name'(name)
-					'url-pattern'(parameters.mapping)
-				}
-			}
-		}
-*/
-	}
-
 	def doWithDynamicMethods = { applicationContext ->
-		// Implement registering dynamic methods to classes (optional)
+		// Configure servlets
 		appContext = applicationContext
 		def config = ApplicationContextHolder.atmosphereMeteorConfig
 		def servletContext = applicationContext.servletContext

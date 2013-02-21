@@ -1,13 +1,13 @@
 /*
  Edit line below to import your handler classes
  */
-//import your.package.DefaultMeteorHandler
 //import your.package.ChatMeteorHandler
+//import your.package.ForumMeteorHandler
+//import your.package.SimpleMeteorHandler
 
 /*
- defaultMapping is used by _Events.groovy to create
- atmosphere-meteor-decorators.xml and update sitemesh.xml
- in web-app/WEB-INF.
+ defaultMapping is used by _Events.groovy to create atmosphere-meteor-decorators.xml
+ and update sitemesh.xml in web-app/WEB-INF.
  */
 defaultMapping = "/jabber/*"
 
@@ -24,19 +24,21 @@ defaultMapping = "/jabber/*"
 //servlets = [
 //	MeteorServlet: [
 //		className: "your.package.DefaultMeteorServlet",
-//		mapping: "/jabber*/",
-//		handler: DefaultMeteorHandler,
+//		mapping: "/jabber/*",
+//		handler: SimpleMeteorHandler,
 //		initParams = [
-//			"org.atmosphere.cpr.sessionSupport": "true",
 //			"org.atmosphere.cpr.CometSupport.maxInactiveActivity": "30000",
-//			"org.atmosphere.cpr.broadcaster.shareableThreadPool": "true",
-//			"org.atmosphere.cpr.broadcasterLifeCyclePolicy": "IDLE_DESTROY"
 //		]
 //	],
 //	MeteorServletChat: [
 //		className: "your.package.DefaultMeteorServlet",
-//		mapping: "/jabber/chat*/",
+//		mapping: "/jabber/chat/*",
 //		handler: ChatMeteorHandler
+//	]
+//	MeteorServletChat: [
+//		className: "your.package.DefaultMeteorServlet",
+//		mapping: "/jabber/forum/*",
+//		handler: ForumMeteorHandler
 //	]
 //]
 
@@ -50,9 +52,7 @@ defaultMapping = "/jabber/*"
  */
 
 //defaultInitParams = [
-//	"org.atmosphere.cpr.sessionSupport": "true",
 //	"org.atmosphere.cpr.CometSupport.maxInactiveActivity": "30000",
 //	"org.atmosphere.cpr.broadcaster.shareableThreadPool": "true",
-//	"org.atmosphere.cpr.broadcasterLifeCyclePolicy": "IDLE_DESTROY"
+//	"org.atmosphere.cpr.broadcasterLifeCyclePolicy": "EMPTY_DESTROY"
 //]
-

@@ -64,7 +64,7 @@
 						url: '', // Must start with http:// or https://
 						connectTimeout: -1,
 						reconnectInterval: 0,
-						timeout: 300000, // Same as session timeout?
+						timeout: 300000,
 						method: 'GET',
 						headers: {},
 						contentType: 'application/json',

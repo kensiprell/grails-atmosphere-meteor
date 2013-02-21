@@ -1,11 +1,11 @@
 @artifact.package@
 
-import javax.servlet.http.HttpServlet
 import javax.servlet.ServletConfig
 import javax.servlet.ServletException
+import javax.servlet.http.HttpServlet
+
 import org.atmosphere.cpr.MeteorServlet
 import org.atmosphere.handler.ReflectorServletProcessor
-import org.grails.plugins.atmosphere_meteor.ApplicationContextHolder
 
 class @artifact.name@ extends MeteorServlet {
 

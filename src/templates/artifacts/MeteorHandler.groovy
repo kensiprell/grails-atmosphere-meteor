@@ -1,26 +1,24 @@
 @artifact.package@
 
-import org.atmosphere.cpr.Meteor
-import org.grails.plugins.atmosphere_meteor.ApplicationContextHolder
-import org.springframework.context.ApplicationContext
-import javax.servlet.http.HttpServlet
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+//import org.atmosphere.cpr.DefaultBroadcaster
+import org.atmosphere.util.SimpleBroadcaster
+
+import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.LONG_POLLING
+import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.WEBSOCKET
+
 import grails.converters.JSON
-import org.springframework.context.ApplicationContext
+
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import org.atmosphere.cpr.AtmosphereResource
+
 import org.atmosphere.cpr.AtmosphereResourceEventListenerAdapter
 import org.atmosphere.cpr.Broadcaster
 import org.atmosphere.cpr.BroadcasterFactory
 import org.atmosphere.cpr.Meteor
-import org.atmosphere.util.SimpleBroadcaster
 import org.atmosphere.websocket.WebSocketEventListenerAdapter
 import org.json.simple.JSONObject
-import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.LONG_POLLING
-import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.WEBSOCKET
+import org.springframework.context.ApplicationContext
 
 class @artifact.name@ extends HttpServlet {
 
@@ -40,10 +38,9 @@ class @artifact.name@ extends HttpServlet {
 
 		response.setContentType("text/html;charset=UTF-8")
 
+		//Broadcaster b = BroadcasterFactory.getDefault().lookup(DefaultBroadcaster.class, mapping, true)
 		Broadcaster b = BroadcasterFactory.getDefault().lookup(SimpleBroadcaster.class, mapping, true)
 		m.setBroadcaster(b)
-		//AtmosphereResource resource = m.getAtmosphereResource()
-		//b.addAtmosphereResource(resource)
 		m.resumeOnBroadcast(m.transport() == LONG_POLLING).suspend(-1)
 	}
 
@@ -64,7 +61,8 @@ class @artifact.name@ extends HttpServlet {
 			} else {
 				Broadcaster b = BroadcasterFactory.getDefault().lookup(mapping)
 				b.broadcast(data)
-				//meteorService.recordChat(data)
+				// TODO record chat message
+				// chatService.recordChat(data)
 			}
 		}
 	}
