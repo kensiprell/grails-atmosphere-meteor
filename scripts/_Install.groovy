@@ -3,10 +3,12 @@ def processFileInplace(file, Closure processText) {
 	def text = file.text
 	file.write(processText(text))
 }
+
 def buildConfigFile = new File(basedir, "grails-app/conf/BuildConfig.groovy")
 def grailsServletVersion = buildConfig.grails.servlet.version
 def grailsTomcatNio = buildConfig.grails.tomcat.nio
 boolean isTomcat = buildConfigFile.text.readLines().any { it =~ /tomcat/ && !(it =~ /\/\/.*tomcat/) }
+boolean isAtmosphere = buildConfigFile.text.readLines().any { it =~ /org.atmosphere:atmosphere-runtime/ && !(it =~ /\/\/.*org.atmosphere:atmosphere-runtime/) }
 
 // Create the directory for Atmosphere artefacts
 ant.mkdir(dir: "${basedir}/grails-app/atmosphere")
@@ -42,30 +44,32 @@ if (isTomcat) {
 }
 
 // Add atmosphere-runtime dependency in BuildConfig.groovy
-processFileInplace(buildConfigFile) { text ->
-	text.replaceAll(/(?m)(^\s*dependencies\s*\{.*$)/, """\$1
-        compile('org.atmosphere:atmosphere-runtime:1.0.9') {  // Added by atmosphere-meteor plugin on ${new Date()}.
+if (!isAtmosphere) {
+	processFileInplace(buildConfigFile) { text ->
+		text.replaceAll(/(?m)(^\s*dependencies\s*\{.*$)/, """\$1
+        compile('org.atmosphere:atmosphere-runtime:1.0.10') {  // Added by atmosphere-meteor plugin on ${new Date()}.
             excludes 'slf4j-api', 'atmosphere-ping'
         }
 """)
+	}
 }
 
 // Create context.xml in META-INF and WEB-INF
-def contextDotXml = """\
+	def contextDotXml = """\
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
 	<Loader delegate="true"/>
 </Context>"""
-def metaInf = new File(basedir, "web-app/META-INF/")
-def webInf = new File(basedir, "web-app/WEB-INF/")
-if (!metaInf.exists())
-	metaInf.mkdirs()
-if (!webInf.exists())
-	webInf.mkdirs()
-new File(metaInf, "context.xml").write contextDotXml
-new File(webInf, "context.xml").write contextDotXml
+	def metaInf = new File(basedir, "web-app/META-INF/")
+	def webInf = new File(basedir, "web-app/WEB-INF/")
+	if (!metaInf.exists())
+		metaInf.mkdirs()
+	if (!webInf.exists())
+		webInf.mkdirs()
+	new File(metaInf, "context.xml").write contextDotXml
+	new File(webInf, "context.xml").write contextDotXml
 
-println '''
+	println '''
 ***********************************************************
 * You have installed the atmosphere-meteor plugin.        *
 *                                                         *

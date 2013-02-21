@@ -36,21 +36,23 @@ The configuration file, grails-app/conf/AtmosphereMeteorConfig.groovy, is used t
 
 The create-meteor-servlet script creates a class in grails-app/atmosphere that extends Atmosphere's MeteorServlet. You could probably use a single class throughout your application.
 
-Although the example application uses the same MeteorServlet class for each URL, you can easily use a different class. Of course, each of the URL patterns above can be further divided using a combination of request headers, Broadcaster, etc. For example, a chat room could be established under /jabber/chat/private-room/* that is serviced by the same servlet, MeteorServlet, and MeteorHandler classes as /jabber/chat/*.
+Although the example application uses the same MeteorServlet class for each URL, you can easily use a different class. Of course, each of the URL patterns above can be further divided using a combination of request headers, Broadcaster, etc. For example, a chat room could be established under /jabber/chat/private-room that is serviced by the same servlet, MeteorServlet, and MeteorHandler classes as /jabber/chat/*.
 
 ### MeteorHandler Class
 
-The create-meteor-handler script creates a class in grails-app/atmosphere that extends HttpServlet. This is where you customize how the incoming and outgoing (including Atmosphere Broadcaster) HTTP requests are handled.
+The create-meteor-handler script creates a class in grails-app/atmosphere that extends HttpServlet. This is where you customize how the incoming and outgoing HTTP requests (including Atmosphere Broadcaster) are handled.
 
 ## Standalone Application Installation
 
 The plugin source can be downloaded and used as a standalone Grails application. I suggest running it first before installing the plugin.
 
- 1. Clone the plugin repository
+```
+$ git clone git://github.com/kensiprell/grails-atmosphere-meteor.git
 
- 2. cd /path/to/grails-atmosphere-meteor
+$ cd grails-atmosphere-meteor
 
- 3. grails run-app
+$ grails run-app
+```
 
 You will have a simple application that performs the following tasks out of the box. Please note that this sample is not production ready. It merely incorporates some of the lessons I have learned and provides a point of departure for your own application.
 
@@ -63,6 +65,8 @@ You will have a simple application that performs the following tasks out of the 
 You can review the files below to understand how it all works. Note that many of the files are not packaged into the finished plugin.
 
 * grails-app/atmosphere/org/grails/plugins/atmosphere_meteor/DefaultMeteorHandler.groovy
+
+* grails-app/atmosphere/org/grails/plugins/atmosphere_meteor/SimpleMeteorHandler.groovy
 
 * grails-app/atmosphere/org/grails/plugins/atmosphere_meteor/DefaultMeteorServlet.groovy
 
@@ -123,7 +127,7 @@ The instructions assume you are using Tomcat as the servlet container. Since the
 
     grails.project.dependency.resolution = {
         dependencies {
-            compile('org.atmosphere:atmosphere-runtime:1.0.9') {
+            compile('org.atmosphere:atmosphere-runtime:1.0.10') {
                 excludes 'slf4j-api', 'atmosphere-ping'
             }
         }

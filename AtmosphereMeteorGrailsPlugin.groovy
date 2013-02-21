@@ -39,8 +39,6 @@ This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere
 			"file:./grails-app/atmosphere/**/*MeteorHandler.groovy",
 			"file:./grails-app/atmosphere/**/*MeteorServlet.groovy",
 			"file:./grails-app/conf/AtmosphereMeteorConfig.groovy"
-			//"file:../../plugins/*/atmosphere/**/*MeteorHandler.groovy",
-			//"file:../../plugins/*/atmosphere/**/*MeteorServlet.groovy"
 	]
 
 	def onChange = { event ->
@@ -54,7 +52,7 @@ This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere
 
 		// Change in AtmosphereMeteorConfig.groovy
 		if (event.source.name == "AtmosphereMeteorConfig") {
-			println "\nChanges to AtmosphereMeteorConfig.groovy will not be implemented until the application is restarted.\n"
+			println "\nChanges to AtmosphereMeteorConfig.groovy will be implemented when the application is restarted.\n"
 			/*
 			application.meteorServletClasses.each {
 				def newClass = application.classLoader.loadClass(it.clazz.name)
