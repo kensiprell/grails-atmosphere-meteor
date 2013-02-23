@@ -44,7 +44,7 @@ The create-meteor-handler script creates a class in grails-app/atmosphere that e
 
 ## Standalone Application Installation
 
-The plugin source can be downloaded and used as a standalone Grails application. I suggest running it first before installing the plugin.
+The plugin source can be downloaded and used as a standalone Grails application. I suggest running it first before installing the plugin. The application was tested with Grails 2.2 and Tomcat 7.0.30 and Chrome 25, Firefox 19, and Safari 6 on Mountain Lion.
 
 ```
 git clone git://github.com/kensiprell/grails-atmosphere-meteor.git
@@ -82,7 +82,9 @@ You can review the files below to understand how it all works. Note that many of
 
 ## Plugin Installation
 
-The instructions assume you are using Tomcat as the servlet container. Since the plugin is not yet in the Grails plugin repository, the steps below are cumbersome.
+The instructions assume you are using Tomcat as the servlet container. The plugin was tested with Grails 2.2 and Tomcat 7.0.30 in a new application using Chrome 25, Firefox 19, and Safari 6 on Mountain Lion.
+
+Since the plugin is not yet in the Grails plugin repository, the steps below are cumbersome.
 
 1. Clone the plugin repository
 
