@@ -1,10 +1,7 @@
 package org.grails.plugins.atmosphere_meteor
 
-import org.atmosphere.cpr.DefaultBroadcaster
-
 import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.LONG_POLLING
 import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.WEBSOCKET
-
 import grails.converters.JSON
 
 import javax.servlet.http.HttpServlet
@@ -14,6 +11,7 @@ import javax.servlet.http.HttpServletResponse
 import org.atmosphere.cpr.AtmosphereResourceEventListenerAdapter
 import org.atmosphere.cpr.Broadcaster
 import org.atmosphere.cpr.BroadcasterFactory
+import org.atmosphere.cpr.DefaultBroadcaster
 import org.atmosphere.cpr.Meteor
 import org.atmosphere.websocket.WebSocketEventListenerAdapter
 import org.json.simple.JSONObject

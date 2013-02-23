@@ -19,6 +19,7 @@ import org.atmosphere.cpr.Meteor
 import org.atmosphere.websocket.WebSocketEventListenerAdapter
 import org.json.simple.JSONObject
 import org.springframework.context.ApplicationContext
+import org.grails.plugins.atmosphere_meteor.ApplicationContextHolder
 
 class @artifact.name@ extends HttpServlet {
 

@@ -47,7 +47,7 @@ if (isTomcat) {
 if (!isAtmosphere) {
 	processFileInplace(buildConfigFile) { text ->
 		text.replaceAll(/(?m)(^\s*dependencies\s*\{.*$)/, """\$1
-        compile('org.atmosphere:atmosphere-runtime:1.0.10') {  // Added by atmosphere-meteor plugin on ${new Date()}.
+        compile('org.atmosphere:atmosphere-runtime:1.0.11') {  // Added by atmosphere-meteor plugin on ${new Date()}.
             excludes 'slf4j-api', 'atmosphere-ping'
         }
 """)

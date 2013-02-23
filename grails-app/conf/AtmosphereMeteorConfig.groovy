@@ -7,7 +7,8 @@ servlets = [
 	MeteorServlet: [
 		className: "org.grails.plugins.atmosphere_meteor.DefaultMeteorServlet",
 		mapping: "/jabber/*",
-		handler: DefaultMeteorHandler
+		handler: SimpleMeteorHandler,
+		initParams: []
 	],
 	MeteorServletChat: [
 		className: "org.grails.plugins.atmosphere_meteor.DefaultMeteorServlet",
@@ -17,20 +18,18 @@ servlets = [
 	MeteorServletNotification: [
 		className: "org.grails.plugins.atmosphere_meteor.DefaultMeteorServlet",
 		mapping: "/jabber/notification/*",
-		handler: DefaultMeteorHandler
+		handler: SimpleMeteorHandler,
+		initParams: []
 	],
 	MeteorServletPublic: [
 		className: "org.grails.plugins.atmosphere_meteor.DefaultMeteorServlet",
 		mapping: "/jabber/public/*",
-		handler: SimpleMeteorHandler,
-		initParams: [
-			"org.atmosphere.cpr.broadcaster.shareableThreadPool": "true",
-		]
+		handler: DefaultMeteorHandler
 	]
 ]
 
 defaultInitParams = [
-	"org.atmosphere.cpr.CometSupport.maxInactiveActivity": "30000",
-	"org.atmosphere.cpr.broadcaster.shareableThreadPool": "true",
-	"org.atmosphere.cpr.broadcasterLifeCyclePolicy": "EMPTY_DESTROY"
+		"org.atmosphere.cpr.CometSupport.maxInactiveActivity": "30000",
+		"org.atmosphere.cpr.broadcaster.shareableThreadPool": "true",
+		"org.atmosphere.cpr.broadcasterLifeCyclePolicy": "EMPTY_DESTROY"
 ]

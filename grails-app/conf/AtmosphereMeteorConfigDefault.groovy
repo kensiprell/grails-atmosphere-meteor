@@ -26,9 +26,7 @@ defaultMapping = "/jabber/*"
 //		className: "your.package.DefaultMeteorServlet",
 //		mapping: "/jabber/*",
 //		handler: SimpleMeteorHandler,
-//		initParams = [
-//			"org.atmosphere.cpr.CometSupport.maxInactiveActivity": "30000",
-//		]
+//		initParams = []
 //	],
 //	MeteorServletChat: [
 //		className: "your.package.DefaultMeteorServlet",

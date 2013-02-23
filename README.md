@@ -47,11 +47,11 @@ The create-meteor-handler script creates a class in grails-app/atmosphere that e
 The plugin source can be downloaded and used as a standalone Grails application. I suggest running it first before installing the plugin.
 
 ```
-$ git clone git://github.com/kensiprell/grails-atmosphere-meteor.git
+git clone git://github.com/kensiprell/grails-atmosphere-meteor.git
 
-$ cd grails-atmosphere-meteor
+cd grails-atmosphere-meteor
 
-$ grails run-app
+grails run-app
 ```
 
 You will have a simple application that performs the following tasks out of the box. Please note that this sample is not production ready. It merely incorporates some of the lessons I have learned and provides a point of departure for your own application.
@@ -127,7 +127,7 @@ The instructions assume you are using Tomcat as the servlet container. Since the
 
     grails.project.dependency.resolution = {
         dependencies {
-            compile('org.atmosphere:atmosphere-runtime:1.0.10') {
+            compile('org.atmosphere:atmosphere-runtime:1.0.11') {
                 excludes 'slf4j-api', 'atmosphere-ping'
             }
         }
