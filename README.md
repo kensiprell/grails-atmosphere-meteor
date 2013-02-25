@@ -84,29 +84,30 @@ You can review the files below to understand how it all works. Note that many of
 
 The instructions assume you are using Tomcat as the servlet container. The plugin was tested with Grails 2.2 and Tomcat 7.0.30 in a new application using Chrome 25, Firefox 19, and Safari 6 on Mountain Lion.
 
-Since the plugin is not yet in the Grails plugin repository, the steps below are cumbersome.
+1. Edit your BuildConfig.groovy:
+```groovy
+plugins {
+	// other plugins
+	compile ":atmosphere-meteor:0.4.2"
+	// other plugins
+}
+```
+or use the deprecated:
+```
+grails install-plugin atmosphere-meteor
+```
 
-1. Clone the plugin repository
-
-2. cd /path/to/grails-atmosphere-meteor
-
-3. grails package-plugin
-
-4. cd /path/to/your/application
-
-5. grails install-plugin /path/to/grails-atmosphere-meteor/grails-atmosphere-meteor-x.x.x.zip
-
-6. Create a MeteorServlet. Changes to these classes are reloaded automatically.
+2. Create a MeteorServlet. Changes to these classes are reloaded automatically.
 ```groovy
     grails create-meteor-servlet com.example.Default
 ```
 
-7. Create a handler. Changes to these classes are reloaded automatically.
+3. Create a handler. Changes to these classes are reloaded automatically.
 ```groovy
     grails create-meteor-handler com.example.Default
 ```
 
-8. Edit grails-app/conf/AtmosphereMeteorConfig.groovy. Changes to this file will be implemented when the application is restarted.
+4. Edit grails-app/conf/AtmosphereMeteorConfig.groovy. Changes to this file will be implemented when the application is restarted.
 ```groovy
     import com.example.DefaultMeteorHandler
 
@@ -122,7 +123,7 @@ Since the plugin is not yet in the Grails plugin repository, the steps below are
     ]
 ```
 
-9. Note the changes the plugin installation made to grails-app/conf/BuildConfig.groovy
+5. Note the changes the plugin installation made to grails-app/conf/BuildConfig.groovy
 ```groovy
     grails.servlet.version = "3.0"
     grails.tomcat.nio = true
@@ -136,7 +137,7 @@ Since the plugin is not yet in the Grails plugin repository, the steps below are
     }
 ```
 
-10. Use the JavaScript code in grails-app/views/atmosphereTest/index.gsp to get you started with your own client implementation.
+6. Use the JavaScript code in grails-app/views/atmosphereTest/index.gsp to get you started with your own client implementation.
 
 ## Comments
 
