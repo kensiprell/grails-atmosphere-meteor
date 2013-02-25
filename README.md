@@ -87,9 +87,9 @@ The instructions assume you are using Tomcat as the servlet container. The plugi
 1. Edit your BuildConfig.groovy:
 ```groovy
 plugins {
-	// other plugins
-	compile ":atmosphere-meteor:0.4.2"
-	// other plugins
+&nbsp;&nbsp;// other plugins
+&nbsp;&nbsp;compile ":atmosphere-meteor:0.4.2"
+&nbsp;&nbsp;// other plugins
 }
 ```
 or use the deprecated:
