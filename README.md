@@ -117,7 +117,7 @@ grails install-plugin atmosphere-meteor
         MeteorServlet: [
         description: "MeteorServlet Default",
         className: "com.example.DefaultMeteorServlet",
-        mapping: "/jabber*/",
+        mapping: "/jabber/*",
         handler: DefaultMeteorHandler
         ]
     ]
