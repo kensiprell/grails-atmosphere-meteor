@@ -15,7 +15,7 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		compile('org.atmosphere:atmosphere-runtime:1.0.11') {
+		compile('org.atmosphere:atmosphere-runtime:1.0.12') {
 			excludes 'slf4j-api', 'atmosphere-ping'
 		}
 	}
