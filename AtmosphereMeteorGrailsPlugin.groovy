@@ -5,7 +5,7 @@ import org.grails.plugins.atmosphere_meteor.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
 class AtmosphereMeteorGrailsPlugin {
-	def version = "0.4.2"
+	def version = "0.4.3"
 	def grailsVersion = "2.0 > *"
 	def pluginExcludes = [
 			"**/atmosphere/**",
@@ -42,14 +42,6 @@ This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere
 	]
 
 	def onChange = { event ->
-		/*
-		event.source - The source of the event, either the reloaded Class or a Spring Resource
-		event.ctx - The Spring ApplicationContext instance
-		event.plugin - The plugin object that manages the resource (usually this)
-		event.application - The GrailsApplication instance
-		event.manager - The GrailsPluginManager instance
-		*/
-
 		// Change in AtmosphereMeteorConfig.groovy
 		if (event.source.name == "AtmosphereMeteorConfig") {
 			println "\nChanges to AtmosphereMeteorConfig.groovy will be implemented when the application is restarted.\n"
