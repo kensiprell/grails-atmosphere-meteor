@@ -80,7 +80,7 @@ This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere
 
 	def doWithDynamicMethods = { applicationContext ->
 		// Configure servlets
-		appContext = applicationContext
+		//appContext = applicationContext
 		def config = ApplicationContextHolder.atmosphereMeteorConfig
 		def servletContext = applicationContext.servletContext
 
