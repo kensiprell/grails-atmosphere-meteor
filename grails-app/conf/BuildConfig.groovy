@@ -4,8 +4,8 @@ grails.project.work.dir = "target"
 
 grails.project.dependency.resolution = {
 
-	inherits 'global'
-	log 'warn'
+	inherits "global"
+	log "warn"
 	legacyResolve true
 
 	repositories {
@@ -15,8 +15,8 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		compile('org.atmosphere:atmosphere-runtime:1.0.12') {
-			excludes 'slf4j-api', 'atmosphere-ping'
+		compile("org.atmosphere:atmosphere-runtime:1.0.13") {
+			excludes "slf4j-api", "atmosphere-ping"
 		}
 	}
 
@@ -25,7 +25,7 @@ grails.project.dependency.resolution = {
 
 		runtime ":resources:1.2.RC3"
 
-		build ':release:2.2.0', ':rest-client-builder:1.0.3', {
+		build ":release:2.2.0", ":rest-client-builder:1.0.3", {
 			export = false
 		}
 
