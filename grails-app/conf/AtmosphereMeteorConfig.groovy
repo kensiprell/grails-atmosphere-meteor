@@ -1,3 +1,4 @@
+import org.atmosphere.cache.UUIDBroadcasterCache
 import org.grails.plugins.atmosphere_meteor.DefaultMeteorHandler
 import org.grails.plugins.atmosphere_meteor.SimpleMeteorHandler
 
@@ -31,5 +32,6 @@ servlets = [
 defaultInitParams = [
 		"org.atmosphere.cpr.CometSupport.maxInactiveActivity": "30000",
 		"org.atmosphere.cpr.broadcaster.shareableThreadPool": "true",
-		"org.atmosphere.cpr.broadcasterLifeCyclePolicy": "EMPTY_DESTROY"
+		"org.atmosphere.cpr.broadcasterLifeCyclePolicy": "EMPTY_DESTROY",
+		"org.atmosphere.cpr.broadcasterCacheClass": UUIDBroadcasterCache
 ]
