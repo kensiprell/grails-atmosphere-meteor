@@ -23,7 +23,7 @@ grails.project.dependency.resolution = {
 	plugins {
 		runtime ":jquery:1.8.3"
 
-		runtime ":resources:1.2.RC3"
+		runtime ":resources:1.2"
 
 		build ":release:2.2.0", ":rest-client-builder:1.0.3", {
 			export = false
