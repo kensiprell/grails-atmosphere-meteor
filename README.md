@@ -88,13 +88,19 @@ The instructions assume you are using Tomcat as the servlet container. The plugi
 ```groovy
     plugins {
         // other plugins
-        compile ":atmosphere-meteor:0.4.2"
+        compile ":atmosphere-meteor:0.4.4"
         // other plugins
     }
 ```
-or use the deprecated:
+
+and then run the setup-atmosphere-meteor script:
+```groovy
+    grails setup-atmosphere-meteor
 ```
-grails install-plugin atmosphere-meteor
+
+or use the deprecated:
+```groovy
+    grails install-plugin atmosphere-meteor
 ```
 
 2. Create a MeteorServlet. Changes to these classes are reloaded automatically.
@@ -130,7 +136,7 @@ grails install-plugin atmosphere-meteor
 
     grails.project.dependency.resolution = {
         dependencies {
-            compile('org.atmosphere:atmosphere-runtime:1.0.11') {
+            compile('org.atmosphere:atmosphere-runtime:1.0.13') {
                 excludes 'slf4j-api', 'atmosphere-ping'
             }
         }
