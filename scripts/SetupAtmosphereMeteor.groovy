@@ -14,10 +14,10 @@ boolean isAtmosphere = buildConfigFile.text.readLines().any { it =~ /org.atmosph
 ant.mkdir(dir: "${basedir}/grails-app/atmosphere")
 
 // Copy the default plugin configuration file
-ant.copy(file: "${pluginBasedir}/grails-app/conf/AtmosphereMeteorConfigDefault.groovy", tofile: "${basedir}/grails-app/conf/AtmosphereMeteorConfig.groovy")
+ant.copy(file: "${atmosphereMeteorPluginDir}/grails-app/conf/AtmosphereMeteorConfigDefault.groovy", tofile: "${basedir}/grails-app/conf/AtmosphereMeteorConfig.groovy")
 
 // Copy the default plugin resources file
-ant.copy(file: "${pluginBasedir}/grails-app/conf/AtmosphereMeteorResources.groovy", toDir: "${basedir}/grails-app/conf")
+ant.copy(file: "${atmosphereMeteorPluginDir}/grails-app/conf/AtmosphereMeteorResources.groovy", toDir: "${basedir}/grails-app/conf")
 
 // Modify BuildConfig.groovy
 ant.copy(file: "${basedir}/grails-app/conf/BuildConfig.groovy", tofile: "${basedir}/grails-app/conf/BuildConfig_ORIG.groovy")
@@ -47,7 +47,7 @@ if (isTomcat) {
 if (!isAtmosphere) {
 	processFileInplace(buildConfigFile) { text ->
 		text.replaceAll(/(?m)(^\s*dependencies\s*\{.*$)/, """\$1
-        compile('org.atmosphere:atmosphere-runtime:1.0.11') {  // Added by atmosphere-meteor plugin on ${new Date()}.
+        compile('org.atmosphere:atmosphere-runtime:1.0.13') {  // Added by atmosphere-meteor plugin on ${new Date()}.
             excludes 'slf4j-api', 'atmosphere-ping'
         }
 """)
@@ -71,7 +71,7 @@ if (!isAtmosphere) {
 
 	println '''
 ***********************************************************
-* You have installed the atmosphere-meteor plugin.        *
+* You have setup the atmosphere-meteor plugin.            *
 *                                                         *
 * Documentation:                                          *
 * https://github.com/kensiprell/grails-atmosphere-meteor  *
@@ -87,3 +87,4 @@ if (!isAtmosphere) {
 *                                                         *
 ***********************************************************
 '''
+target('default': "Setup the atmosphere-meteor plugin") { }

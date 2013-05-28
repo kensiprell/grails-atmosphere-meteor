@@ -95,6 +95,7 @@ The instructions assume you are using Tomcat as the servlet container. The plugi
 
     and then run the setup-atmosphere-meteor script:
 ```groovy
+    cd /path/to/app
     grails setup-atmosphere-meteor
 ```
 
