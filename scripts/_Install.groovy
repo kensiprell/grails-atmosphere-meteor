@@ -23,9 +23,9 @@ ant.copy(file: "${pluginBasedir}/grails-app/conf/AtmosphereMeteorResources.groov
 ant.copy(file: "${basedir}/grails-app/conf/BuildConfig.groovy", tofile: "${basedir}/grails-app/conf/BuildConfig_ORIG.groovy")
 
 // Change grails.servlet.version to 3.0 in BuildConfig.groovy if necessary
-if (grailsServletVersion != "3") {
+if (grailsServletVersion != "3.0") {
 	processFileInplace(buildConfigFile) { text ->
-		text.replaceAll(/(?m)^grails\.servlet\.version.*"(.*)".*$/, """grails.servlet.version = "3" // Modified by atmosphere-meteor plugin on ${new Date()}. Previous version was ${grailsServletVersion}.""")
+		text.replaceAll(/(?m)^grails\.servlet\.version.*"(.*)".*$/, """grails.servlet.version = "3.0" // Modified by atmosphere-meteor plugin on ${new Date()}. Previous version was ${grailsServletVersion}.""")
 	}
 }
 
