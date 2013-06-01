@@ -93,11 +93,6 @@ The instructions assume you are using Tomcat as the servlet container. The plugi
     }
 ```
 
-    and then run the setup-atmosphere-meteor script:
-```groovy
-    grails setup-atmosphere-meteor
-```
-
     or use the deprecated:
 ```groovy
     grails install-plugin atmosphere-meteor
