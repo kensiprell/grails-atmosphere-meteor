@@ -1,18 +1,26 @@
 ## Grails plugin for integrating the Atmosphere Framework
-https://github.com/Atmosphere/atmosphere/wiki
+
+[Atmosphere Wiki](https://github.com/Atmosphere/atmosphere/wiki)
+
+If you have a question, problem, suggestion, or want to report a bug, please submit an [issue](https://github.com/kensiprell/grails-atmosphere-meteor/issues?state=open). I will reply as soon as I can.
+
+[Planned Changes](https://github.com/kensiprell/grails-atmosphere-meteor/wiki/Planned-Changes)
+
+[Release Notes](https://github.com/kensiprell/grails-atmosphere-meteor/wiki/Release-Notes)
 
 The plugin uses the following pieces of the Atmosphere Framework:
 
-* jquery.atmosphere.js (https://github.com/Atmosphere/atmosphere/wiki/jQuery.atmosphere.js-API)
-
-* MeteorServlet (http://atmosphere.github.com/atmosphere/apidocs/org/atmosphere/cpr/MeteorServlet.html)
+* [jquery.atmosphere.js](https://github.com/Atmosphere/atmosphere/wiki/jQuery.atmosphere.js-API) 
 
 
-* ReflectorServletProcessor (http://atmosphere.github.com/atmosphere/apidocs/org/atmosphere/handler/ReflectorServletProcessor.html)
+* [MeteorServlet](http://atmosphere.github.com/atmosphere/apidocs/org/atmosphere/cpr/MeteorServlet.html)
 
-* DefaultBroadcaster (http://atmosphere.github.com/atmosphere/apidocs/org/atmosphere/cpr/DefaultBroadcaster.html)
 
-* SimpleBroadcaster (http://atmosphere.github.com/atmosphere/apidocs/org/atmosphere/util/SimpleBroadcaster.html)
+* [ReflectorServletProcessor](http://atmosphere.github.com/atmosphere/apidocs/org/atmosphere/handler/ReflectorServletProcessor.html)
+
+* [DefaultBroadcaster](http://atmosphere.github.com/atmosphere/apidocs/org/atmosphere/cpr/DefaultBroadcaster.html)
+
+* [SimpleBroadcaster](http://atmosphere.github.com/atmosphere/apidocs/org/atmosphere/util/SimpleBroadcaster.html)
 
 ## How It Works
 
@@ -140,7 +148,4 @@ The instructions assume you are using Tomcat as the servlet container. The plugi
 
 6. Use the JavaScript code in grails-app/views/atmosphereTest/index.gsp to get you started with your own client implementation.
 
-## Comments
-
-Your comments, questions, and suggestions are very welcome!
 
