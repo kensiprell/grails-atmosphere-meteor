@@ -18,20 +18,14 @@ ant.mkdir(dir: "${basedir}/grails-app/atmosphere")
 println "pluginBasedir: " + pluginBasedir
 
 // Copy the default plugin configuration file
-/*
 if (!atmosphereMeteorConfigFile.exists()) {
-	ant.copy(file: "${pluginBasedir}/src/templates/conf/AtmosphereMeteorConfig.groovy", tofile: "${basedir}/grails-app/conf/AtmosphereMeteorConfig.groovy")
+	ant.copy(file: "${pluginBasedir}/src/templates/conf/AtmosphereMeteorConfig.groovy", todir: "${basedir}/grails-app/conf")
 }
-*/
-
-//ant.copy(file: "${pluginBasedir}/src/templates/conf/AtmosphereMeteorConfig.groovy", tofile: "${basedir}/grails-app/conf/AtmosphereMeteorConfig.groovy")
 
 // Copy the default plugin resources file
-/*
 if (!atmosphereMeteorResourcesFile.exists()) {
 	ant.copy(file: "${pluginBasedir}/src/templates/conf/AtmosphereMeteorResources.groovy", todir: "${basedir}/grails-app/conf")
 }
-*/
 
 // Modify BuildConfig.groovy
 ant.copy(file: "${basedir}/grails-app/conf/BuildConfig.groovy", tofile: "${basedir}/grails-app/conf/BuildConfig_ORIG.groovy")

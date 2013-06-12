@@ -8,11 +8,6 @@ class AtmosphereMeteorGrailsPlugin {
 	def version = "0.5.0"
 	def grailsVersion = "2.0 > *"
 	def pluginExcludes = [
-			"**/atmosphere/**",
-			"**/atmosphereTest/**",
-			"src/templates/conf/AtmosphereMeteorConfig.groovy",
-			"grails-app/controllers/org/grails/plugins/atmosphere_meteor/AtmosphereTestController.groovy",
-			"grails-app/services/org/grails/plugins/atmosphere_meteor/AtmosphereTestService.groovy",
 			"web-app/css/**",
 			"web-app/images/**",
 			"web-app/js/application.js"
