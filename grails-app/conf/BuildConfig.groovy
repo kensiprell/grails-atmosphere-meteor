@@ -15,26 +15,22 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		compile("org.atmosphere:atmosphere-runtime:1.0.13") {
+		compile("org.atmosphere:atmosphere-runtime:1.1.0.RC3") {
 			excludes "slf4j-api", "atmosphere-ping"
 		}
 	}
 
 	plugins {
-		runtime ":jquery:1.10.0"
-
-		runtime ":resources:1.2"
-
-		build ":release:2.2.0", ":rest-client-builder:1.0.3", {
+		build ":release:2.2.1", ":rest-client-builder:1.0.3", {
 			export = false
 		}
-
 		build ":tomcat:$grailsVersion", {
 			export = false
 		}
-
-		compile  ":hibernate:$grailsVersion", {
+		compile ":hibernate:$grailsVersion", {
 			export = false
 		}
+		runtime ":jquery:1.10.0"
+		runtime ":resources:1.2"
 	}
 }

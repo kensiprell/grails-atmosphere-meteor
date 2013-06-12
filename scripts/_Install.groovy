@@ -5,6 +5,8 @@ def processFileInplace(file, Closure processText) {
 }
 
 def buildConfigFile = new File(basedir, "grails-app/conf/BuildConfig.groovy")
+def atmosphereMeteorConfigFile = new File(basedir, "grails-app/conf/AtmosphereMeteorConfig.groovy")
+def atmosphereMeteorResourcesFile = new File(basedir, "grails-app/conf/AtmosphereMeteorResources.groovy")
 def grailsServletVersion = buildConfig.grails.servlet.version
 def grailsTomcatNio = buildConfig.grails.tomcat.nio
 boolean isTomcat = buildConfigFile.text.readLines().any { it =~ /tomcat/ && !(it =~ /\/\/.*tomcat/) }
@@ -13,11 +15,23 @@ boolean isAtmosphere = buildConfigFile.text.readLines().any { it =~ /org.atmosph
 // Create the directory for Atmosphere artefacts
 ant.mkdir(dir: "${basedir}/grails-app/atmosphere")
 
+println "pluginBasedir: " + pluginBasedir
+
 // Copy the default plugin configuration file
-ant.copy(file: "${pluginBasedir}/grails-app/conf/AtmosphereMeteorConfigDefault.groovy", tofile: "${basedir}/grails-app/conf/AtmosphereMeteorConfig.groovy")
+/*
+if (!atmosphereMeteorConfigFile.exists()) {
+	ant.copy(file: "${pluginBasedir}/src/templates/conf/AtmosphereMeteorConfig.groovy", tofile: "${basedir}/grails-app/conf/AtmosphereMeteorConfig.groovy")
+}
+*/
+
+//ant.copy(file: "${pluginBasedir}/src/templates/conf/AtmosphereMeteorConfig.groovy", tofile: "${basedir}/grails-app/conf/AtmosphereMeteorConfig.groovy")
 
 // Copy the default plugin resources file
-ant.copy(file: "${pluginBasedir}/grails-app/conf/AtmosphereMeteorResources.groovy", toDir: "${basedir}/grails-app/conf")
+/*
+if (!atmosphereMeteorResourcesFile.exists()) {
+	ant.copy(file: "${pluginBasedir}/src/templates/conf/AtmosphereMeteorResources.groovy", todir: "${basedir}/grails-app/conf")
+}
+*/
 
 // Modify BuildConfig.groovy
 ant.copy(file: "${basedir}/grails-app/conf/BuildConfig.groovy", tofile: "${basedir}/grails-app/conf/BuildConfig_ORIG.groovy")
