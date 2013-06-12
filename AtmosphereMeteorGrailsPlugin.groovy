@@ -10,7 +10,7 @@ class AtmosphereMeteorGrailsPlugin {
 	def pluginExcludes = [
 			"**/atmosphere/**",
 			"**/atmosphereTest/**",
-			"grails-app/conf/AtmosphereMeteorConfig.groovy",
+			"src/templates/conf/AtmosphereMeteorConfig.groovy",
 			"grails-app/controllers/org/grails/plugins/atmosphere_meteor/AtmosphereTestController.groovy",
 			"grails-app/services/org/grails/plugins/atmosphere_meteor/AtmosphereTestService.groovy",
 			"web-app/css/**",
