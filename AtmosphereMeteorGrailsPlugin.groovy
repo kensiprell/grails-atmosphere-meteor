@@ -5,6 +5,7 @@ import org.grails.plugins.atmosphere_meteor.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
 class AtmosphereMeteorGrailsPlugin {
+	// TODO update version
 	def version = "0.5.0"
 	def grailsVersion = "2.0 > *"
 	def pluginExcludes = [
@@ -16,9 +17,10 @@ class AtmosphereMeteorGrailsPlugin {
 	def title = "Atmosphere Meteor Plugin"
 	def author = "Ken Siprell"
 	def authorEmail = "ken.siprell@gmail.com"
-	// TODO mention sample app
+
 	def description = '''
-This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere/atmosphere/wiki). It can form the basis for a traditional XMPP server with a browser-based client without the limitations of BOSH.
+This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere/atmosphere/wiki). An associated sample application is located at https://github.com/kensiprell/grails-atmosphere-meteor-sample. Click the Documentation button above for the details.
+
 '''
 
 	def documentation = "https://github.com/kensiprell/grails-atmosphere-meteor/blob/master/README.md"

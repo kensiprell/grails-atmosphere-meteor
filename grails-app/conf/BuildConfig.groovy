@@ -6,7 +6,7 @@ grails.project.dependency.resolution = {
 
 	inherits "global"
 	log "warn"
-	legacyResolve true
+	//legacyResolve true  // causes failure Grails 2.0.x
 
 	repositories {
 		grailsCentral()
@@ -15,7 +15,8 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		compile("org.atmosphere:atmosphere-runtime:1.1.0.RC3") {
+		// TODO update version
+		compile("org.atmosphere:atmosphere-runtime:1.1.0.RC4") {
 			excludes "slf4j-api", "atmosphere-ping"
 		}
 	}
