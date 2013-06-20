@@ -1,6 +1,7 @@
 @artifact.package@
 
 //import org.atmosphere.cpr.DefaultBroadcaster
+import org.atmosphere.config.service.MeteorService
 import org.atmosphere.util.SimpleBroadcaster
 
 import static org.atmosphere.cpr.AtmosphereResource.TRANSPORT.LONG_POLLING
@@ -21,6 +22,7 @@ import org.json.simple.JSONObject
 import org.springframework.context.ApplicationContext
 import org.grails.plugins.atmosphere_meteor.ApplicationContextHolder
 
+@MeteorService
 class @artifact.name@ extends HttpServlet {
 
 	ApplicationContext applicationContext = ApplicationContextHolder.applicationContext

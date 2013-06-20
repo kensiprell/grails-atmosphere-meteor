@@ -17,12 +17,12 @@ grails.project.dependency.resolution = {
 	dependencies {
 		// TODO update version
 		compile("org.atmosphere:atmosphere-runtime:1.1.0.RC4") {
-			excludes "slf4j-api", "atmosphere-ping"
+			excludes "slf4j-api"
 		}
 	}
 
 	plugins {
-		build ":release:2.2.1", ":rest-client-builder:1.0.3", {
+		build ":release:3.0.0", ":rest-client-builder:1.0.3", {
 			export = false
 		}
 		build ":tomcat:$grailsVersion", {
