@@ -6,7 +6,6 @@ grails.project.dependency.resolution = {
 
 	inherits "global"
 	log "warn"
-	//legacyResolve true  // causes failure Grails 2.0.x
 
 	repositories {
 		grailsCentral()
@@ -22,7 +21,7 @@ grails.project.dependency.resolution = {
 	}
 
 	plugins {
-		build ":release:3.0.0", ":rest-client-builder:1.0.3", {
+		build ":release:2.2.1", ":rest-client-builder:1.0.3", {
 			export = false
 		}
 		build ":tomcat:$grailsVersion", {
@@ -31,7 +30,5 @@ grails.project.dependency.resolution = {
 		compile ":hibernate:$grailsVersion", {
 			export = false
 		}
-		runtime ":jquery:1.10.0"
-		runtime ":resources:1.2"
 	}
 }

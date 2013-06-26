@@ -2,7 +2,7 @@
 
 [Atmosphere Wiki](https://github.com/Atmosphere/atmosphere/wiki)
 
-The plugin has been tested on Grails versions 2.0.0 through 2.2.2. I use the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script) for testing.
+The plugin has been tested on Grails versions 2.0.0 through 2.2.3. I use the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script) for testing.
 
 If you have a question, problem, suggestion, or want to report a bug, please submit an [issue](https://github.com/kensiprell/grails-atmosphere-meteor/issues?state=open). I will reply as soon as I can.
 
@@ -12,7 +12,7 @@ If you have a question, problem, suggestion, or want to report a bug, please sub
 
 The plugin uses the following pieces of the Atmosphere Framework:
 
-* [jquery.atmosphere.js](https://github.com/Atmosphere/atmosphere/wiki/jQuery.atmosphere.js-API)
+* [atmosphere.js / jquery.atmosphere.js](https://github.com/Atmosphere/atmosphere/wiki/jQuery.atmosphere.js-API)
 
 * [MeteorServlet](http://atmosphere.github.com/atmosphere/apidocs/org/atmosphere/cpr/MeteorServlet.html)
 
@@ -34,32 +34,34 @@ The plugin is designed to create and use a servlet for each main or significant 
 
 	/jabber/public/*
 
-The servlets are created programmatically using ServletContext.addServlet and are not defined in web.xml.
+The servlets are registered programmatically and are not defined in web.xml.
 
 ### Configuration
 
-The configuration file, grails-app/conf/AtmosphereMeteorConfig.groovy, is used to tie the MeteorServlet and MeteorHandler classes together.
+All servlets are defined in grails-app/conf/AtmosphereMeteorConfig.groovy.
+
+ grails-app/conf/AtmosphereResources.groovy has modules for atmosphere.js and jquery.atmosphere.js.
 
 ### MeteorServlet Class
 
 The create-meteor-servlet script creates a class in grails-app/atmosphere that extends Atmosphere's MeteorServlet. You could probably use a single class throughout your application.
 
-Although the [sample application](https://github.com/kensiprell/grails-atmosphere-meteor-sample) uses the same MeteorServlet class for each URL, you can easily use a different class. Of course, each of the URL patterns above can be further divided using a combination of request headers, Broadcaster, etc. For example, a chat room could be established under /jabber/chat/private-room that is serviced by the same servlet, MeteorServlet, and MeteorHandler classes as /jabber/chat/*.
+Although the [sample application](https://github.com/kensiprell/grails-atmosphere-meteor-sample) uses the same MeteorServlet class for each URL, you can easily use a different class. Of course, each of the URL patterns above can be further divided using a combination of request headers, path, etc. For example, a chat room could be established under /jabber/chat/private-room that is serviced by the same servlet, MeteorServlet, and MeteorHandler classes as /jabber/chat/*.
 
 ### MeteorHandler Class
 
-The create-meteor-handler script creates a class in grails-app/atmosphere that extends HttpServlet. This is where you customize how the incoming and outgoing HTTP requests (including Atmosphere Broadcaster) are handled.
+The create-meteor-handler script creates a class in grails-app/atmosphere that extends HttpServlet. This is where you customize how the HTTP requests and responses (including Atmosphere Broadcaster) are handled.
 
 ## Plugin Installation
 
-The instructions assume you are using Tomcat as the servlet container. The plugin was tested with Grails 2.2 and Tomcat 7.0.30 in a new application using Chrome 25, Firefox 19, and Safari 6 on Mountain Lion.
+The instructions assume you are using Tomcat as the servlet container. The plugin was built with Grails 2.2.3.
 
 Edit your BuildConfig.groovy:
 
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:0.5.1"
+    compile ":atmosphere-meteor:0.5.2"
     // other plugins
 }
 ```
@@ -90,16 +92,24 @@ import com.example.DefaultMeteorHandler
 defaultMapping = "/jabber/*"
 
 servlets = [
-    MeteorServlet: [
-        description: "MeteorServlet Default",
+    MeteorServletDefault: [
         className: "com.example.DefaultMeteorServlet",
         mapping: "/jabber/*",
-        handler: DefaultMeteorHandler
+       	handler: DefaultMeteorHandler,
+ 		initParams = [
+			"org.atmosphere.useNative": "true",
+			"org.atmosphere.cpr.broadcasterCacheClass": "org.atmosphere.cache.UUIDBroadcasterCache",
+			"org.atmosphere.cpr.AtmosphereInterceptor": """
+				org.atmosphere.client.TrackMessageSizeInterceptor,
+				org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor,
+				org.atmosphere.interceptor.HeartbeatInterceptor
+			"""
+		]
     ]
 ]
 ```
 
-Note the changes the plugin installation made to grails-app/conf/BuildConfig.groovy.
+Note the changes the plugin installation made to grails-app/conf/BuildConfig.groovy. Your original file was copied to grails-app/conf/BuildConfig_ORIG.groovy. 
 
 ```
 grails.servlet.version = "3.0"
@@ -108,8 +118,9 @@ grails.tomcat.nio = true
 grails.project.dependency.resolution = {
     dependencies {
         compile('org.atmosphere:atmosphere-runtime:1.1.RC4') {
-            excludes 'slf4j-api', 'atmosphere-ping'
+            excludes 'slf4j-api'
         }
+	    compile 'org.codehaus.jackson:jackson-core-asl:1.9.12'
     }
 }
 ```
