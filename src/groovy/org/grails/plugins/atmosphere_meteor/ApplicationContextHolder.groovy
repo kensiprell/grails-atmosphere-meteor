@@ -29,7 +29,7 @@ class ApplicationContextHolder implements ApplicationContextAware {
 	}
 
 	static Object getBean(String name) {
-		//TEST_BEANS[name] ?: getApplicationContext().getBean(name)
+		TEST_BEANS[name] ?: getApplicationContext().getBean(name)
 	}
 
 	static GrailsApplication getGrailsApplication() {

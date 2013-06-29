@@ -46,8 +46,7 @@ servlets = [
 		mapping: "/jabber/*",
 		handler: SimpleMeteorHandler,
 		initParams = [
-			// You can config each servlet to use its own initParams here
-			// instead of using the defaultInitParams below.
+			"org.atmosphere.useNative": "true",
 		]
 	],
 	MeteorServletChat: [

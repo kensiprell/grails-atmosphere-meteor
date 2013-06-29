@@ -6,7 +6,7 @@ import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
 class AtmosphereMeteorGrailsPlugin {
 	// TODO update version
-	def version = "0.5.2"
+	def version = "0.5.3"
 	def grailsVersion = "2.0 > *"
 	def pluginExcludes = [
 			"web-app/css/**",
@@ -92,6 +92,12 @@ This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere
 					servletRegistration.setInitParameter(param, value)
 				}
 			}
+		}
+	}
+
+	def doWithSpring = {
+		applicationContextHolder(ApplicationContextHolder) { bean ->
+			bean.factoryMethod = 'getInstance'
 		}
 	}
 }

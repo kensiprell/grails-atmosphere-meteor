@@ -14,7 +14,7 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		// TODO update version
+		// TODO update versions
 		compile("org.atmosphere:atmosphere-runtime:1.1.0.RC4") {
 			excludes "slf4j-api"
 		}
