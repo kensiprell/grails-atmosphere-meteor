@@ -61,7 +61,7 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:0.5.3"
+    compile ":atmosphere-meteor:0.5.4"
     // other plugins
 }
 ```
