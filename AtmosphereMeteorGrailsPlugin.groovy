@@ -5,8 +5,8 @@ import org.grails.plugins.atmosphere_meteor.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
 class AtmosphereMeteorGrailsPlugin {
-	// TODO update version
-	def version = "0.5.4"
+	// TODO update version here and in README.md
+	def version = "0.6.0"
 	def grailsVersion = "2.0 > *"
 	def pluginExcludes = [
 			"web-app/css/**",
@@ -86,7 +86,7 @@ This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere
 			servletRegistration.addMapping(parameters.mapping)
 			servletRegistration.setAsyncSupported(Boolean.TRUE)
 			servletRegistration.setLoadOnStartup(1)
-			def initParams = parameters.initParams //?: config?.defaultInitParams
+			def initParams = parameters.initParams
 			if (initParams != "none") {
 				initParams?.each { param, value ->
 					servletRegistration.setInitParameter(param, value)

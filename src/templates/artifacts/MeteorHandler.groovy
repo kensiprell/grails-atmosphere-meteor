@@ -32,9 +32,6 @@ class @artifact.name@ extends HttpServlet {
 
 		m.addListener(new AtmosphereResourceEventListenerAdapter())
 		m.setBroadcaster(b)
-		// TODO the line below is not needed if AtmosphereResourceLifecycleInterceptor is used
-		// in the servlet interceptors intitParams, see AtmosphereMeteorConfig.groovy
-		m.resumeOnBroadcast(m.transport() == LONG_POLLING).suspend(-1)
 	}
 
 	@Override

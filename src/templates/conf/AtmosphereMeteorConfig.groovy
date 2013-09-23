@@ -20,7 +20,6 @@ defaultMapping = "/jabber/*"
 */
 
 defaultInitParams = [
-		"org.atmosphere.useNative": "true",
 		"org.atmosphere.cpr.broadcasterCacheClass": "org.atmosphere.cache.UUIDBroadcasterCache",
 		"org.atmosphere.cpr.AtmosphereInterceptor": """
 			org.atmosphere.client.TrackMessageSizeInterceptor,

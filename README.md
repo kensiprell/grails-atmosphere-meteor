@@ -2,7 +2,7 @@
 
 [Atmosphere Wiki](https://github.com/Atmosphere/atmosphere/wiki)
 
-The plugin has been tested on Grails versions 2.0.0 through 2.2.3. I use the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script) for testing.
+The plugin has been tested on Grails versions 2.0.0 through 2.3.0. I use the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script) for testing.
 
 If you have a question, problem, suggestion, or want to report a bug, please submit an [issue](https://github.com/kensiprell/grails-atmosphere-meteor/issues?state=open). I will reply as soon as I can.
 
@@ -54,22 +54,16 @@ The create-meteor-handler script creates a class in grails-app/atmosphere that e
 
 ## Plugin Installation
 
-The instructions assume you are using Tomcat as the servlet container. The plugin was built with Grails 2.2.3.
+The instructions assume you are using Tomcat as the servlet container. 
 
 Edit your BuildConfig.groovy:
 
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:0.5.4"
+    compile ":atmosphere-meteor:0.6.0"
     // other plugins
 }
-```
-
-   or use the deprecated:
-    
-```
-grails install-plugin atmosphere-meteor
 ```
 
 Create a MeteorServlet. Changes to these classes are reloaded automatically.
@@ -97,8 +91,7 @@ servlets = [
         mapping: "/jabber/*",
        	handler: DefaultMeteorHandler,
  		initParams = [
-			"org.atmosphere.useNative": "true",
-			"org.atmosphere.cpr.broadcasterCacheClass": "org.atmosphere.cache.UUIDBroadcasterCache",
+\			"org.atmosphere.cpr.broadcasterCacheClass": "org.atmosphere.cache.UUIDBroadcasterCache",
 			"org.atmosphere.cpr.AtmosphereInterceptor": """
 				org.atmosphere.client.TrackMessageSizeInterceptor,
 				org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor,
@@ -114,13 +107,19 @@ Note the changes the plugin installation made to grails-app/conf/BuildConfig.gro
 ```
 grails.servlet.version = "3.0"
 grails.tomcat.nio = true
+```
 
+You can change the dependency versions your application uses by editing your application's grails-app/conf/BuildConfig.groovy. This will override the versions defined in the plugin.
+
+```
 grails.project.dependency.resolution = {
     dependencies {
-        compile('org.atmosphere:atmosphere-runtime:1.1.RC4') {
+    	// other dependencies
+        compile('org.atmosphere:atmosphere-runtime:2.0.0') {
             excludes 'slf4j-api'
         }
-	    compile 'org.codehaus.jackson:jackson-core-asl:1.9.12'
+        compile 'org.codehaus.jackson:jackson-core-asl:1.9.13'
+    	// other dependencies
     }
 }
 ```

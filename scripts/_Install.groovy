@@ -5,16 +5,14 @@ def processFileInplace(file, Closure processText) {
 }
 
 def now = new Date()
-// TODO update version here and in README.md
-def atmosphereVersion = "1.1.0.RC4"
-// TODO update version
-def jacksonVersion = "1.9.12"
+// TODO change versions
+def atmosphereVersion = "2.0.0"
+def jacksonVersion = "1.9.13"
 def buildConfigFile = new File(basedir, "grails-app/conf/BuildConfig.groovy")
 def atmosphereMeteorConfigFile = new File(basedir, "grails-app/conf/AtmosphereMeteorConfig.groovy")
 def atmosphereMeteorResourcesFile = new File(basedir, "grails-app/conf/AtmosphereMeteorResources.groovy")
 def grailsServletVersion = buildConfig.grails.servlet.version
 def grailsTomcatNioExists = buildConfigFile.text.readLines().any { it =~ /grails.tomcat.nio/ && !(it =~ /\/\/.*grails.tomcat.nio/) }
-def grailsTomcatNioValue = buildConfig.grails.tomcat.nio
 boolean atmosphereMeteorResourcesFileExists = false
 boolean isTomcat = buildConfigFile.text.readLines().any { it =~ /tomcat/ && !(it =~ /\/\/.*tomcat/) }
 boolean isAtmosphere = buildConfigFile.text.readLines().any { it =~ /org.atmosphere:atmosphere-runtime/ && !(it =~ /\/\/.*org.atmosphere:atmosphere-runtime/) }
@@ -85,21 +83,6 @@ if (isJackson) {
 """)
 	}
 }
-
-// Create context.xml in META-INF and WEB-INF
-def contextDotXml = """\
-<?xml version="1.0" encoding="UTF-8"?>
-<Context>
-	<Loader delegate="true"/>
-</Context>"""
-def metaInf = new File(basedir, "web-app/META-INF/")
-def webInf = new File(basedir, "web-app/WEB-INF/")
-if (!metaInf.exists())
-	metaInf.mkdirs()
-if (!webInf.exists())
-	webInf.mkdirs()
-new File(metaInf, "context.xml").write contextDotXml
-new File(webInf, "context.xml").write contextDotXml
 
 if (atmosphereMeteorResourcesFileExists) {
 	println """
