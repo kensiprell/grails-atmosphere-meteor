@@ -12,7 +12,7 @@ If you have a question, problem, suggestion, or want to report a bug, please sub
 
 The plugin uses the following pieces of the Atmosphere Framework:
 
-* [atmosphere.js / jquery.atmosphere.js](https://github.com/Atmosphere/atmosphere/wiki/jQuery.atmosphere.js-API)
+* [atmosphere.js / jquery.atmosphere.js](https://github.com/Atmosphere/atmosphere-javascript)
 
 * [MeteorServlet](http://atmosphere.github.com/atmosphere/apidocs/org/atmosphere/cpr/MeteorServlet.html)
 
