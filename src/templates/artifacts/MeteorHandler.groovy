@@ -44,6 +44,6 @@ class @artifact.name@ extends HttpServlet {
 		def jsonMap = JSON.parse(request.getReader().readLine().trim()) as Map
 
 		Broadcaster b = BroadcasterFactory.getDefault().lookup(DefaultBroadcaster.class, mapping)
-		b.broadcast(jsonMap as JSON)
+		b.broadcast(jsonMap)
 	}
 }
