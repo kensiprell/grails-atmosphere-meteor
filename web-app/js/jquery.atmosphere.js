@@ -54,7 +54,7 @@ jQuery.atmosphere = function () {
     };
 
     return {
-        version: "2.0.5-jquery",
+        version: "2.1.0-jquery",
         uuid : 0,
         requests: [],
         callbacks: [],
@@ -2229,7 +2229,7 @@ jQuery.atmosphere = function () {
              *
              */
             function _pushWebSocket(message) {
-                var msg = _getStringMessage(message);
+                var msg = jQuery.atmosphere.isBinary(message) ? message : _getStringMessage(message);
                 var data;
                 try {
                     if (_request.dispatchUrl != null) {
@@ -2773,6 +2773,12 @@ jQuery.atmosphere = function () {
 
         error: function () {
             jQuery.atmosphere.log('error', arguments);
+        },
+        
+        // TODO extract to utils or something
+        isBinary: function (data) {
+            var string = Object.prototype.toString.call(data);
+            return string === "[object Blob]" || string === "[object ArrayBuffer]";
         }
     };
 }();

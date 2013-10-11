@@ -28,7 +28,7 @@
 
     "use strict";
 
-    var version = "2.0.5-javascript",
+    var version = "2.1.0-javascript",
         atmosphere = {},
         guid,
         requests = [],
@@ -2302,7 +2302,7 @@
              *
              */
             function _pushWebSocket(message) {
-                var msg = _getStringMessage(message);
+                var msg = atmosphere.util.isBinary(message) ? message : _getStringMessage(message);
                 var data;
                 try {
                     if (_request.dispatchUrl != null) {
