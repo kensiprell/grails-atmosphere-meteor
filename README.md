@@ -2,7 +2,17 @@
 
 [Atmosphere Wiki](https://github.com/Atmosphere/atmosphere/wiki)
 
-The plugin has been tested on Grails versions 2.0.0 through 2.3.0. I use the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script) for testing.
+The plugin has been tested in the following environment, using the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script):
+
+* atmosphere-runtime 2.0.1
+
+* OSX 10.8.5
+
+* JDK 1.7.0_40
+
+* Grails versions 2.1.0 through 2.3.0
+
+The plugin has worked on Grails versions 2.0.x; however, providing support and maintaining my test environment has become too difficult.
 
 If you have a question, problem, suggestion, or want to report a bug, please submit an [issue](https://github.com/kensiprell/grails-atmosphere-meteor/issues?state=open). I will reply as soon as I can.
 
@@ -61,7 +71,7 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:0.6.0"
+    compile ":atmosphere-meteor:0.6.1"
     // other plugins
 }
 ```
@@ -115,7 +125,7 @@ You can change the dependency versions your application uses by editing your app
 grails.project.dependency.resolution = {
     dependencies {
     	// other dependencies
-        compile('org.atmosphere:atmosphere-runtime:2.0.0') {
+        compile('org.atmosphere:atmosphere-runtime:2.0.1') {
             excludes 'slf4j-api'
         }
         compile 'org.codehaus.jackson:jackson-core-asl:1.9.13'
@@ -123,6 +133,13 @@ grails.project.dependency.resolution = {
     }
 }
 ```
+
+You can change the Atmosphere log level by adding a line to your application's grails-app/conf/Config.groovy in the appropriate place. For example, to set the level to warn:
+
+```
+warn 'org.atmosphere'
+```
+
 
 
 
