@@ -19,8 +19,7 @@ class AtmosphereMeteorGrailsPlugin {
 	def authorEmail = "ken.siprell@gmail.com"
 
 	def description = '''
-This plugin incorporates the Atmosphere Framework (https://github.com/Atmosphere/atmosphere/wiki). An associated sample application is located at https://github.com/kensiprell/grails-atmosphere-meteor-sample. Click the Documentation button above for the details.
-
+This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere/atmosphere], which includes client and server-side components for building asynchronous web applications.
 '''
 
 	def documentation = "https://github.com/kensiprell/grails-atmosphere-meteor/blob/master/README.md"
