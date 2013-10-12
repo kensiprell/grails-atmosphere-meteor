@@ -6,7 +6,7 @@ def processFileInplace(file, Closure processText) {
 
 def now = new Date()
 // TODO change versions
-def atmosphereVersion = "2.0.1"
+def atmosphereVersion = "2.0.3"
 def jacksonVersion = "1.9.13"
 def buildConfigFile = new File(basedir, "grails-app/conf/BuildConfig.groovy")
 def atmosphereMeteorConfigFile = new File(basedir, "grails-app/conf/AtmosphereMeteorConfig.groovy")

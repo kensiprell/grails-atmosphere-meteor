@@ -6,7 +6,7 @@ import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
 class AtmosphereMeteorGrailsPlugin {
 	// TODO update version here and in README.md
-	def version = "0.6.1"
+	def version = "0.6.2"
 	def grailsVersion = "2.1 > *"
 	def pluginExcludes = [
 			"web-app/css/**",

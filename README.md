@@ -71,7 +71,7 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:0.6.1"
+    compile ":atmosphere-meteor:0.6.2"
     // other plugins
 }
 ```
@@ -125,7 +125,7 @@ You can change the dependency versions your application uses by editing your app
 grails.project.dependency.resolution = {
     dependencies {
     	// other dependencies
-        compile('org.atmosphere:atmosphere-runtime:2.0.1') {
+        compile('org.atmosphere:atmosphere-runtime:2.0.3') {
             excludes 'slf4j-api'
         }
         compile 'org.codehaus.jackson:jackson-core-asl:1.9.13'
@@ -139,6 +139,15 @@ You can change the Atmosphere log level by adding a line to your application's g
 ```
 warn 'org.atmosphere'
 ```
+
+### Update Javascript Files
+
+You can update the Atmosphere Javascript files by running the script below. This will allow you to update the client files without having to wait on a plugin release.
+
+```
+grails update-atmosphere-meteor-javascript
+```
+
 
 
 

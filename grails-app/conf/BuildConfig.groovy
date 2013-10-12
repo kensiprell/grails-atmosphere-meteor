@@ -21,8 +21,8 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		// TODO update versions
-		compile "org.atmosphere:atmosphere-runtime:2.0.1", {
+		// TODO update versions here and in README.md
+		compile "org.atmosphere:atmosphere-runtime:2.0.3", {
 			excludes "slf4j-api"
 		}
 		compile "org.codehaus.jackson:jackson-core-asl:1.9.13"
