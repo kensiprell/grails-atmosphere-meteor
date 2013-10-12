@@ -4,7 +4,7 @@
 
 The plugin has been tested in the following environment, using the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script):
 
-* atmosphere-runtime 2.0.1
+* atmosphere-runtime 2.0.3
 
 * OSX 10.8.5
 
