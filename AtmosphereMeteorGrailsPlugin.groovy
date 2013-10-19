@@ -79,8 +79,24 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 		// Configure servlets
 		def config = ApplicationContextHolder.atmosphereMeteorConfig
 		def servletContext = applicationContext.servletContext
+		boolean jetty = servletContext.getServerInfo().contains("jetty")
+		boolean tomcat = servletContext.getServerInfo().contains("Tomcat")
+		if(!tomcat && !jetty) {
+			//println "This plugin will only work with Jetty or Tomcat"
+			//return
+		}
+
+		println "servletContext.getServerInfo(): " + servletContext.getServerInfo()
+
+		// TODO use, delete, or comment out
 
 		config?.servlets?.each { name, parameters ->
+			if (tomcat) {
+				println "tomcat"
+			}
+			if (jetty) {
+				println "jetty"
+			}
 			ServletRegistration servletRegistration = servletContext.addServlet(name, parameters.className)
 			servletRegistration.addMapping(parameters.mapping)
 			servletRegistration.setAsyncSupported(Boolean.TRUE)
