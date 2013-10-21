@@ -1,25 +1,107 @@
-// Define some variables
-def processFileInplace(file, Closure processText) {
-	def text = file.text
-	file.write(processText(text))
-}
-
-def now = new Date()
 // TODO change versions
 def atmosphereVersion = "2.0.3"
 def jacksonVersion = "1.9.13"
 def jettyVersion = "8.1.13.v20130916"
 def jettyPluginVersion = "2.0.3"
+
+def processFileInplace(file, Closure processText) {
+	def text = file.text
+	file.write(processText(text))
+}
+def now = new Date()
 def buildConfigFile = new File(basedir, "grails-app/conf/BuildConfig.groovy")
+def buildConfigLines = buildConfigFile.text.readLines()
 def atmosphereMeteorConfigFile = new File(basedir, "grails-app/conf/AtmosphereMeteorConfig.groovy")
 def atmosphereMeteorResourcesFile = new File(basedir, "grails-app/conf/AtmosphereMeteorResources.groovy")
 def grailsServletVersion = buildConfig.grails.servlet.version
-def grailsTomcatNioExists = buildConfigFile.text.readLines().any { it =~ /grails.tomcat.nio/ && !(it =~ /\/\/.*grails.tomcat.nio/) }
+def grailsTomcatNioExists = buildConfigLines.any { it =~ /grails.tomcat.nio/ && !(it =~ /\/\/.*grails.tomcat.nio/) }
 boolean atmosphereMeteorResourcesFileExists = false
-boolean isJetty = buildConfigFile.text.readLines().any { it =~ /jetty/ && !(it =~ /\/\/.*jetty/) }
-boolean isTomcat = buildConfigFile.text.readLines().any { it =~ /tomcat/ && !(it =~ /\/\/.*tomcat/) }
-boolean isAtmosphere = buildConfigFile.text.readLines().any { it =~ /org.atmosphere:atmosphere-runtime/ && !(it =~ /\/\/.*org.atmosphere:atmosphere-runtime/) }
-boolean isJackson = buildConfigFile.text.readLines().any { it =~ /org.codehaus.jackson:jackson-core-asl/ && !(it =~ /\/\/.*org.codehaus.jackson:jackson-core-asl/) }
+boolean isJetty = buildConfigLines.any { it =~ /jetty/ && !(it =~ /\/\/.*jetty/) }
+boolean isTomcat = buildConfigLines.any { it =~ /tomcat/ && !(it =~ /\/\/.*tomcat/) }
+boolean isAtmosphere = buildConfigLines.any { it =~ /org.atmosphere:atmosphere-runtime/ && !(it =~ /\/\/.*org.atmosphere:atmosphere-runtime/) }
+boolean isJackson = buildConfigLines.any { it =~ /org.codehaus.jackson:jackson-core-asl/ && !(it =~ /\/\/.*org.codehaus.jackson:jackson-core-asl/) }
+
+// Check Jetty version and if not Jetty 8 or 9, exit
+// else modify BuildConfig.groovy dependencies to use version 8
+if (isJetty) {
+	def jettyDependencies = """
+	dependencies {
+		def jettyVersion = "${jettyVersion}" // Modified by atmosphere-meteor plugin on ${now}.
+		provided(
+				"org.eclipse.jetty:jetty-http:\\\${jettyVersion}",
+				"org.eclipse.jetty:jetty-server:\\\${jettyVersion}",
+				"org.eclipse.jetty:jetty-webapp:\\\${jettyVersion}",
+				"org.eclipse.jetty:jetty-plus:\\\${jettyVersion}",
+				"org.eclipse.jetty:jetty-security:\\\${jettyVersion}",
+				"org.eclipse.jetty:jetty-websocket:\\\${jettyVersion}",
+				"org.eclipse.jetty:jetty-continuation:\\\${jettyVersion}",
+				"org.eclipse.jetty:jetty-jndi:\\\${jettyVersion}"
+		) {
+			excludes "commons-el", "ant", "sl4j-api", "sl4j-simple", "jcl104-over-slf4j", "xercesImpl", "xmlParserAPIs", "servlet-api", "mail", "commons-lang"
+			excludes(
+					[group: "org.eclipse.jetty.orbit", name: "javax.servlet"],
+					[group: "org.eclipse.jetty.orbit", name: "javax.activation"],
+					[group: "org.eclipse.jetty.orbit", name: "javax.mail.glassfish"],
+					[group: "org.eclipse.jetty.orbit", name: "javax.transaction"]
+			)
+		}
+"""
+	def jettyPlugin = """
+		runtime(":jetty:${jettyPluginVersion}") {  // Modified by atmosphere-meteor plugin on ${now}.
+			excludes "jetty-http", "jetty-server", "jetty-webapp", "jetty-plus", "jetty-security", "jetty-websocket", "jetty-continuation", "jetty-jndi"
+		}
+"""
+
+	if (buildConfigLines.any { it =~ /org.eclipse.jetty/ }) {
+		def versionJettyVersion = null
+		def versionJettyRuntime = null
+		def versionJettyHttp = null
+		def appJettyVersion
+
+		// TODO check if commented out?
+		buildConfigLines.each {
+			if (it =~ /jettyVersion\s*=/) {
+				def m = it =~ /=\s*['"](.*)['"]/
+				versionJettyVersion = m[0][1]
+			}
+			// runtime "org.eclipse.jetty.aggregate:jetty-all:8.1.13.v20130916"
+			if (it =~ /runtime\s+['"]org.eclipse.jetty.*:.*:.*['"]/) {
+				def m = it =~ /['"]org.eclipse.jetty.*:.*:(.*)['"]/
+				versionJettyRuntime = m[0][1]
+			}
+			// "org.eclipse.jetty:jetty-http:8.1.13.v20130916"
+			if (it =~ /['"]org.eclipse.jetty:jetty-http:.*['"]/) {
+				def m = it =~ /['"]org.eclipse.jetty:jetty-http:(.*)['"]/
+				versionJettyHttp = m[0][1]
+			}
+		}
+		appJettyVersion = [versionJettyVersion, versionJettyRuntime, versionJettyHttp].max()
+
+		if (appJettyVersion.getAt(0) < 8.toString()) {
+			def versionLine = "* It appears you are using version $appJettyVersion.".padRight(67, " ")
+			println """
+********************************************************************
+* The atmosphere-meteor plugin requires at least Jetty version 8.  *
+*                                                                  *
+$versionLine*
+*                                                                  *
+* Jetty documentation:                                             *
+* https://github.com/kensiprell/grails-atmosphere-meteor#jetty     *
+*                                                                  *
+* The plugin was not installed.                                    *
+********************************************************************
+"""
+			return
+		}
+	} else {
+		processFileInplace(buildConfigFile) { text ->
+			text.replaceAll(/(?m)(^\s*dependencies\s*\{.*$)/, jettyDependencies)
+		}
+	}
+	processFileInplace(buildConfigFile) { text ->
+		text.replaceAll(/(?m)(^\s*build.*jetty.*$)/, jettyPlugin)
+	}
+}
 
 // Create the directory for Atmosphere artefacts
 ant.mkdir(dir: "${basedir}/grails-app/atmosphere")
@@ -72,53 +154,6 @@ if (isAtmosphere) {
         }
 """)
 	}
-}
-
-// Update Jetty dependencies to use version 8
-if (isJetty) {
-	def jettyDependencies = """
-	dependencies {
-		def jettyVersion = "${jettyVersion}" // Modified by atmosphere-meteor plugin on ${now}.
-		provided(
-				"org.eclipse.jetty:jetty-http:\\\${jettyVersion}",
-				"org.eclipse.jetty:jetty-server:\\\${jettyVersion}",
-				"org.eclipse.jetty:jetty-webapp:\\\${jettyVersion}",
-				"org.eclipse.jetty:jetty-plus:\\\${jettyVersion}",
-				"org.eclipse.jetty:jetty-security:\\\${jettyVersion}",
-				"org.eclipse.jetty:jetty-websocket:\\\${jettyVersion}",
-				"org.eclipse.jetty:jetty-continuation:\\\${jettyVersion}",
-				"org.eclipse.jetty:jetty-jndi:\\\${jettyVersion}"
-		) {
-			excludes "commons-el", "ant", "sl4j-api", "sl4j-simple", "jcl104-over-slf4j", "xercesImpl", "xmlParserAPIs", "servlet-api", "mail", "commons-lang"
-			excludes(
-					[group: "org.eclipse.jetty.orbit", name: "javax.servlet"],
-					[group: "org.eclipse.jetty.orbit", name: "javax.activation"],
-					[group: "org.eclipse.jetty.orbit", name: "javax.mail.glassfish"],
-					[group: "org.eclipse.jetty.orbit", name: "javax.transaction"]
-			)
-		}
-"""
-	def jettyPlugin = """
-		runtime(":jetty:${jettyPluginVersion}") {  // Modified by atmosphere-meteor plugin on ${now}.
-			excludes "jetty-http", "jetty-server", "jetty-webapp", "jetty-plus", "jetty-security", "jetty-websocket", "jetty-continuation", "jetty-jndi"
-		}
-"""
-
-	if (buildConfigFile.text.readLines().any { it =~ /org.eclipse.jetty:jetty-http/ }) {
-		// TODO Jetty already configured?
-		// TODO check version and notify user?
-		println "Jetty installed"
-	} else {
-		println "Jetty not installed"
-		processFileInplace(buildConfigFile) { text ->
-			text.replaceAll(/(?m)(^\s*dependencies\s*\{.*$)/, jettyDependencies)
-		}
-	}
-
-	processFileInplace(buildConfigFile) { text ->
-		text.replaceAll(/(?m)(^\s*build.*jetty.*$)/, jettyPlugin)
-	}
-
 }
 
 // Change grails.tomcat.nio to true in BuildConfig.groovy if necessary

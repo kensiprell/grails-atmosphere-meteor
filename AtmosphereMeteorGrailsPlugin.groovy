@@ -6,7 +6,7 @@ import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
 class AtmosphereMeteorGrailsPlugin {
 	// TODO update version here and in README.md
-	def version = "0.6.2"
+	def version = "0.7.0"
 	def grailsVersion = "2.1 > *"
 	def pluginExcludes = [
 			"web-app/css/**",
@@ -81,26 +81,17 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 		def servletContext = applicationContext.servletContext
 		boolean jetty = servletContext.getServerInfo().contains("jetty")
 		boolean tomcat = servletContext.getServerInfo().contains("Tomcat")
-		if(!tomcat && !jetty) {
-			//println "This plugin will only work with Jetty or Tomcat"
-			//return
-		}
-
-		println "servletContext.getServerInfo(): " + servletContext.getServerInfo()
-
-		// TODO use, delete, or comment out
-
 		config?.servlets?.each { name, parameters ->
-			if (tomcat) {
-				println "tomcat"
-			}
-			if (jetty) {
-				println "jetty"
-			}
 			ServletRegistration servletRegistration = servletContext.addServlet(name, parameters.className)
 			servletRegistration.addMapping(parameters.mapping)
 			servletRegistration.setAsyncSupported(Boolean.TRUE)
 			servletRegistration.setLoadOnStartup(1)
+			if(jetty) {
+				servletRegistration.setInitParameter("org.atmosphere.cpr.asyncSupport", "org.atmosphere.container.JettyServlet30AsyncSupportWithWebSocket")
+			}
+			if(tomcat) {
+				servletRegistration.setInitParameter("org.atmosphere.cpr.asyncSupport", "org.atmosphere.container.Tomcat7AsyncSupportWithWebSocket")
+			}
 			def initParams = parameters.initParams
 			if (initParams != "none") {
 				initParams?.each { param, value ->
@@ -111,6 +102,7 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 	}
 
 	def doWithSpring = {
+		// Register ApplicationContextHolder bean
 		applicationContextHolder(ApplicationContextHolder) { bean ->
 			bean.factoryMethod = 'getInstance'
 		}
