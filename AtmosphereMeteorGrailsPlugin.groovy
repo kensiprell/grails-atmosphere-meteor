@@ -78,18 +78,39 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 	def doWithDynamicMethods = { applicationContext ->
 		// Configure servlets
 		def config = ApplicationContextHolder.atmosphereMeteorConfig
-		def servletContext = applicationContext.servletContext
-		boolean jetty = servletContext.getServerInfo().contains("jetty")
-		boolean tomcat = servletContext.getServerInfo().contains("Tomcat")
+		def servletContext =  applicationContext.servletContext
+		def serverInfo = servletContext.getServerInfo()
+		boolean jetty = serverInfo.contains("jetty")
+		boolean tomcat = serverInfo.contains("Tomcat")
+
+		//println "\n\ngetServerInfo: $serverInfo\n\n"
+		if (jetty) {
+			def m = serverInfo =~ /jetty\/(.*)/
+			def jettyVersion =  m[0][1]
+			if (jettyVersion.getAt(0) < 8.toString()) {
+				def versionLine = "* It appears you are using version $jettyVersion.".padRight(67, " ")
+				println """
+********************************************************************
+* The atmosphere-meteor plugin requires at least Jetty version 8.  *
+*                                                                  *
+$versionLine*
+*                                                                  *
+* Jetty documentation:                                             *
+* https://github.com/kensiprell/grails-atmosphere-meteor#jetty     *
+********************************************************************
+"""
+			}
+		}
+
 		config?.servlets?.each { name, parameters ->
 			ServletRegistration servletRegistration = servletContext.addServlet(name, parameters.className)
 			servletRegistration.addMapping(parameters.mapping)
 			servletRegistration.setAsyncSupported(Boolean.TRUE)
 			servletRegistration.setLoadOnStartup(1)
-			if(jetty) {
+			if (jetty) {
 				servletRegistration.setInitParameter("org.atmosphere.cpr.asyncSupport", "org.atmosphere.container.JettyServlet30AsyncSupportWithWebSocket")
 			}
-			if(tomcat) {
+			if (tomcat) {
 				servletRegistration.setInitParameter("org.atmosphere.cpr.asyncSupport", "org.atmosphere.container.Tomcat7AsyncSupportWithWebSocket")
 			}
 			def initParams = parameters.initParams

@@ -6,8 +6,6 @@
 
 // TODO delete grails-app/atmosphere if empty
 
-// TODO remove dependencies from BuildConfig.groovy
-
 // TODO delete web-app/WEB-INF/atmosphere-meteor-decorators.xml
 
 // TODO remove excludes from web-app/WEB-INF/sitemesh.xml

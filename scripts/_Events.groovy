@@ -1,5 +1,31 @@
 import groovy.xml.StreamingMarkupBuilder
 
+def jetty = false
+pluginDescriptors.each {
+	if (it.toString().contains("Jetty")) {
+		jetty = true
+	}
+}
+
+eventSetClasspath = {
+	if (jetty) {
+		System.setProperty("grails.server.factory", "org.grails.jetty.JettyServerFactory")
+	}
+}
+
+/*
+eventCreateWarStart = { warName, stagingDir ->
+	if (jetty) {
+		println "Removing Jetty jars ...."
+		ant.delete {
+			fileset(dir: "${stagingDir}/WEB-INF/lib") {
+				include(name: "jetty-*.jar")
+			}
+		}
+	}
+}
+*/
+
 eventCompileEnd = {
 	if (!isPluginProject) {
 		buildConfiguration(basedir)

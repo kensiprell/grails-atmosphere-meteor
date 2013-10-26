@@ -1045,7 +1045,7 @@ jQuery.atmosphere = function () {
                         if (_requestCount++ < _request.maxReconnectOnClose) {
                             _open('re-connecting', _request.transport, _request);
                             if (_request.reconnectInterval > 0) {
-                                _request.id = setTimeout(function () {
+                                _request.reconnectId = setTimeout(function () {
                                     _executeSSE(true);
                                 }, _request.reconnectInterval);
                             } else {
@@ -1225,7 +1225,7 @@ jQuery.atmosphere = function () {
                         if (_requestCount++ < _request.maxReconnectOnClose) {
                             _open('re-connecting', _request.transport, _request);
                             if (_request.reconnectInterval > 0) {
-                                _request.id = setTimeout(function () {
+                                _request.reconnectId = setTimeout(function () {
                                     _response.responseBody = "";
                                     _response.messages = [];
                                     _executeWebSocket(true);
@@ -1257,6 +1257,9 @@ jQuery.atmosphere = function () {
             function _handleProtocol(request, message) {
                 // The first messages is always the uuid.
                 var b = true;
+
+                if (request.transport === 'polling') return b;
+
                 if (jQuery.trim(message).length !== 0 && request.enableProtocol && request.firstMessage) {
                     request.firstMessage = false;
                     var messages = message.split(request.messageDelimiter);
@@ -1317,7 +1320,7 @@ jQuery.atmosphere = function () {
              * @param response
              */
             function _trackMessageSize(message, request, response) {
-                if (!_handleProtocol(_request, message))
+                if (!_handleProtocol(request, message))
                     return true;
                 if (message.length === 0)
                     return true;
@@ -1386,7 +1389,7 @@ jQuery.atmosphere = function () {
                     _response.transport = _request.fallbackTransport;
                     _request.fallbackTransport = 'none';
                     if (reconnectInterval > 0) {
-                        _request.id = setTimeout(function () {
+                        _request.reconnectId = setTimeout(function () {
                             _execute();
                         }, reconnectInterval);
                     } else {
@@ -1547,8 +1550,8 @@ jQuery.atmosphere = function () {
                             if (!_response.status) {
                                 _response.status = 500;
                             }
-                            _clearState();
                             if (!_response.errorHandled) {
+                                _clearState();
                                 reconnectF();
                             }
                         };
@@ -1584,7 +1587,7 @@ jQuery.atmosphere = function () {
                             }
                             // MSIE 9 and lower status can be higher than 1000, Chrome can be 0
                             var status = 200;
-                            if (ajaxRequest.readyState > 1) {
+                            if (ajaxRequest.readyState === 4) {
                                 status = ajaxRequest.status > 1000 ? 0 : ajaxRequest.status;
                             }
 
@@ -1772,9 +1775,13 @@ jQuery.atmosphere = function () {
 
                     // Reconnect immedialtely
                     clearTimeout(request.id);
+                    if (request.reconnectId) {
+                        clearTimeout(request.reconnectId);
+                    }
+
                     if (reconnectInterval > 0) {
-                        request.id = setTimeout(function () {
-                            _executeRequest(request);
+                        setTimeout(function () {
+                            _request.reconnectId = _executeRequest(request);
                         }, reconnectInterval);
                     } else {
                         _executeRequest(request);
@@ -1839,7 +1846,7 @@ jQuery.atmosphere = function () {
                         _clearState();
                         if (_requestCount++ < rq.maxReconnectOnClose) {
                             if (rq.reconnectInterval > 0) {
-                                rq.id = setTimeout(function () {
+                                rq.reconnectId = setTimeout(function () {
                                     _open('re-connecting', request.transport, request);
                                     _ieXDR(rq);
                                 }, rq.reconnectInterval);
@@ -2036,7 +2043,7 @@ jQuery.atmosphere = function () {
                                         _invokeClose(true);
                                         _open('re-connecting', rq.transport, rq);
                                         if (rq.reconnectInterval > 0) {
-                                            rq.id = setTimeout(function () {
+                                            rq.reconnectId = setTimeout(function () {
                                                 _ieStreaming(rq);
                                             }, rq.reconnectInterval);
                                         } else {
@@ -2052,7 +2059,7 @@ jQuery.atmosphere = function () {
                                 _open('re-connecting', rq.transport, rq);
                                 if (_requestCount++ < rq.maxReconnectOnClose) {
                                     if (rq.reconnectInterval > 0) {
-                                        rq.id = setTimeout(function () {
+                                        rq.reconnectId = setTimeout(function () {
                                             _ieStreaming(rq);
                                         }, rq.reconnectInterval);
                                     } else {
@@ -2476,6 +2483,9 @@ jQuery.atmosphere = function () {
              * @private
              */
             function _close() {
+                if (_request.reconnectId) {
+                    clearTimeout(_request.reconnectId);
+                }
                 _request.reconnect = false;
                 _abordingConnection = true;
                 _response.request = _request;
@@ -2774,11 +2784,11 @@ jQuery.atmosphere = function () {
         error: function () {
             jQuery.atmosphere.log('error', arguments);
         },
-        
+
         // TODO extract to utils or something
         isBinary: function (data) {
-            var string = Object.prototype.toString.call(data);
-            return string === "[object Blob]" || string === "[object ArrayBuffer]";
+            // True if data is an instance of Blob, ArrayBuffer or ArrayBufferView 
+            return /^\[object\s(?:Blob|ArrayBuffer|.+Array)\]$/.test(Object.prototype.toString.call(data));
         }
     };
 }();
