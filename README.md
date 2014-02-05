@@ -6,13 +6,13 @@
 
 The plugin has been tested in the following environment, using the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script):
 
-* atmosphere-runtime-native 2.0.3
+* atmosphere-runtime 2.1.0
 
-* OSX 10.9.0
+* OSX 10.9.1
 
-* JDK 1.7.0_45
+* JDK 1.7.0_51
 
-* Grails versions 2.1.0 through 2.3.1
+* Grails versions 2.1.0 through 2.3.5
 
 * Tomcat (version depends on Grails version)
 
@@ -43,11 +43,11 @@ The plugin uses the following components of the Atmosphere Framework:
 
 The plugin is designed to create and use a servlet for each main or significant URL pattern. For example, if you download the [sample application](https://github.com/kensiprell/grails-atmosphere-meteor-sample), you will see that a servlet is created for each URL pattern below:
 
-	/jabber/chat/*
+	/atmosphere/chat/*
 
-	/jabber/notification/*
+	/atmosphere/notification/*
 
-	/jabber/public/*
+	/atmosphere/public/*
 
 The servlets are registered programmatically and are not defined in web.xml.
 
@@ -61,7 +61,7 @@ All servlets are defined in grails-app/conf/AtmosphereMeteorConfig.groovy.
 
 The create-meteor-servlet script creates a class in grails-app/atmosphere that extends Atmosphere's MeteorServlet. You could probably use a single class throughout your application.
 
-Although the [sample application](https://github.com/kensiprell/grails-atmosphere-meteor-sample) uses the same MeteorServlet class for each URL, you can easily use a different class. Of course, each of the URL patterns above can be further divided using a combination of request headers, path, etc. For example, a chat room could be established under /jabber/chat/private-room that is serviced by the same servlet, MeteorServlet, and MeteorHandler classes as /jabber/chat/*.
+Although the [sample application](https://github.com/kensiprell/grails-atmosphere-meteor-sample) uses the same MeteorServlet class for each URL, you can easily use a different class. Of course, each of the URL patterns above can be further divided using a combination of request headers, path, etc. For example, a chat room could be established under /atmosphere/chat/private-room that is serviced by the same servlet, MeteorServlet, and MeteorHandler classes as /atmosphere/chat/*.
 
 ### MeteorHandler Class
 
@@ -75,7 +75,7 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:0.7.0"
+    compile ":atmosphere-meteor:0.7.1"
     // other plugins
 }
 ```
@@ -178,13 +178,37 @@ error "org.eclipse.jetty"
 ```
 
 ### Tomcat
-Although it's possible to update your Tomcat version by inserting dependencies in your BuildConfig.groovy similar to the Jetty workaround above, I recommend using the Grails plugin. 
-
 The plugin will update your BuildConfig.groovy to use the Tomcat NIO connector if it's not already set.
 
 ```
 grails.tomcat.nio = true
 ```
+
+The plugin no longer uses atmosphere-runtime-native. If you prefer using it over atmosphere-runtime, insert the lines below in the dependencies section of your BuildConfig.groovy.
+
+```
+dependencies {
+	compile "org.atmosphere:atmosphere-runtime-native:2.1.0", {
+		excludes "slf4j-api"
+	}
+
+	// other dependencies 
+}
+```
+You must also add ```"org.atmosphere.useWebSocketAndServlet3": "false"``` to your init params in grails-app/conf/AtmosphereMeteorConfig.groovy. See the example below.
+
+```
+defaultInitParams = [
+		"org.atmosphere.useWebSocketAndServlet3": "false",
+		"org.atmosphere.cpr.broadcasterCacheClass": "org.atmosphere.cache.UUIDBroadcasterCache",
+		"org.atmosphere.cpr.AtmosphereInterceptor": """
+			org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor,
+			org.atmosphere.interceptor.HeartbeatInterceptor
+		"""
+]
+```
+
+See [Installing-AtmosphereServlet-with-or-without-native-support](https://github.com/Atmosphere/atmosphere/wiki/Installing-AtmosphereServlet-with-or-without-native-support) for more information.
 
 ### MeteorServlet
 
@@ -209,14 +233,16 @@ Edit grails-app/conf/AtmosphereMeteorConfig.groovy. Changes to this file will be
 ```
 import com.example.DefaultMeteorHandler
 
-defaultMapping = "/jabber/*"
+defaultMapping = "/atmosphere/*"
 
 servlets = [
     MeteorServletDefault: [
         className: "com.example.DefaultMeteorServlet",
-        mapping: "/jabber/*",
+        mapping: "/atmosphere/*",
        	handler: DefaultMeteorHandler,
  		initParams = [
+			// Uncomment the line below use native WebSocket support with native Comet support.
+			//"org.atmosphere.useWebSocketAndServlet3": "false",
 			"org.atmosphere.cpr.broadcasterCacheClass": "org.atmosphere.cache.UUIDBroadcasterCache",
 			"org.atmosphere.cpr.AtmosphereInterceptor": """
 				org.atmosphere.client.TrackMessageSizeInterceptor,
@@ -235,22 +261,6 @@ You can change the Atmosphere log level by adding a line to your application's g
 warn "org.atmosphere"
 ```
 
-### Update Atmosphere Dependencies
-
-You can change the Atmosphere version your application uses by adding the dependencies below to your BuildConfig.groovy. This will override the versions defined in the plugin and will allow you to update the runtime jars without having to wait on a plugin release.
-
-```
-grails.project.dependency.resolution = {
-    dependencies {
-    	// other dependencies
-        compile('org.atmosphere:atmosphere-runtime-native:2.0.3') {
-            excludes 'slf4j-api'
-        }
-        compile 'org.codehaus.jackson:jackson-core-asl:1.9.13'
-    	// other dependencies
-    }
-}
-```
 ### Update Atmosphere Javascript Files
 
 You can update the Atmosphere Javascript files by running the script below. This will allow you to update the client files without having to wait on a plugin release.

@@ -1,7 +1,7 @@
-import org.grails.plugins.atmosphere_meteor.ApplicationContextHolder
+import org.grails.plugins.atmosphere_meteor.AtmosphereConfigurationHolder
 
 beans = {
-   applicationContextHolder(ApplicationContextHolder) { bean ->
+	atmosphereConfigurationHolder(AtmosphereConfigurationHolder) { bean ->
       bean.factoryMethod = 'getInstance'
    }
 }

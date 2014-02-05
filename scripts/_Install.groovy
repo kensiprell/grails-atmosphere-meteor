@@ -1,7 +1,3 @@
-// TODO change versions
-def atmosphereVersion = "2.0.3"
-def jacksonVersion = "1.9.13"
-
 def processFileInplace(file, Closure processText) {
 	def text = file.text
 	file.write(processText(text))

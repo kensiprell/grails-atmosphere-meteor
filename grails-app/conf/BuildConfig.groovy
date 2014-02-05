@@ -11,7 +11,6 @@ grails.project.dependency.distribution = {
 grails.project.dependency.resolution = {
 	inherits "global"
 	log "warn"
-	//legacyResolve true
 
 	repositories {
 		grailsCentral()
@@ -21,14 +20,14 @@ grails.project.dependency.resolution = {
 
 	dependencies {
 		// TODO update versions here and in README.md
-		compile "org.atmosphere:atmosphere-runtime-native:2.0.3", {
+		compile "org.atmosphere:atmosphere-runtime:2.1.0", {
 			excludes "slf4j-api"
 		}
 		compile "org.codehaus.jackson:jackson-core-asl:1.9.13"
 	}
 
 	plugins {
-		build ":release:3.0.1", ":rest-client-builder:2.0.0", ":tomcat:7.0.42", {
+		build ":release:3.0.1", ":rest-client-builder:2.0.1", ":tomcat:7.0.50", {
 			export = false
 		}
 s	}

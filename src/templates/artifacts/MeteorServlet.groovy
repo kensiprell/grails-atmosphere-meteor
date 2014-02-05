@@ -3,7 +3,7 @@
 import org.atmosphere.cpr.MeteorServlet
 import org.atmosphere.handler.ReflectorServletProcessor
 
-import org.grails.plugins.atmosphere_meteor.ApplicationContextHolder
+import org.grails.plugins.atmosphere_meteor.AtmosphereConfigurationHolder
 
 import javax.servlet.http.HttpServlet
 import javax.servlet.ServletConfig
@@ -16,7 +16,7 @@ class @artifact.name@ extends MeteorServlet {
 		super.init(sc)
 
 		def servletName = sc.servletName
-		def config = ApplicationContextHolder.atmosphereMeteorConfig
+		def config = AtmosphereConfigurationHolder.atmosphereMeteorConfig
 		def servlet = config.servlets.get(servletName)
 		def mapping = servlet.mapping
 		def handler = servlet.handler.newInstance() as HttpServlet

@@ -35,7 +35,7 @@ eventCompileEnd = {
 def buildConfiguration(basedir) {
 	def config = new ConfigSlurper().parse(new File("${basedir}/grails-app/conf/AtmosphereMeteorConfig.groovy").toURI().toURL())
 	def sitemeshXml = new File("$basedir/web-app/WEB-INF/sitemesh.xml")
-	def defaultMapping = config.defaultMapping ?: '/jabber/*'
+	def defaultMapping = config.defaultMapping ?: '/atmosphere/*'
 
 	// Create atmosphere-meteor-decorators.xml in WEB-INF
 	def decoratorsDotXml = """\

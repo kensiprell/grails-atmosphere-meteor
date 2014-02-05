@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContextAware
  http://burtbeckwith.com/blog/?p=1017
  */
 
+@Deprecated
 @Singleton
 class ApplicationContextHolder implements ApplicationContextAware {
 
