@@ -12,7 +12,7 @@ The plugin has been tested in the following environment, using the [grails-atmos
 
 * JDK 1.7.0_51
 
-* Grails versions 2.1.0 through 2.3.5
+* Grails versions 2.1.5, 2.2.4, and 2.3.7
 
 * Tomcat (version depends on Grails version)
 
@@ -55,8 +55,6 @@ The servlets are registered programmatically and are not defined in web.xml.
 
 All servlets are defined in grails-app/conf/AtmosphereMeteorConfig.groovy.
 
- grails-app/conf/AtmosphereResources.groovy has modules for atmosphere.js and jquery.atmosphere.js.
-
 ### MeteorServlet Class
 
 The create-meteor-servlet script creates a class in grails-app/atmosphere that extends Atmosphere's MeteorServlet. You could probably use a single class throughout your application.
@@ -75,29 +73,50 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:0.7.1"
+    compile ":atmosphere-meteor:0.8.0"
     // other plugins
 }
 ```
 
-The plugin will make some minor changes to your grails-app/conf/BuildConfig.groovy on installation. Your original file will be copied to grails-app/conf/BuildConfig_ORIG.groovy. 
-
-If not already set, the plugin will change your BuildConfig.groovy to use the Servlet 3.0 API and the Tomcat NIO connector.
+### Tomcat
+Change your BuildConfig.groovy to use the Servlet 3.0 API and the Tomcat NIO connector.
 
 ```
 grails.servlet.version = "3.0"
 grails.tomcat.nio = true
 ```
 
+The plugin no longer uses atmosphere-runtime-native. If you prefer using it over atmosphere-runtime, insert the lines below in the dependencies section of your BuildConfig.groovy.
+
+```
+dependencies {
+	compile "org.atmosphere:atmosphere-runtime-native:2.1.1", {
+		excludes "slf4j-api"
+	}
+
+	// other dependencies 
+}
+```
+You must also add ```"org.atmosphere.useWebSocketAndServlet3": "false"``` to your init params in grails-app/conf/AtmosphereMeteorConfig.groovy if using atmosphere-runtime-native. See the example below.
+
+```
+defaultInitParams = [
+		"org.atmosphere.useWebSocketAndServlet3": "false",
+		"org.atmosphere.cpr.broadcasterCacheClass": "org.atmosphere.cache.UUIDBroadcasterCache",
+		"org.atmosphere.cpr.AtmosphereInterceptor": """
+			org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor,
+			org.atmosphere.interceptor.HeartbeatInterceptor
+		"""
+]
+```
+
+See [Installing-AtmosphereServlet-with-or-without-native-support](https://github.com/Atmosphere/atmosphere/wiki/Installing-AtmosphereServlet-with-or-without-native-support) for more information.
 
 ### Jetty
 
-The current [Jetty Plugin](http://www.grails.org/plugins/jetty) installs Jetty 7 with the Servlet 2.5 API, and the plugin requires the Servlet 3.0 API. Functional tests and the run-war command fail with the Jetty Plugin and Grails 2.3. Thanks to help from [Igor Poteryaev](http://jetty.4.x6.nabble.com/template/NamlServlet.jtp?macro=user_nodes&user=360626), we can work around these problems.
-
-
-The atmosphere-meteor plugin automatically resolves the issues with functional testing and the run-war command.
+The current [Jetty Plugin](http://www.grails.org/plugins/jetty) installs Jetty 7 with the Servlet 2.5 API, and the plugin requires the Servlet 3.0 API. Functional tests and the run-war command fail with the Jetty Plugin and Grails 2.3. The atmosphere-meteor plugin automatically resolves the issues with functional testing and the run-war command.
  
-You can update your Jetty version by modifying your BuildConfig.groovy using Igor's recommendation:
+You can update your Jetty version by modifying your BuildConfig.groovy:
 
 ```
 dependencies {
@@ -177,39 +196,6 @@ You can change the Jetty log level by adding a line to your application's grails
 error "org.eclipse.jetty"
 ```
 
-### Tomcat
-The plugin will update your BuildConfig.groovy to use the Tomcat NIO connector if it's not already set.
-
-```
-grails.tomcat.nio = true
-```
-
-The plugin no longer uses atmosphere-runtime-native. If you prefer using it over atmosphere-runtime, insert the lines below in the dependencies section of your BuildConfig.groovy.
-
-```
-dependencies {
-	compile "org.atmosphere:atmosphere-runtime-native:2.1.0", {
-		excludes "slf4j-api"
-	}
-
-	// other dependencies 
-}
-```
-You must also add ```"org.atmosphere.useWebSocketAndServlet3": "false"``` to your init params in grails-app/conf/AtmosphereMeteorConfig.groovy. See the example below.
-
-```
-defaultInitParams = [
-		"org.atmosphere.useWebSocketAndServlet3": "false",
-		"org.atmosphere.cpr.broadcasterCacheClass": "org.atmosphere.cache.UUIDBroadcasterCache",
-		"org.atmosphere.cpr.AtmosphereInterceptor": """
-			org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor,
-			org.atmosphere.interceptor.HeartbeatInterceptor
-		"""
-]
-```
-
-See [Installing-AtmosphereServlet-with-or-without-native-support](https://github.com/Atmosphere/atmosphere/wiki/Installing-AtmosphereServlet-with-or-without-native-support) for more information.
-
 ### MeteorServlet
 
 Create a MeteorServlet. Changes to these classes are reloaded automatically.
@@ -261,7 +247,33 @@ You can change the Atmosphere log level by adding a line to your application's g
 warn "org.atmosphere"
 ```
 
-### Update Atmosphere Javascript Files
+### Javascript
+
+The plugin supports both the asset-pipeline and resources plugins. You can use the following tags depending on whether or not you are using jQuery.
+
+asset-pipeline plugin:
+
+```
+<asset:javascript src="atmosphere-meteor"/>
+```
+or
+
+```
+<asset:javascript src="atmosphere-meteor-jquery"/>
+```
+
+resources plugin:
+
+```
+<r:require module="atmosphere-meteor"/>
+```
+or
+
+```
+<r:require module="jquery"/>
+<r:require module="atmosphere-meteor-jquery"/>
+```
+
 
 You can update the Atmosphere Javascript files by running the script below. This will allow you to update the client files without having to wait on a plugin release.
 
