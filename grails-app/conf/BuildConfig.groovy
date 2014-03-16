@@ -20,15 +20,21 @@ grails.project.dependency.resolution = {
 
 	dependencies {
 		// TODO update versions here and in README.md
-		compile "org.atmosphere:atmosphere-runtime:2.1.0", {
+		compile "org.atmosphere:atmosphere-runtime:2.1.1", {
 			excludes "slf4j-api"
 		}
 		compile "org.codehaus.jackson:jackson-core-asl:1.9.13"
 	}
 
 	plugins {
-		build ":release:3.0.1", ":rest-client-builder:2.0.1", ":tomcat:7.0.50", {
+		build ":release:3.0.1", ":rest-client-builder:2.0.1", ":tomcat:7.0.52.1", {
 			export = false
 		}
-s	}
+		compile ":asset-pipeline:1.6.4", {
+			export = false
+		}
+		runtime ":resources:1.2.7", {
+			export = false
+		}
+	}
 }

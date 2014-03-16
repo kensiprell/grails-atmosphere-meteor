@@ -1,21 +1,15 @@
 import groovy.xml.StreamingMarkupBuilder
 
-def jetty = false
-pluginDescriptors.each {
-	if (it.toString().contains("Jetty")) {
-		jetty = true
-	}
-}
-
 eventSetClasspath = {
-	if (jetty) {
+	def servletContainerName = getServletContainerName()
+	if (servletContainerName == "jetty") {
 		System.setProperty("grails.server.factory", "org.grails.jetty.JettyServerFactory")
 	}
 }
 
-/*
 eventCreateWarStart = { warName, stagingDir ->
-	if (jetty) {
+	def servletContainerName = getServletContainerName()
+	if (servletContainerName == "jetty") {
 		println "Removing Jetty jars ...."
 		ant.delete {
 			fileset(dir: "${stagingDir}/WEB-INF/lib") {
@@ -24,12 +18,24 @@ eventCreateWarStart = { warName, stagingDir ->
 		}
 	}
 }
-*/
 
 eventCompileEnd = {
 	if (!isPluginProject) {
 		buildConfiguration(basedir)
 	}
+}
+
+def getServletContainerName() {
+	def servletContainerName = "not-supported"
+	pluginDescriptors.each {
+		if (it.toString().contains("Jetty")) {
+			servletContainerName = "jetty"
+		}
+		if (it.toString().contains("Tomcat")) {
+			servletContainerName = "tomcat"
+		}
+	}
+	servletContainerName
 }
 
 def buildConfiguration(basedir) {
