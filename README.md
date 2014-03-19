@@ -6,7 +6,7 @@
 
 The plugin has been tested in the following environment, using the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script):
 
-* atmosphere-runtime 2.1.0
+* atmosphere-runtime 2.1.1
 
 * OSX 10.9.1
 
@@ -14,14 +14,12 @@ The plugin has been tested in the following environment, using the [grails-atmos
 
 * Grails versions 2.1.5, 2.2.4, and 2.3.7
 
-* Tomcat (version depends on Grails version)
+* Tomcat (version depends on Grails version). Does not work with Tomcat 7.0.52 or 8.x. See issue https://github.com/kensiprell/grails-atmosphere-meteor/issues/32.
 
 * Jetty 8.1.13.v20130916
 
 
 If you have a question, problem, suggestion, or want to report a bug, please submit an [issue](https://github.com/kensiprell/grails-atmosphere-meteor/issues?state=open). I will reply as soon as I can.
-
-[Planned Changes](https://github.com/kensiprell/grails-atmosphere-meteor/wiki/Planned-Changes)
 
 [Release Notes](https://github.com/kensiprell/grails-atmosphere-meteor/wiki/Release-Notes)
 
@@ -78,13 +76,23 @@ plugins {
 }
 ```
 
-### Tomcat
+### Jetty
+
+See the [Jetty Page](https://github.com/kensiprell/grails-atmosphere-meteor/wiki/Jetty).
+
+### Tomcat 7
 Change your BuildConfig.groovy to use the Servlet 3.0 API and the Tomcat NIO connector.
 
 ```
 grails.servlet.version = "3.0"
 grails.tomcat.nio = true
 ```
+
+### Tomcat 8
+
+See issue https://github.com/kensiprell/grails-atmosphere-meteor/issues/32.
+
+### Atmosphere Runtime Native
 
 The plugin no longer uses atmosphere-runtime-native. If you prefer using it over atmosphere-runtime, insert the lines below in the dependencies section of your BuildConfig.groovy.
 
@@ -111,90 +119,6 @@ defaultInitParams = [
 ```
 
 See [Installing-AtmosphereServlet-with-or-without-native-support](https://github.com/Atmosphere/atmosphere/wiki/Installing-AtmosphereServlet-with-or-without-native-support) for more information.
-
-### Jetty
-
-The current [Jetty Plugin](http://www.grails.org/plugins/jetty) installs Jetty 7 with the Servlet 2.5 API, and the plugin requires the Servlet 3.0 API. Functional tests and the run-war command fail with the Jetty Plugin and Grails 2.3. The atmosphere-meteor plugin automatically resolves the issues with functional testing and the run-war command.
- 
-You can update your Jetty version by modifying your BuildConfig.groovy:
-
-```
-dependencies {
-	// other dependencies
-	def jettyVersion = "8.1.13.v20130916"
-	provided(
-		"org.eclipse.jetty:jetty-http:$jettyVersion",
-		"org.eclipse.jetty:jetty-server:$jettyVersion",
-		"org.eclipse.jetty:jetty-webapp:$jettyVersion",
-		"org.eclipse.jetty:jetty-plus:$jettyVersion",
-		"org.eclipse.jetty:jetty-security:$jettyVersion",
-		"org.eclipse.jetty:jetty-websocket:$jettyVersion",
-		"org.eclipse.jetty:jetty-continuation:$jettyVersion",
-		"org.eclipse.jetty:jetty-jndi:$jettyVersion"
-	) {
-   		excludes "commons-el","ant", "sl4j-api","sl4j-simple","jcl104-over-slf4j"
-   		excludes "xercesImpl","xmlParserAPIs", "servlet-api"
-   		excludes "mail", "commons-lang"
-   		excludes([group: "org.eclipse.jetty.orbit", name: "javax.servlet"],
-           	[group: "org.eclipse.jetty.orbit", name: "javax.activation"],
-           	[group: "org.eclipse.jetty.orbit", name: "javax.mail.glassfish"],
-           	[group: "org.eclipse.jetty.orbit", name: "javax.transaction"])
-	 }
-	 // other dependencies
-}
-
-plugins {
-	// other plugins
-	runtime(":jetty:2.0.3") {
-		excludes "jetty-http", "jetty-server", "jetty-webapp" 
-		excludes "jetty-plus", "jetty-security", "jetty-websocket"
-		excludes "jetty-continuation", "jetty-jndi"
-	}
-	// other plugins
-}
-```
-I have also tested the plugin using the settings below:
-
-```
-dependencies {
-	// other dependencies
-	provided(
-		"org.eclipse.jetty.aggregate:jetty-all:8.1.13.v20130916"
-	) {
-   		excludes "commons-el","ant", "sl4j-api","sl4j-simple","jcl104-over-slf4j"
-   		excludes "xercesImpl","xmlParserAPIs", "servlet-api"
-   		excludes "mail", "commons-lang"
-   		excludes([group: "org.eclipse.jetty.orbit", name: "javax.servlet"],
-           	[group: "org.eclipse.jetty.orbit", name: "javax.activation"],
-           	[group: "org.eclipse.jetty.orbit", name: "javax.mail.glassfish"],
-           	[group: "org.eclipse.jetty.orbit", name: "javax.transaction"])
-	 }
-	 // other dependencies
-}
-
-plugins {
-	// other plugins
-	runtime(":jetty:2.0.3") {
-		excludes "jetty-all"
-	}
-	// other plugins
-}
-```
-
-You should also add the following to your BuildConfig.groovy to remove the Jetty 7 jars from the war file: 
-
-```
-grails.war.resources = { stagingDir, args -> 
-    delete(file: "${stagingDir}/WEB-INF/web-jetty.xml") 
-    delete(file: "${stagingDir}/WEB-INF/jetty-all-7.6.0.v20120127.jar") 
-} 
-```
-
-You can change the Jetty log level by adding a line to your application's grails-app/conf/Config.groovy in the appropriate place. For example, to set the level to error:
-
-```
-error "org.eclipse.jetty"
-```
 
 ### MeteorServlet
 
@@ -254,12 +178,18 @@ The plugin supports both the asset-pipeline and resources plugins. You can use t
 asset-pipeline plugin:
 
 ```
-<asset:javascript src="atmosphere-meteor"/>
+<asset:javascript src="atmosphere-meteor.js"/>
 ```
 or
 
 ```
-<asset:javascript src="atmosphere-meteor-jquery"/>
+<asset:javascript src="atmosphere-meteor-jquery.js"/>
+```
+
+You can also add the dependency in one of your JavaScript manifests:
+
+```
+//= require atmosphere-meteor
 ```
 
 resources plugin:
@@ -270,10 +200,8 @@ resources plugin:
 or
 
 ```
-<r:require module="jquery"/>
 <r:require module="atmosphere-meteor-jquery"/>
 ```
-
 
 You can update the Atmosphere Javascript files by running the script below. This will allow you to update the client files without having to wait on a plugin release.
 

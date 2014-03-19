@@ -135,7 +135,7 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 		def tomcatErrorApi = ""
 
 		// Tomcat errors
-		if (serverInfo.serverName == "tomcat") {
+		if (serverInfo.serverName == "tomcat" && serverInfo.serverVersion.startsWith("7")) {
 			if (tomcatNio != true) {
 				log.error("The atmosphere-meteor plugin requires in your BuildConfig.groovy: grails.tomcat.nio = true")
 				tomcatErrors = true
