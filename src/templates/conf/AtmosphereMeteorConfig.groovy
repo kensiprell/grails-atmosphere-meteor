@@ -14,7 +14,7 @@ import your.package.SimpleMeteorHandler
 defaultMapping = "/atmosphere/*"
 
 /*
- The defaultInitParams below are added to each MeteorServlet defined above
+ The defaultInitParams below are added to each MeteorServlet
  unless the servlet has specified its own initParams map.
  See http:pastehtml.com/view/cgwfei5nu.html for details.
 */
