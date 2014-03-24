@@ -11,7 +11,7 @@ import org.grails.plugins.atmosphere_meteor.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
 class AtmosphereMeteorGrailsPlugin {
-	def version = "0.8.0"
+	def version = "0.8.1"
 	def grailsVersion = "2.1 > *"
 	def pluginExcludes = [
 			"web-app/css/**",
@@ -103,13 +103,22 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 	def doWithSpring = {
 		// Register AtmosphereConfigurationHolder bean
 		applicationContextHolder(AtmosphereConfigurationHolder) { bean ->
-			bean.factoryMethod = 'getInstance'
+			bean.factoryMethod = "getInstance"
 		}
 	}
 
+/*
+	def doWithWebDescriptor = { xml ->
+		// Prevent container from scanning AtmosphereInitializer during SCI phase
+		xml."display-name" + {
+			"absolute-ordering"("")
+		}
+	}
+*/
+
 	protected static serverInfo(ServletContext servletContext) {
-		def apiVersion = servletContext.effectiveMajorVersion
-		List serverInfo = servletContext.serverInfo.tokenize("/")
+		def apiVersion = servletContext?.effectiveMajorVersion
+		List serverInfo = servletContext?.serverInfo?.tokenize("/")
 		def serverName = serverInfo[0]
 		def serverVersion = serverInfo[1]
 		if (serverName.contains("jetty")) {
@@ -119,8 +128,8 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 			serverName = "tomcat"
 		}
 		[
-				apiVersion: apiVersion as Integer,
-				serverName: serverName,
+				apiVersion   : apiVersion as Integer,
+				serverName   : serverName,
 				serverVersion: serverVersion
 		]
 	}
@@ -128,7 +137,7 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 	protected static printConfigurationErrors(serverInfo) {
 		Log log = LogFactory.getLog(this)
 		def settings = BuildSettingsHolder.settings
-		def tomcatNio = settings.config.grails.tomcat.nio
+		def tomcatNio = settings?.config?.grails?.tomcat?.nio
 		def tomcatErrors = false
 		def tomcatErrorNio = ""
 		def tomcatErrorApi = ""
