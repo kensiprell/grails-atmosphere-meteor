@@ -29,7 +29,7 @@ grails.project.dependency.resolution = {
 		build ":release:3.0.1", ":rest-client-builder:2.0.1", {
 			export = false
 		}
-		compile ":asset-pipeline:1.7.1", {
+		compile ":asset-pipeline:1.7.2", {
 			export = false
 		}
 		runtime ":resources:1.2.7", {

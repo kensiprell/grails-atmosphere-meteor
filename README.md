@@ -71,7 +71,7 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:0.8.1"
+    compile ":atmosphere-meteor:0.8.2"
     // other plugins
 }
 ```
@@ -90,7 +90,7 @@ grails.tomcat.nio = true
 
 ### Tomcat 8
 
-Not yet supported. See [issue #32](https://github.com/kensiprell/grails-atmosphere-meteor/issues/32).
+Not yet supported. See [issue #34](https://github.com/kensiprell/grails-atmosphere-meteor/issues/34).
 
 ### MeteorServlet
 
