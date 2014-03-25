@@ -14,7 +14,7 @@ The plugin has been tested in the following environment, using the [grails-atmos
 
 * Grails versions 2.1.5, 2.2.4, and 2.3.7
 
-* Tomcat (version depends on Grails version). Does not work with Tomcat 7.0.52 or 8.x. See [issue #32](https://github.com/kensiprell/grails-atmosphere-meteor/issues/32).
+* Tomcat (version depends on Grails version). Does not work with Tomcat 7.0.52 or 8.x. See [issue #34](https://github.com/kensiprell/grails-atmosphere-meteor/issues/34).
 
 * Jetty 8.1.13.v20130916
 
