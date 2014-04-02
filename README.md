@@ -6,7 +6,7 @@
 
 The plugin has been tested in the following environment, using the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script):
 
-* atmosphere-runtime 2.1.1
+* atmosphere-runtime 2.1.2
 
 * OSX 10.9.2
 
@@ -14,7 +14,7 @@ The plugin has been tested in the following environment, using the [grails-atmos
 
 * Grails versions 2.1.5, 2.2.4, and 2.3.7
 
-* Tomcat (version depends on Grails version). Does not work with Tomcat 7.0.52 or 8.x. See [issue #34](https://github.com/kensiprell/grails-atmosphere-meteor/issues/34).
+* Tomcat 7.0.27 through 7.0.52 (version depends on Grails version).
 
 * Jetty 8.1.13.v20130916
 
@@ -71,7 +71,7 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:0.8.2"
+    compile ":atmosphere-meteor:0.8.3"
     // other plugins
 }
 ```
@@ -90,7 +90,7 @@ grails.tomcat.nio = true
 
 ### Tomcat 8
 
-Not yet supported. See [issue #34](https://github.com/kensiprell/grails-atmosphere-meteor/issues/34).
+Search the [BuildConfig.groovy](https://github.com/kensiprell/grails-atmosphere-meteor-sample/blob/master/grails-app/conf/BuildConfig.groovy) for the sample app for "tomcat8" for configuring Tomcat 8.
 
 ### MeteorServlet
 
