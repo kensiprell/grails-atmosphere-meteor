@@ -6,15 +6,15 @@
 
 The plugin has been tested in the following environment, using the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script):
 
-* atmosphere-runtime 2.1.2
+* atmosphere-runtime 2.1.5
 
-* OSX 10.9.2
+* OSX 10.9.3
 
-* JDK 1.7.0_51
+* JDK 1.7.0_55
 
-* Grails versions 2.1.5, 2.2.4, and 2.3.7
+* Grails versions 2.1.5, 2.2.4, 2.3.9, and 2.4.0
 
-* Tomcat 7.0.27 through 7.0.52 (version depends on Grails version).
+* Tomcat 7.0.27 through 7.0.52.1 (version depends on Grails version).
 
 * Jetty 8.1.13.v20130916
 
@@ -71,7 +71,7 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:0.8.3"
+    compile ":atmosphere-meteor:0.8.4"
     // other plugins
 }
 ```

@@ -11,7 +11,7 @@ import org.grails.plugins.atmosphere_meteor.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
 class AtmosphereMeteorGrailsPlugin {
-	def version = "0.8.3"
+	def version = "0.8.4"
 	def grailsVersion = "2.1 > *"
 	def pluginExcludes = [
 			"web-app/css/**",
