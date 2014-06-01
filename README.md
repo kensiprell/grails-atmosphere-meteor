@@ -14,9 +14,9 @@ The plugin has been tested in the following environment, using the [grails-atmos
 
 * Grails versions 2.1.5, 2.2.4, 2.3.9, and 2.4.0
 
-* Tomcat 7.0.27 through 7.0.52.1 (version depends on Grails version).
+* Tomcat 7.0.27 through 7.0.53 (version depends on Grails version)
 
-* Jetty 8.1.13.v20130916
+* Jetty plugin version 3.0.0, available in Grails 2.3.7 or greater
 
 
 If you have a question, problem, suggestion, or want to report a bug, please submit an [issue](https://github.com/kensiprell/grails-atmosphere-meteor/issues?state=open). I will reply as soon as I can.
@@ -65,7 +65,7 @@ The create-meteor-handler script creates a class in grails-app/atmosphere that e
 
 ## Plugin Installation, Configuration, and Use
 
-### Installion
+### Installation
 Edit your BuildConfig.groovy:
 
 ```
@@ -78,7 +78,7 @@ plugins {
 
 ### Jetty
 
-See the [Jetty Page](https://github.com/kensiprell/grails-atmosphere-meteor/wiki/Jetty) for versions 8 and higher.
+The plugin works with the Jetty plugin version 3.0.0 (Jetty 9) or greater, which can be used with Grails versions 2.3.7 and greater. See the [Jetty Page](https://github.com/kensiprell/grails-atmosphere-meteor/wiki/Jetty) for workarounds with Jetty 8.
 
 ### Tomcat 7
 Change your BuildConfig.groovy to use the Servlet 3.0 API and the Tomcat NIO connector.

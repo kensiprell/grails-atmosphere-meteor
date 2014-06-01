@@ -13,10 +13,11 @@ class AtmosphereConfigurationHolder {
 		String environment = Environment.getCurrent().toString()
 		def slurper = new ConfigSlurper(environment)
 		try {
-			config = slurper.parse(classLoader.loadClass('AtmosphereMeteorConfig'))
+			config = slurper.parse(classLoader.loadClass("AtmosphereMeteorConfig"))
 		}
 		catch (e) {
-			log.error e
+			config = slurper.parse(classLoader.loadClass("AtmosphereMeteorDefaultConfig"))			
+			log.warn "AtmosphereMeteorConfig not found: using AtmosphereMeteorDefaultConfig."
 		}
 		return config
 	}

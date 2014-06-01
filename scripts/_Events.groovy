@@ -2,7 +2,7 @@ import groovy.xml.StreamingMarkupBuilder
 
 eventSetClasspath = {
 	def servletContainerName = getServletContainerName()
-	if (servletContainerName == "jetty") {
+	if (System.getProperty("atmosphereMeteorServletContainerName") == "jetty") {
 		System.setProperty("grails.server.factory", "org.grails.jetty.JettyServerFactory")
 	}
 }
@@ -35,7 +35,7 @@ def getServletContainerName() {
 			servletContainerName = "tomcat"
 		}
 	}
-	servletContainerName
+	System.setProperty("atmosphereMeteorServletContainerName", servletContainerName)
 }
 
 def buildConfiguration(basedir) {

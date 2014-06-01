@@ -16,14 +16,14 @@
 /**
  * Atmosphere.js
  * https://github.com/Atmosphere/atmosphere-javascript
- * 
+ *
  * API reference
  * https://github.com/Atmosphere/atmosphere/wiki/jQuery.atmosphere.js-API
- * 
- * Highly inspired by 
+ *
+ * Highly inspired by
  * - Portal by Donghwan Kim http://flowersinthesand.github.io/portal/
  */
-(function(root, factory) {
+(function (root, factory) {
     if (typeof define === "function" && define.amd) {
         // AMD
         define(factory);
@@ -31,11 +31,11 @@
         // Browser globals, Window
         root.atmosphere = factory();
     }
-}(this, function() {
+}(this, function () {
 
     "use strict";
 
-    var version = "2.2.0-javascript",
+    var version = "2.2.1-javascript",
         atmosphere = {},
         guid,
         requests = [],
@@ -65,7 +65,60 @@
         },
         onFailureToReconnect: function (request, response) {
         },
-        onClientTimeout: function(request){
+        onClientTimeout: function (request) {
+        },
+
+        /**
+         * Creates an object based on an atmosphere subscription that exposes functions defined by the Websocket interface.
+         *
+         * @class WebsocketApiAdapter
+         * @param {Object} request the request object to build the underlying subscription
+         * @constructor
+         */
+        WebsocketApiAdapter: function (request) {
+            var _socket, _adapter;
+
+            /**
+             * Overrides the onMessage callback in given request.
+             *
+             * @method onMessage
+             * @param {Object} e the event object
+             */
+            request.onMessage = function (e) {
+                _adapter.onmessage({data: e.responseBody});
+            };
+
+            /**
+             * Overrides the onOpen callback in given request to proxy the event to the adapter.
+             *
+             * @method onOpen
+             * @param {Object} e the event object
+             */
+            request.onOpen = function (e) {
+                _adapter.onopen(e);
+            };
+
+            _adapter = {
+                send: function (data) {
+                    _socket.push(data);
+                },
+
+                onmessage: function (e) {
+                },
+
+                onopen: function (e) {
+                },
+
+                onclose: function (e) {
+                },
+
+                onerror: function (e) {
+
+                }
+            };
+            _socket = new atmosphere.subscribe(request);
+
+            return _adapter;
         },
 
         AtmosphereRequest: function (options) {
@@ -115,7 +168,12 @@
                 readResponsesHeaders: false,
                 maxReconnectOnClose: 5,
                 enableProtocol: true,
-                pollingInterval : 0,
+                pollingInterval: 0,
+                heartbeat: {
+                    client: null,
+                    server: null
+                },
+                ackInterval: 0,
                 onError: function (response) {
                 },
                 onClose: function (response) {
@@ -136,7 +194,7 @@
                 },
                 onFailureToReconnect: function (request, response) {
                 },
-                onClientTimeout: function(request){
+                onClientTimeout: function (request) {
                 }
             };
 
@@ -157,7 +215,8 @@
                 request: null,
                 partialMessage: "",
                 errorHandled: false,
-                closedByClientTimeout: false
+                closedByClientTimeout: false,
+                ffTryingReconnect: false
             };
 
             /**
@@ -286,14 +345,9 @@
             function _verifyStreamingLength(ajaxRequest, rq) {
                 // Wait to be sure we have the full message before closing.
                 if (_response.partialMessage === "" && (rq.transport === 'streaming') && (ajaxRequest.responseText.length > rq.maxStreamingLength)) {
-                    _response.messages = [];
-                    rq.reconnectingOnLength = true;
-                    rq.isReopen = true;
-                    _invokeClose(true);
-                    _disconnect();
-                    _clearState();
-                    _reconnect(ajaxRequest, rq, rq.pollingInterval);
+                    return true;
                 }
+                return false;
             }
 
             /**
@@ -337,12 +391,20 @@
              * @private
              */
             function _close() {
+                if (_request.logLevel === 'debug') {
+                    atmosphere.util.debug("Closing");
+                }
+                _abordingConnection = true;
                 if (_request.reconnectId) {
                     clearTimeout(_request.reconnectId);
                     delete _request.reconnectId;
                 }
+
+                if (_request.heartbeatTimer) {
+                    clearTimeout(_request.heartbeatTimer);
+                }
+
                 _request.reconnect = false;
-                _abordingConnection = true;
                 _response.request = _request;
                 _response.state = 'unsubscribe';
                 _response.responseBody = "";
@@ -357,6 +419,10 @@
                 _response.partialMessage = "";
                 if (_request.id) {
                     clearTimeout(_request.id);
+                }
+
+                if (_request.heartbeatTimer) {
+                    clearTimeout(_request.heartbeatTimer);
                 }
 
                 if (_ieStream != null) {
@@ -943,10 +1009,14 @@
                                     clearTimeout(rq.openId);
                                 }
 
+                                if (rq.heartbeatTimer) {
+                                    clearTimeout(rq.heartbeatTimer);
+                                }
+
                                 if (rq.reconnect && _requestCount++ < rq.maxReconnectOnClose) {
                                     _open('re-connecting', rq.transport, rq);
                                     _reconnect(_jqxhr, rq, request.reconnectInterval);
-                                    rq.openId = setTimeout(function() {
+                                    rq.openId = setTimeout(function () {
                                         _triggerOpen(rq);
                                     }, rq.reconnectInterval + 1000);
                                 } else {
@@ -1029,7 +1099,7 @@
              * @private
              */
             function _buildWebSocketUrl() {
-                return _attachHeaders(_request, atmosphere.util.getAbsoluteURL(_request.url)).replace(/^http/, "ws");
+                return _attachHeaders(_request, atmosphere.util.getAbsoluteURL(_request.webSocketUrl || _request.url)).replace(/^http/, "ws");
             }
 
             /**
@@ -1131,10 +1201,10 @@
 
                     // https://github.com/remy/polyfills/blob/master/EventSource.js
                     // Since we polling.
-                   /* if (_sse.URL) {
-                        _sse.interval = 100;
-                        _sse.URL = _buildSSEUrl();
-                    } */
+                    /* if (_sse.URL) {
+                     _sse.interval = 100;
+                     _sse.URL = _buildSSEUrl();
+                     } */
 
                     if (!skipCallbackInvocation) {
                         _invokeCallback();
@@ -1145,6 +1215,10 @@
 
                 _sse.onerror = function (message) {
                     clearTimeout(_request.id);
+
+                    if (_request.heartbeatTimer) {
+                        clearTimeout(_request.heartbeatTimer);
+                    }
 
                     if (_response.closedByClientTimeout) return;
 
@@ -1237,7 +1311,7 @@
 
                     var reopening = webSocketOpened;
 
-                    if(_websocket != null) {
+                    if (_websocket != null) {
                         _websocket.canSendMessage = true;
                     }
 
@@ -1292,6 +1366,10 @@
 
                 _websocket.onerror = function (message) {
                     clearTimeout(_request.id);
+
+                    if (_request.heartbeatTimer) {
+                        clearTimeout(_request.heartbeatTimer);
+                    }
                 };
 
                 _websocket.onclose = function (message) {
@@ -1317,7 +1395,7 @@
                                     + "cannot accept (for example, a text-only endpoint received binary data).";
                                 break;
                             case 1004:
-                                reason = "The endpoint is terminating the connection because a data frame was received that " + "is too large.";
+                                reason = "The endpoint is terminating the connection because a data frame was received that is too large.";
                                 break;
                             case 1005:
                                 reason = "Unknown: no status code was provided even though one was expected.";
@@ -1346,7 +1424,7 @@
                     } else if (!webSocketOpened) {
                         _reconnectWithFallbackTransport("Websocket failed. Downgrading to Comet and resending");
 
-                    } else if (_request.reconnect && _response.transport === 'websocket') {
+                    } else if (_request.reconnect && _response.transport === 'websocket' && message.code !== 1001) {
                         _clearState();
                         if (_requestCount++ < _request.maxReconnectOnClose) {
                             _open('re-connecting', _request.transport, _request);
@@ -1388,11 +1466,36 @@
                 if (request.transport === 'polling') return nMessage;
 
                 if (atmosphere.util.trim(message).length !== 0 && request.enableProtocol && request.firstMessage) {
-                    request.firstMessage = false;
-                    var messages = message.split(request.messageDelimiter);
                     var pos = request.trackMessageLength ? 1 : 0;
+                    var messages = message.split(request.messageDelimiter);
+
+                    if (messages.length <= pos + 1) {
+                        // Something went wrong, normally with IE or when a message is written before the
+                        // handshake has been received.
+                        return nMessage;
+                    }
+
+                    request.firstMessage = false;
                     request.uuid = atmosphere.util.trim(messages[pos]);
                     request.stime = atmosphere.util.trim(messages[pos + 1]);
+
+                    if (messages.length <= pos + 3) {
+                        atmosphere.util.log('error', ["Protocol data not sent by the server. " +
+                            "If you enable protocol on client side, be sure to install JavascriptProtocol interceptor on server side." +
+                            "Also note that atmosphere-runtime 2.2+ should be used."]);
+                    }
+
+                    var interval = parseInt(atmosphere.util.trim(messages[pos + 2]), 10);
+                    var paddingData = messages[pos + 3];
+
+                    if (!isNaN(interval) && interval > 0) {
+                        var _pushHeartbeat = function () {
+                            _push(paddingData);
+                            request.heartbeatTimer = setTimeout(_pushHeartbeat, interval);
+                        };
+                        request.heartbeatTimer = setTimeout(_pushHeartbeat, interval);
+                    }
+
                     if (request.transport !== 'long-polling') {
                         _triggerOpen(request);
                     }
@@ -1400,7 +1503,7 @@
                     nMessage = "";
 
                     // We have trailing messages
-                    pos = request.trackMessageLength ? 3 : 2;
+                    pos = request.trackMessageLength ? 5 : 4;
                     if (messages.length > pos + 1) {
                         for (var i = pos; i < messages.length; i++) {
                             nMessage += messages[i];
@@ -1409,12 +1512,19 @@
                             }
                         }
                     }
-                } else if (request.enableProtocol && request.firstMessage) {
+
+                    if (request.ackInterval !== 0) {
+                        setTimeout(function () {
+                            _push("...ACK...");
+                        }, request.ackInterval);
+                    }
+                } else if (request.enableProtocol && request.firstMessage && atmosphere.util.browser.msie && +atmosphere.util.browser.version.split(".")[0] < 10) {
                     // In case we are getting some junk from IE
+                    atmosphere.util.log(_request.logLevel, ["Receiving unexpected data from IE"]);
                 } else {
                     _triggerOpen(request);
                 }
-                return atmosphere.util.trim(nMessage);
+                return nMessage;
             }
 
             function _timeout(_request) {
@@ -1469,7 +1579,7 @@
                     var messages = [];
                     var messageStart = message.indexOf(request.messageDelimiter);
                     while (messageStart !== -1) {
-                        var str = atmosphere.util.trim(message.substring(0, messageStart));
+                        var str = message.substring(0, messageStart);
                         var messageLength = +str;
                         if (isNaN(messageLength))
                             throw new Error('message length "' + str + '" is not a number');
@@ -1579,6 +1689,10 @@
                     url += "&X-Cache-Date=" + 0;
                 }
 
+                if (rq.heartbeat !== null && rq.heartbeat.server !== null) {
+                    url += "&X-Heartbeat-Server=" + rq.heartbeat.server;
+                }
+
                 if (rq.contentType !== '') {
                     //Eurk!
                     url += "&Content-Type=" + (rq.transport === 'websocket' ? rq.contentType : encodeURIComponent(rq.contentType));
@@ -1655,6 +1769,13 @@
                     }
                 };
 
+                var disconnected = function () {
+                    // Prevent onerror callback to be called
+                    _response.errorHandled = true;
+                    _clearState();
+                    reconnectF();
+                };
+
                 if (rq.force || (rq.reconnect && (rq.maxRequest === -1 || rq.requestCount++ < rq.maxRequest))) {
                     rq.force = false;
 
@@ -1676,6 +1797,7 @@
 
                         ajaxRequest.onerror = function () {
                             _response.error = true;
+                            _response.ffTryingReconnect = true;
                             try {
                                 _response.status = XMLHttpRequest.status;
                             } catch (e) {
@@ -1702,9 +1824,6 @@
                         var update = false;
 
                         if (rq.transport === 'streaming' && rq.readyState > 2 && ajaxRequest.readyState === 4) {
-                            if (rq.reconnectingOnLength) {
-                                return;
-                            }
                             _clearState();
                             reconnectF();
                             return;
@@ -1727,16 +1846,24 @@
                             }
 
                             if (status >= 300 || status === 0) {
-                                // Prevent onerror callback to be called
-                                _response.errorHandled = true;
-                                _clearState();
-                                reconnectF();
+                                disconnected();
                                 return;
                             }
 
-                            // Firefox incorrectly send statechange 0->2 when a reconnect attempt fails. The above checks ensure that onopen is not called for these
                             if ((!rq.enableProtocol || !request.firstMessage) && ajaxRequest.readyState === 2) {
-                                _triggerOpen(rq);
+                                // Firefox incorrectly send statechange 0->2 when a reconnect attempt fails. The above checks ensure that onopen is not called for these
+                                // In that case, ajaxRequest.onerror will be called just after onreadystatechange is called, so we delay the trigger untill we are
+                                // garantee the connection is well established.
+                                if (atmosphere.util.browser.mozilla && _response.ffTryingReconnect) {
+                                    _response.ffTryingReconnect = false;
+                                    setTimeout(function () {
+                                        if (!_response.ffTryingReconnect) {
+                                            _triggerOpen(rq);
+                                        }
+                                    }, 500);
+                                } else {
+                                    _triggerOpen(rq);
+                                }
                             }
 
                         } else if (ajaxRequest.readyState === 4) {
@@ -1745,11 +1872,13 @@
 
                         if (update) {
                             var responseText = ajaxRequest.responseText;
+                            _response.errorHandled = false;
 
+                            // IE behave the same way when resuming long-polling or when the server goes down.
                             if (atmosphere.util.trim(responseText).length === 0 && rq.transport === 'long-polling') {
                                 // For browser that aren't support onabort
                                 if (!ajaxRequest.hasData) {
-                                    _reconnect(ajaxRequest, rq, rq.pollingInterval);
+                                    disconnected();
                                 } else {
                                     ajaxRequest.hasData = false;
                                 }
@@ -1791,7 +1920,10 @@
                                                 _invokeCallback();
                                             }
 
-                                            _verifyStreamingLength(ajaxRequest, rq);
+                                            if (_verifyStreamingLength(ajaxRequest, rq)) {
+                                                _reconnectOnMaxStreamingLength(ajaxRequest, rq);
+                                                return;
+                                            }
                                         } else if (_response.status > 400) {
                                             // Prevent replaying the last message.
                                             rq.lastIndex = ajaxRequest.responseText.length;
@@ -1802,6 +1934,7 @@
                             } else {
                                 skipCallbackInvocation = _trackMessageSize(responseText, rq, _response);
                             }
+                            var closeStream = _verifyStreamingLength(ajaxRequest, rq);
 
                             try {
                                 _response.status = ajaxRequest.status;
@@ -1818,7 +1951,7 @@
                                 _response.state = "messagePublished";
                             }
 
-                            var isAllowedToReconnect = request.transport !== 'streaming' && request.transport !== 'polling';
+                            var isAllowedToReconnect = !closeStream && request.transport !== 'streaming' && request.transport !== 'polling';
                             if (isAllowedToReconnect && !rq.executeCallbackBeforeReconnect) {
                                 _reconnect(ajaxRequest, rq, rq.pollingInterval);
                             }
@@ -1830,7 +1963,9 @@
                                 _reconnect(ajaxRequest, rq, rq.pollingInterval);
                             }
 
-                            _verifyStreamingLength(ajaxRequest, rq);
+                            if (closeStream) {
+                                _reconnectOnMaxStreamingLength(ajaxRequest, rq);
+                            }
                         }
                     };
 
@@ -1848,6 +1983,12 @@
                     }
                     _onError(0, "maxRequest reached");
                 }
+            }
+
+            function _reconnectOnMaxStreamingLength(ajaxRequest, rq) {
+                _close();
+                _abordingConnection = false;
+                _reconnect(ajaxRequest, rq, 500);
             }
 
             /**
@@ -1878,7 +2019,7 @@
                     }
                 }
 
-                if (_request.withCredentials) {
+                if (_request.withCredentials && _request.transport !== 'websocket') {
                     if ("withCredentials" in ajaxRequest) {
                         ajaxRequest.withCredentials = true;
                     }
@@ -1891,6 +2032,10 @@
                         ajaxRequest.setRequestHeader("X-Cache-Date", request.lastTimestamp);
                     } else {
                         ajaxRequest.setRequestHeader("X-Cache-Date", 0);
+                    }
+
+                    if (ajaxRequest.heartbeat !== null && ajaxRequest.heartbeat.server !== null) {
+                        ajaxRequest.setRequestHeader("X-Heartbeat-Server", ajaxRequest.heartbeat.server);
                     }
 
                     if (request.trackMessageLength) {
@@ -2366,7 +2511,9 @@
                     enableProtocol: false,
                     messageDelimiter: '|',
                     trackMessageLength: _request.trackMessageLength,
-                    maxReconnectOnClose: _request.maxReconnectOnClose
+                    maxReconnectOnClose: _request.maxReconnectOnClose,
+                    heartbeatTimer: _request.heartbeatTimer,
+                    heartbeat: _request.heartbeat
                 };
 
                 if (typeof (message) === 'object') {
@@ -2463,15 +2610,24 @@
                         _requestCount = 0;
                         if (typeof (f.onMessage) !== 'undefined')
                             f.onMessage(response);
+
+                        if (typeof (f.onmessage) !== 'undefined')
+                            f.onmessage(response);
                         break;
                     case "error":
                         if (typeof (f.onError) !== 'undefined')
                             f.onError(response);
+
+                        if (typeof (f.onerror) !== 'undefined')
+                            f.onerror(response);
                         break;
                     case "opening":
                         delete _request.closed;
                         if (typeof (f.onOpen) !== 'undefined')
                             f.onOpen(response);
+
+                        if (typeof (f.onopen) !== 'undefined')
+                            f.onopen(response);
                         break;
                     case "messagePublished":
                         if (typeof (f.onMessagePublished) !== 'undefined')
@@ -2483,7 +2639,7 @@
                         break;
                     case "closedByClient":
                         if (typeof (f.onClientTimeout) !== 'undefined')
-                           f.onClientTimeout(_request);
+                            f.onClientTimeout(_request);
                         break;
                     case "re-opening":
                         delete _request.closed;
@@ -2497,8 +2653,16 @@
                     case "unsubscribe":
                     case "closed":
                         var closed = typeof (_request.closed) !== 'undefined' ? _request.closed : false;
-                        if (typeof (f.onClose) !== 'undefined' && !closed)
-                            f.onClose(response);
+
+                        if (!closed) {
+                            if (typeof (f.onClose) !== 'undefined') {
+                                f.onClose(response);
+                            }
+
+                            if (typeof (f.onclose) !== 'undefined') {
+                                f.onclose(response);
+                            }
+                        }
                         _request.closed = true;
                         break;
                 }
@@ -2630,14 +2794,14 @@
             atmosphere.addCallback(callback);
         }
 
-        // https://github.com/Atmosphere/atmosphere-javascript/issues/58
-        uuid = 0;
-
         if (typeof (url) !== "string") {
             request = url;
         } else {
             request.url = url;
         }
+
+        // https://github.com/Atmosphere/atmosphere-javascript/issues/58
+        uuid = ((typeof (request) !== 'undefined') && typeof (request.uuid) !== 'undefined') ? request.uuid : 0;
 
         var rq = new atmosphere.AtmosphereRequest(request);
         rq.execute();
@@ -2653,6 +2817,10 @@
                 var rq = requestsClone[i];
                 rq.close();
                 clearTimeout(rq.response.request.id);
+
+                if (rq.heartbeatTimer) {
+                    clearTimeout(rq.heartbeatTimer);
+                }
             }
         }
         requests = [];
@@ -2669,6 +2837,11 @@
                 if (rq.getUrl() === url) {
                     rq.close();
                     clearTimeout(rq.response.request.id);
+
+                    if (rq.heartbeatTimer) {
+                        clearTimeout(rq.heartbeatTimer);
+                    }
+
                     idx = i;
                     break;
                 }
@@ -2796,13 +2969,13 @@
         },
 
         storage: function () {
-        	try {
-        		return !!(window.localStorage && window.StorageEvent);
-        	} catch (e) {
-        		//Firefox throws an exception here, see 
-        		//https://bugzilla.mozilla.org/show_bug.cgi?id=748620
-        		return false;
-        	}
+            try {
+                return !!(window.localStorage && window.StorageEvent);
+            } catch (e) {
+                //Firefox throws an exception here, see
+                //https://bugzilla.mozilla.org/show_bug.cgi?id=748620
+                return false;
+            }
         },
 
         iterate: function (fn, interval) {
@@ -3055,7 +3228,7 @@
 
         atmosphere.util.browser[match[1] || ""] = true;
         atmosphere.util.browser.version = match[2] || "0";
-        
+
         // Trident is the layout engine of the Internet Explorer
         // IE 11 has no "MSIE: 11.0" token
         if (atmosphere.util.browser.trident) {
@@ -3086,7 +3259,7 @@
     atmosphere.util.on(window, "offline", function () {
         atmosphere.unsubscribe();
     });
-    
+
     return atmosphere;
 }));
 /* jshint eqnull:true, noarg:true, noempty:true, eqeqeq:true, evil:true, laxbreak:true, undef:true, browser:true, indent:false, maxerr:50 */
