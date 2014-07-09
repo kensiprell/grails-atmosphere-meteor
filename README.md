@@ -122,7 +122,11 @@ servlets = [
         className: "com.example.DefaultMeteorServlet",
         mapping: "/atmosphere/*",
        	handler: DefaultMeteorHandler,
+<<<<<<< HEAD
  		initParams: [
+=======
+ 		initParams : [
+>>>>>>> 3d656db297c23503b5f256563845f47b99fa27c9
 			// Uncomment the line below use native WebSocket support with native Comet support.
 			//"org.atmosphere.useWebSocketAndServlet3": "false",
 			"org.atmosphere.cpr.broadcasterCacheClass": "org.atmosphere.cache.UUIDBroadcasterCache",
