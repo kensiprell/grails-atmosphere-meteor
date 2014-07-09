@@ -71,7 +71,7 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:0.8.4"
+    compile ":atmosphere-meteor:0.8.5"
     // other plugins
 }
 ```
@@ -122,7 +122,7 @@ servlets = [
         className: "com.example.DefaultMeteorServlet",
         mapping: "/atmosphere/*",
        	handler: DefaultMeteorHandler,
- 		initParams = [
+ 		initParams: [
 			// Uncomment the line below use native WebSocket support with native Comet support.
 			//"org.atmosphere.useWebSocketAndServlet3": "false",
 			"org.atmosphere.cpr.broadcasterCacheClass": "org.atmosphere.cache.UUIDBroadcasterCache",

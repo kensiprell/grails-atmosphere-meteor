@@ -12,7 +12,7 @@ import org.grails.plugins.atmosphere_meteor.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
 class AtmosphereMeteorGrailsPlugin {
-	def version = "0.8.4"
+	def version = "0.8.5"
 	def grailsVersion = "2.1 > *"
 	def pluginExcludes = [
 			"web-app/css/**",
@@ -28,7 +28,12 @@ class AtmosphereMeteorGrailsPlugin {
 This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere/atmosphere], which includes client and server-side components for building asynchronous web applications.
 '''
 
-	def applicationContext	
+	def documentation = "https://github.com/kensiprell/grails-atmosphere-meteor/blob/master/README.md"
+	def license = "APACHE"
+	def issueManagement = [system: "github", url: "https://github.com/kensiprell/grails-atmosphere-meteor/issues"]
+	def scm = [url: "https://github.com/kensiprell/grails-atmosphere-meteor"]
+
+	def applicationContext
 	def artefacts = [MeteorHandlerArtefactHandler, MeteorServletArtefactHandler]
 	def watchedResources = [
 			"file:./grails-app/atmosphere/**/*MeteorHandler.groovy",

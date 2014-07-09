@@ -41,7 +41,24 @@
     });
 
     jQuery(window).bind("offline", function () {
-        jQuery.atmosphere.unsubscribe();
+        var requestsClone = [].concat(jQuery.atmosphere.requests);
+        for (var i = 0; i < requestsClone.length; i++) {
+            var rq = requestsClone[i];
+            rq.close();
+            clearTimeout(rq.response.request.id);
+
+            if (rq.heartbeatTimer) {
+                clearTimeout(rq.heartbeatTimer);
+            }
+        }
+    });
+
+    jQuery(window).bind("online", function () {
+        if (jQuery.atmosphere.requests.length > 0) {
+            for (var i = 0; i < jQuery.atmosphere.requests.length; i++) {
+                jQuery.atmosphere.requests[i].execute();
+            }
+        }
     });
 
     // Prevent ESC to kill the connection from Firefox.
@@ -60,7 +77,7 @@
     };
 
     jQuery.atmosphere = {
-        version: "2.2.1-jquery",
+        version: "2.2.3-jquery",
         uuid : 0,
         requests: [],
         callbacks: [],
@@ -106,6 +123,15 @@
                 _adapter.onmessage({data: e.responseBody});
             };
 
+            /**
+             * Overrides the onMessagePublished callback in given request.
+             *
+             * @method onMessagePublished
+             * @param {Object} e the event object
+             */
+            request.onMessagePublished = function (e) {
+                _adapter.onmessage({data: e.responseBody});
+            };
 
             /**
              * Overrides the onOpen callback in given request to proxy the event to the adapter.
@@ -118,6 +144,10 @@
             };
 
             _adapter = {
+                close: function () {
+                    _socket.close();
+                },
+
                 send: function (data) {
                     _socket.push(data);
                 },
@@ -174,7 +204,6 @@
                 attachHeadersAsQueryString: true,
                 executeCallbackBeforeReconnect: false,
                 readyState: 0,
-                lastTimestamp: 0,
                 withCredentials: false,
                 trackMessageLength: false,
                 messageDelimiter: '|',
@@ -1043,11 +1072,6 @@
                     jQuery.atmosphere.debug("Using URL: " + location);
                 }
 
-                if (_request.enableProtocol && sseOpened) {
-                    var time = jQuery.now() - _request.ctime;
-                    _request.lastTimestamp = Number(_request.stime) + Number(time);
-                }
-
                 if (sseOpened && !_request.reconnect) {
                     if (_sse != null) {
                         _clearState();
@@ -1159,13 +1183,7 @@
              * @private
              */
             function _executeWebSocket(webSocketOpened) {
-
                 _response.transport = "websocket";
-
-                if (_request.enableProtocol && webSocketOpened) {
-                    var time = jQuery.now() - _request.ctime;
-                    _request.lastTimestamp = Number(_request.stime) + Number(time);
-                }
 
                 var location = _buildWebSocketUrl(_request.url);
                 if (_request.logLevel === 'debug') {
@@ -1378,16 +1396,15 @@
 
                     request.firstMessage = false;
                     request.uuid = jQuery.trim(messages[pos]);
-                    request.stime = jQuery.trim(messages[pos + 1]);
 
-                    if (messages.length <= pos + 3) {
+                    if (messages.length <= pos + 2) {
                         jQuery.atmosphere.log('error', ["Protocol data not sent by the server. " +
                             "If you enable protocol on client side, be sure to install JavascriptProtocol interceptor on server side." +
                             "Also note that atmosphere-runtime 2.2+ should be used."]);
                     }
 
-                    var interval = parseInt(jQuery.trim(messages[pos + 2]), 10);
-                    var paddingData = messages[pos + 3];
+                    var interval = parseInt(jQuery.trim(messages[pos + 1]), 10);
+                    var paddingData = messages[pos + 2];
 
                     if (!isNaN(interval) && interval > 0) {
                         var _pushHeartbeat = function () {
@@ -1405,7 +1422,7 @@
                     nMessage = "";
 
                     // We have trailing messages
-                    pos = request.trackMessageLength ? 5 : 4;
+                    pos = request.trackMessageLength ? 4 : 3;
                     if (messages.length > pos + 1) {
                         for (var i = pos; i < messages.length; i++) {
                             nMessage += messages[i];
@@ -1585,12 +1602,6 @@
                     url += "&X-Atmosphere-TrackMessageSize=" + "true";
                 }
 
-                if (rq.lastTimestamp != null) {
-                    url += "&X-Cache-Date=" + rq.lastTimestamp;
-                } else {
-                    url += "&X-Cache-Date=" + 0;
-                }
-
                 if (rq.heartbeat !== null && rq.heartbeat.server !== null) {
                     url += "&X-Heartbeat-Server=" + rq.heartbeat.server;
                 }
@@ -1668,6 +1679,7 @@
                 var reconnectF = function () {
                     rq.lastIndex = 0;
                     if (rq.reconnect && _requestCount++ < rq.maxReconnectOnClose) {
+                        _response.ffTryingReconnect = true;
                         _open('re-connecting', request.transport, request);
                         _reconnect(ajaxRequest, rq, request.reconnectInterval);
                     } else {
@@ -1923,11 +1935,6 @@
                 if (!_request.dropHeaders) {
                     ajaxRequest.setRequestHeader("X-Atmosphere-Framework", jQuery.atmosphere.version);
                     ajaxRequest.setRequestHeader("X-Atmosphere-Transport", request.transport);
-                    if (request.lastTimestamp != null) {
-                        ajaxRequest.setRequestHeader("X-Cache-Date", request.lastTimestamp);
-                    } else {
-                        ajaxRequest.setRequestHeader("X-Cache-Date", 0);
-                    }
 
                     if (ajaxRequest.heartbeat !== null && ajaxRequest.heartbeat.server !== null) {
                         ajaxRequest.setRequestHeader("X-Heartbeat-Server", ajaxRequest.heartbeat.server);
@@ -2477,17 +2484,11 @@
             function _readHeaders(xdr, request) {
                 if (!request.readResponsesHeaders) {
                     if (!request.enableProtocol) {
-                        request.lastTimestamp = jQuery.now();
                         request.uuid = jQuery.atmosphere.guid();
                     }
                 }
                 else {
                     try {
-                        var tempDate = xdr.getResponseHeader('X-Cache-Date');
-                        if (tempDate && tempDate != null && tempDate.length > 0) {
-                            request.lastTimestamp = tempDate.split(" ").pop();
-                        }
-
                         var tempUUID = xdr.getResponseHeader('X-Atmosphere-tracking-id');
                         if (tempUUID && tempUUID != null) {
                             request.uuid = tempUUID.split(" ").pop();
