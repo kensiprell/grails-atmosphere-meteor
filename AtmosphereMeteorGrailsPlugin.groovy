@@ -133,8 +133,6 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 					servlet {
 						"servlet-name"(name)
 						"servlet-class"(parameters.className)
-						"async-supported"("true")
-						"load-on-startup"(1)
 						if (initParams != "none") {
 							initParams?.each { param, value ->
 								"init-param" {
@@ -143,6 +141,8 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 								}
 							}
 						}
+						"load-on-startup"(1)
+						"async-supported"("true")
 /*						if (environment == "test") {
 							if (servletContainerName == "jetty") {
 								"init-param" {
