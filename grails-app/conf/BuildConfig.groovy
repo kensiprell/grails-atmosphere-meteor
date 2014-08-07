@@ -19,7 +19,7 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		compile "org.atmosphere:atmosphere-runtime:2.1.5", {
+		compile "org.atmosphere:atmosphere-runtime:2.2.0", {
 			excludes "slf4j-api"
 		}
 		compile "org.codehaus.jackson:jackson-core-asl:1.9.13"
