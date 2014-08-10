@@ -6,15 +6,15 @@
 
 The plugin has been tested in the following environment, using the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script):
 
-* atmosphere-runtime 2.1.5
+* atmosphere-runtime 2.2.0
 
-* OSX 10.9.3
+* OSX 10.9.4
 
-* JDK 1.7.0_55
+* JDK 1.7.0_67
 
-* Grails versions 2.1.5, 2.2.4, 2.3.9, and 2.4.0
+* Grails versions 2.1.5, 2.2.4, 2.3.9, and 2.4.3
 
-* Tomcat 7.0.27 through 7.0.53 (version depends on Grails version)
+* Tomcat 7.0.27 through 7.0.54 (version depends on Grails version)
 
 * Jetty plugin version 3.0.0, available in Grails 2.3.7 or greater
 
@@ -47,21 +47,19 @@ The plugin is designed to create and use a servlet for each main or significant 
 
 	/atmosphere/public/*
 
-The servlets are registered programmatically and are not defined in web.xml.
-
 ### Configuration
 
-All servlets are defined in grails-app/conf/AtmosphereMeteorConfig.groovy. A default file that you must edit will be copied to your app when the plugin is first installed.
+All servlets are defined in ```grails-app/conf/AtmosphereMeteorConfig.groovy```. A default file that you must edit will be copied to your app when the plugin is first installed.
 
 ### MeteorServlet Class
 
-The create-meteor-servlet script creates a class in grails-app/atmosphere that extends Atmosphere's MeteorServlet. You could probably use a single class throughout your application.
+The ```create-meteor-servlet``` script creates a class in grails-app/atmosphere that extends Atmosphere's MeteorServlet. You could probably use a single class throughout your application.
 
 Although the [sample application](https://github.com/kensiprell/grails-atmosphere-meteor-sample) uses the same MeteorServlet class for each URL, you can easily use a different class. Of course, each of the URL patterns above can be further divided using a combination of request headers, path, etc. For example, a chat room could be established under /atmosphere/chat/private-room that is serviced by the same servlet, MeteorServlet, and MeteorHandler classes as /atmosphere/chat/*.
 
 ### MeteorHandler Class
 
-The create-meteor-handler script creates a class in grails-app/atmosphere that extends HttpServlet. This is where you customize how the HTTP requests and responses (including Atmosphere Broadcaster) are handled.
+The ```create-meteor-handler``` script creates a class in grails-app/atmosphere that extends HttpServlet. This is where you customize how the HTTP requests and responses (including Atmosphere Broadcaster) are handled.
 
 ## Plugin Installation, Configuration, and Use
 
@@ -71,7 +69,7 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:0.8.5"
+    compile ":atmosphere-meteor:0.9.0"
     // other plugins
 }
 ```
@@ -81,7 +79,7 @@ plugins {
 The plugin works with the Jetty plugin version 3.0.0 (Jetty 9) or greater, which can be used with Grails versions 2.3.7 and greater. See the [Jetty Page](https://github.com/kensiprell/grails-atmosphere-meteor/wiki/Jetty) for workarounds with Jetty 8.
 
 ### Tomcat 7
-Change your BuildConfig.groovy to use the Servlet 3.0 API and the Tomcat NIO connector.
+Your BuildConfig.groovy must be configured to use the Servlet 3.0 API and the Tomcat NIO connector.
 
 ```
 grails.servlet.version = "3.0"
@@ -142,6 +140,46 @@ You can change the Atmosphere log level by adding a line to your application's g
 ```
 warn "org.atmosphere"
 ```
+
+### AtmosphereConfigurationHolder
+
+This class is used to hold the ```AtmosphereFramework``` instance as a property and is used to return ```AtmosphereMeteorConfig.groovy``` as a ```ConfigObject```. The ```ConfigObject``` is used mostly internally; however, the lines below could be useful if you need grab the ```AtmosphereFramework``` instance somewhere in your application.
+
+```
+def atmosphereConfigurationHolder
+AtmosphereFramework framework = atmosphereConfigurationHolder.framework
+```
+
+Note that this property must be set before it is available. The ```create-meteor-servlet``` script will take care of this automatically. However, if you have an existing application, add the last line below to your ```grails-app/atmosphere/DefaultMeteorServlet.groovy``` class or whatever you have named your MeteorServlet class.
+
+```
+class DefaultMeteorServlet extends MeteorServlet {
+	@Override
+	public void init(ServletConfig sc) throws ServletException {
+		super.init(sc)
+		AtmosphereConfigurationHolder.framework = framework
+```
+
+### AtmosphereMeteorService
+
+The plugin has a service that you can inject into your application artifacts using the line below. 
+
+```
+def atmosphereMeteorService
+```
+
+#### broadcast()
+
+The ```broadcast()``` method uses the [Atmosphere DefaultBroadcaster](http://atmosphere.github.io/atmosphere/apidocs/org/atmosphere/cpr/DefaultBroadcaster.html) and offers two signatures. The one below will create the broadcaster if it does not exist, and the second one allows you to turn off this behavior by using ```false``` as the ```create``` argument. These are convenience methods that save you from having to grab the ```BroadcasterFactory``` instance.
+
+```
+atmosphereMeteorService.broadcast(String mapping, data)
+```
+
+```
+atmosphereMeteorService.broadcast(String mapping, data, Boolean create)
+```
+
 
 ### Javascript
 
