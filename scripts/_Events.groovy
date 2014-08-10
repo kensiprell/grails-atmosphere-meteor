@@ -1,41 +1,9 @@
 import groovy.xml.StreamingMarkupBuilder
 
-eventSetClasspath = {
-	def servletContainerName = getServletContainerName()
-	if (System.getProperty("atmosphereMeteorServletContainerName") == "jetty") {
-		System.setProperty("grails.server.factory", "org.grails.jetty.JettyServerFactory")
-	}
-}
-
-eventCreateWarStart = { warName, stagingDir ->
-	def servletContainerName = getServletContainerName()
-	if (servletContainerName == "jetty") {
-		println "Removing Jetty jars ...."
-		ant.delete {
-			fileset(dir: "${stagingDir}/WEB-INF/lib") {
-				include(name: "jetty-*.jar")
-			}
-		}
-	}
-}
-
 eventCompileEnd = {
 	if (!isPluginProject) {
 		buildConfiguration(basedir)
 	}
-}
-
-def getServletContainerName() {
-	def servletContainerName = "not-supported"
-	pluginDescriptors.each {
-		if (it.toString().contains("Jetty")) {
-			servletContainerName = "jetty"
-		}
-		if (it.toString().contains("Tomcat")) {
-			servletContainerName = "tomcat"
-		}
-	}
-	System.setProperty("atmosphereMeteorServletContainerName", servletContainerName)
 }
 
 def buildConfiguration(basedir) {
