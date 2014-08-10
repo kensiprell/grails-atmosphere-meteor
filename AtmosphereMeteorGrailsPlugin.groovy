@@ -12,7 +12,7 @@ import org.grails.plugins.atmosphere_meteor.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
 class AtmosphereMeteorGrailsPlugin {
-	def version = "0.8.5"
+	def version = "0.9.0"
 	def grailsVersion = "2.1 > *"
 	def pluginExcludes = [
 			"web-app/css/**",
@@ -73,42 +73,11 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 	}
 
 	def doWithDynamicMethods = { applicationContext ->
-		def config = AtmosphereConfigurationHolder.atmosphereMeteorConfig
 		def environment = Environment.current.name
-		
-		
 		// Check for configuration errors
 		if (environment == "development") {
 			printConfigurationErrors()
 		}
-
-		// Configure servlets
-		// dynamic registration not possible during integration tests
-		// https://github.com/kensiprell/grails-atmosphere-meteor/issues/35
-		/*
-		def servletContext = applicationContext.servletContext
-		def serverInfo = serverInfo()
-		config?.servlets?.each { name, parameters ->
-			ServletRegistration servletRegistration = servletContext.addServlet(name, parameters.className)
-			servletRegistration.addMapping(parameters.mapping)
-			servletRegistration.setAsyncSupported(Boolean.TRUE)
-			servletRegistration.setLoadOnStartup(1)
-			if (environment == "test") {
-				if (serverInfo.serverName == "jetty") {
-					servletRegistration.setInitParameter("org.atmosphere.cpr.asyncSupport", "org.atmosphere.container.JettyServlet30AsyncSupportWithWebSocket")
-				}
-				if (serverInfo.serverName == "tomcat") {
-					servletRegistration.setInitParameter("org.atmosphere.cpr.asyncSupport", "org.atmosphere.container.Tomcat7Servlet30SupportWithWebSocket")
-				}
-			}
-			def initParams = parameters.initParams
-			if (initParams != "none") {
-				initParams?.each { param, value ->
-					servletRegistration.setInitParameter(param, value)
-				}
-			}
-		}
-		*/
 	}
 
 	def doWithSpring = {
@@ -120,9 +89,6 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 
 	def doWithWebDescriptor = { webXml ->
 		def config = AtmosphereConfigurationHolder.atmosphereMeteorConfig
-		//def environment = Environment.current.name
-		//def serverInfo = serverInfo()
-		//def servletContainerName = System.getProperty("atmosphereMeteorServletContainerName")
 		
 		if (config) {
 			config.servlets.each { name, parameters ->
@@ -133,8 +99,6 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 					servlet {
 						"servlet-name"(name)
 						"servlet-class"(parameters.className)
-						"async-supported"("true")
-						"load-on-startup"(1)
 						if (initParams != "none") {
 							initParams?.each { param, value ->
 								"init-param" {
@@ -143,21 +107,8 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 								}
 							}
 						}
-/*						if (environment == "test") {
-							if (servletContainerName == "jetty") {
-								"init-param" {
-									"param-name"("org.atmosphere.cpr.asyncSupport")
-									"param-value"("org.atmosphere.container.JettyServlet30AsyncSupportWithWebSocket")
-								}
-							}
-							if (servletContainerName == "tomcat") {
-								"init-param" {
-									"param-name"("org.atmosphere.cpr.asyncSupport")
-									"param-value"("org.atmosphere.container.Tomcat7Servlet30SupportWithWebSocket")
-								}
-							}
-						}	
-*/
+						"load-on-startup"(1)
+						"async-supported"("true")
 					}
 				})
 				appendToWebDescriptor(webXml, "servlet-mapping", ["servlet-name": name, "url-pattern": parameters.mapping])
