@@ -15,7 +15,7 @@ class @artifact.name@ extends MeteorServlet {
 	public void init(ServletConfig sc) throws ServletException {
 		super.init(sc)
 
-		AtmosphereConfigurationHolder.atmosphereMeteorFramework = framework
+		AtmosphereConfigurationHolder.framework = framework
 		def servletConfig = AtmosphereConfigurationHolder.atmosphereMeteorConfig.servlets.get(sc.servletName)
 		def mapping = servletConfig.mapping
 		def handler = servletConfig.handler.newInstance()
