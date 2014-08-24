@@ -35,7 +35,7 @@
 
     "use strict";
 
-    var version = "2.2.3-javascript",
+    var version = "2.2.4-javascript",
         atmosphere = {},
         guid,
         requests = [],
@@ -66,6 +66,8 @@
         onFailureToReconnect: function (request, response) {
         },
         onClientTimeout: function (request) {
+        },
+        onOpenAfterResume: function(request) {
         },
 
         /**
@@ -208,7 +210,9 @@
                 },
                 onFailureToReconnect: function (request, response) {
                 },
-                onClientTimeout: function (request) {
+                onClientTimeout: function(request){
+                },
+                onOpenAfterResume: function(request) {
                 }
             };
 
@@ -394,6 +398,9 @@
                     closeR.transport = 'polling';
                     closeR.method = 'GET';
                     closeR.data = '';
+                    if (_request.enableXDR) {
+                        closeR.enableXDR = _request.enableXDR
+                    }
                     closeR.async = rq.closeAsync;
                     _pushOnClose("", closeR);
                 }
@@ -1716,6 +1723,8 @@
                 } else if (rq.isReopen) {
                     rq.isReopen = false;
                     _open('re-opening', rq.transport, rq);
+                } else if (_response.state === 'messageReceived'){
+                    _openAfterResume(_response);
                 }
             }
 
@@ -2077,6 +2086,11 @@
 
             function _tryingToReconnect(response) {
                 response.state = 're-connecting';
+                _invokeFunction(response);
+            }
+
+            function _openAfterResume(response) {
+                response.state = 'openAfterResume';
                 _invokeFunction(response);
             }
 
@@ -2651,6 +2665,10 @@
                             }
                         }
                         _request.closed = true;
+                        break;
+                    case "openAfterResume":
+                        if (typeof (f.onOpenAfterResume) !== 'undefined')
+                            f.onOpenAfterResume(_request);
                         break;
                 }
             }

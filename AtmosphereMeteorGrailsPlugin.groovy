@@ -1,18 +1,19 @@
 import grails.util.BuildSettingsHolder
 import grails.util.Environment
 import grails.util.Holders
+
+import javax.servlet.ServletContext
+
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 
-import javax.servlet.ServletContext
-import javax.servlet.ServletRegistration
-
 import org.grails.plugins.atmosphere_meteor.AtmosphereConfigurationHolder
+import org.grails.plugins.atmosphere_meteor.AtmosphereMeteorBean
 import org.grails.plugins.atmosphere_meteor.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
 class AtmosphereMeteorGrailsPlugin {
-	def version = "0.9.2"
+	def version = "1.0.0"
 	def grailsVersion = "2.1 > *"
 	def pluginExcludes = [
 			"web-app/css/**",
@@ -81,9 +82,13 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 	}
 
 	def doWithSpring = {
-		// Register AtmosphereConfigurationHolder bean
-		applicationContextHolder(AtmosphereConfigurationHolder) { bean ->
+		// Register atmosphereConfigurationHolder bean
+		atmosphereConfigurationHolder(AtmosphereConfigurationHolder) { bean ->
 			bean.factoryMethod = "getInstance"
+		}
+		// Register atmosphereMeteor bean
+		atmosphereMeteor(AtmosphereMeteorBean) { bean ->
+			bean.autowire = "byName"
 		}
 	}
 

@@ -53,13 +53,14 @@ All servlets are defined in ```grails-app/conf/AtmosphereMeteorConfig.groovy```.
 
 ### MeteorServlet Class
 
-The ```create-meteor-servlet``` script creates a class in grails-app/atmosphere that extends Atmosphere's MeteorServlet. You could probably use a single class throughout your application.
-
-Although the [sample application](https://github.com/kensiprell/grails-atmosphere-meteor-sample) uses the same MeteorServlet class for each URL, you can easily use a different class. Of course, each of the URL patterns above can be further divided using a combination of request headers, path, etc. For example, a chat room could be established under /atmosphere/chat/private-room that is serviced by the same servlet, MeteorServlet, and MeteorHandler classes as /atmosphere/chat/*.
+The ```create-meteor-servlet``` script creates a class in grails-app/atmosphere that extends Atmosphere's MeteorServlet. You can probably use a single class throughout your application.
 
 ### MeteorHandler Class
 
-The ```create-meteor-handler``` script creates a class in grails-app/atmosphere that extends HttpServlet. This is where you customize how the HTTP requests and responses (including Atmosphere Broadcaster) are handled.
+The ```create-meteor-handler``` script creates a class in grails-app/atmosphere that extends HttpServlet. This is where you customize how the HTTP requests and responses are handled by overriding the ```doGet()``` and ```doPost()``` methods.
+
+Each URL pattern can be differentiated using a combination of request headers, path, etc. For example, a chat room could be established under ```/atmosphere/chat/private-room-12345``` that is serviced by the same MeteorServlet and MeteorHandler classes as ```/atmosphere/chat/*```.
+
 
 ## Plugin Installation, Configuration, and Use
 
@@ -69,7 +70,7 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:0.9.2"
+    compile ":atmosphere-meteor:1.0.0"
     // other plugins
 }
 ```
@@ -108,7 +109,7 @@ grails create-meteor-handler com.example.Default
 
 ### Servlet Configuration
 
-Edit grails-app/conf/AtmosphereMeteorConfig.groovy. Changes to this file will be implemented when the application is restarted.
+Edit ```grails-app/conf/AtmosphereMeteorConfig.groovy```. Changes to this file will be implemented when the application is restarted.
 
 ```
 import com.example.DefaultMeteorHandler
@@ -133,24 +134,31 @@ servlets = [
     ]
 ]
 ```
-### Log Level
 
-You can change the Atmosphere log level by adding a line to your application's grails-app/conf/Config.groovy in the appropriate place. For example, to set the level to warn:
+### AtmosphereMeteor Bean
 
-```
-warn "org.atmosphere"
-```
-
-### AtmosphereConfigurationHolder
-
-This class is used to hold the ```AtmosphereFramework``` instance as a property and is used to return ```AtmosphereMeteorConfig.groovy``` as a ```ConfigObject```. The ```ConfigObject``` is used mostly internally; however, the lines below could be useful if you need grab the ```AtmosphereFramework``` instance somewhere in your application.
+You can access the [AtmosphereFramework](http://atmosphere.github.io/atmosphere/apidocs/org/atmosphere/cpr/AtmosphereFramework.html) and default [BroadcasterFactory](http://atmosphere.github.io/atmosphere/apidocs/org/atmosphere/cpr/BroadcasterFactory.html) instances by injecting the  ```atmosphereMeteor``` bean anywhere in your application using either the standard DI procedure 
 
 ```
-def atmosphereConfigurationHolder
-AtmosphereFramework framework = atmosphereConfigurationHolder.framework
+def atmosphereMeteor
+```
+or for example in a class in ```grails-app/atmosphere```
+
+```
+def atmosphereMeteor = grails.util.Holders.applicationContext.getBean("atmosphereMeteor")
+```
+and then accessing its properties
+
+```
+def atmosphereFramework = atmosphereMeteor.framework
+def broadcasterFactory = atmosphereMeteor.broadcasterFactory
 ```
 
-Note that this property must be set before it is available. The ```create-meteor-servlet``` script will take care of this automatically. However, if you have an existing application, add the last line below to your ```grails-app/atmosphere/DefaultMeteorServlet.groovy``` class or whatever you have named your MeteorServlet class.
+#### AtmosphereConfigurationHolder.framework Deprecated
+
+I have already deprecated the ```AtmosphereConfigurationHolder.framework``` property that I made available in version 0.9.2. It is no longer necessary due to the atmosphereMeteor bean. 
+
+If you have added the last line below in your ```MeteorServlet``` class, you can safely delete it.
 
 ```
 class DefaultMeteorServlet extends MeteorServlet {
@@ -226,6 +234,13 @@ You can update the Atmosphere Javascript files by running the script below. This
 grails update-atmosphere-meteor-javascript
 ```
 
+### Log Level
+
+You can change the Atmosphere log level by adding a line to your application's ```grails-app/conf/Config.groovy``` in the appropriate place. For example, to set the level to warn:
+
+```
+warn "org.atmosphere"
+```
 ### Message Brokers
 
 #### Hazelcast

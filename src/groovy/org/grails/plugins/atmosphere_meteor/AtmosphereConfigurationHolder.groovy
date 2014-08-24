@@ -2,11 +2,14 @@ package org.grails.plugins.atmosphere_meteor
 
 import grails.util.Environment
 import groovy.util.logging.Log4j
+
 import org.atmosphere.cpr.AtmosphereFramework
 
 @Log4j
 @Singleton
 class AtmosphereConfigurationHolder {
+
+	@Deprecated
 	static AtmosphereFramework framework
 	
 	static ConfigObject getAtmosphereMeteorConfig() {

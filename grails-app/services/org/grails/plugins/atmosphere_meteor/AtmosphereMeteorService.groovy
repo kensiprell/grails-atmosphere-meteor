@@ -6,6 +6,7 @@ import org.atmosphere.cpr.DefaultBroadcaster
 import org.grails.plugins.atmosphere_meteor.AtmosphereConfigurationHolder
 
 class AtmosphereMeteorService {
+	def atmosphereMeteor
 
 	/**
 	 * Broadcasts a message to a client or clients, first creating the broadcaster if it does not exist.
@@ -27,8 +28,7 @@ class AtmosphereMeteorService {
     }
 	
 	private broadcastData(clazz, String mapping, data, boolean create) {
-		AtmosphereFramework framework = AtmosphereConfigurationHolder.framework
-		Broadcaster broadcaster = framework.getBroadcasterFactory().getDefault().lookup(clazz, mapping, create)
+		Broadcaster broadcaster = atmosphereMeteor.broadcasterFactory.lookup(clazz, mapping, create)
 		broadcaster.broadcast(data)
 	}
 }

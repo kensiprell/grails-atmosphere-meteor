@@ -1,23 +1,19 @@
 @artifact.package@
 
-import org.atmosphere.cpr.AtmosphereResourceEventListenerAdapter
-import org.atmosphere.cpr.Broadcaster
-import org.atmosphere.cpr.BroadcasterFactory
-import org.atmosphere.cpr.DefaultBroadcaster
-import org.atmosphere.cpr.Meteor
-
 import grails.converters.JSON
+import grails.util.Holders
 
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-import grails.util.Holders
+import org.atmosphere.cpr.AtmosphereResourceEventListenerAdapter
+import org.atmosphere.cpr.Broadcaster
+import org.atmosphere.cpr.DefaultBroadcaster
+import org.atmosphere.cpr.Meteor
 
 class @artifact.name@ extends HttpServlet {
-
-	// TODO inject one of your services
-	//def mySuperDuperService = Holders.applicationContext.getBean("mySuperDuperService")
+	def atmosphereMeteor = Holders.applicationContext.getBean("atmosphereMeteor")
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -26,11 +22,11 @@ class @artifact.name@ extends HttpServlet {
 		//mapping = "/atmosphere" + request.getPathInfo
 		//mapping = URLDecoder.decode(request.getHeader("X-AtmosphereMeteor-Mapping"), "UTF-8")
 
-		Meteor m = Meteor.build(request)
-		Broadcaster b = BroadcasterFactory.getDefault().lookup(DefaultBroadcaster.class, mapping, true)
+		Meteor meteor = Meteor.build(request)
+		Broadcaster broadcaster = atmosphereMeteor.broadcasterFactory.lookup(DefaultBroadcaster.class, mapping, true)
 
-		m.addListener(new AtmosphereResourceEventListenerAdapter())
-		m.setBroadcaster(b)
+		meteor.addListener(new AtmosphereResourceEventListenerAdapter())
+		meteor.setBroadcaster(broadcaster)
 	}
 
 	@Override
@@ -42,7 +38,7 @@ class @artifact.name@ extends HttpServlet {
 
 		def jsonMap = JSON.parse(request.getReader().readLine().trim()) as Map
 
-		Broadcaster b = BroadcasterFactory.getDefault().lookup(DefaultBroadcaster.class, mapping)
-		b.broadcast(jsonMap)
+		Broadcaster broadcaster = atmosphereMeteor.broadcasterFactory.lookup(DefaultBroadcaster.class, mapping)
+		broadcaster.broadcast(jsonMap)
 	}
 }
