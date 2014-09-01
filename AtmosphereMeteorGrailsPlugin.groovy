@@ -4,16 +4,19 @@ import grails.util.Holders
 
 import javax.servlet.ServletContext
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-
 import org.grails.plugins.atmosphere_meteor.AtmosphereConfigurationHolder
 import org.grails.plugins.atmosphere_meteor.AtmosphereMeteorBean
 import org.grails.plugins.atmosphere_meteor.MeteorHandlerArtefactHandler
 import org.grails.plugins.atmosphere_meteor.MeteorServletArtefactHandler
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 class AtmosphereMeteorGrailsPlugin {
-	def version = "1.0.0"
+	
+	private Logger log = LoggerFactory.getLogger("org.grails.plugins.atmosphere_meteor.AtmosphereMeteorGrailsPlugin")
+	
+	def version = "1.0.1"
 	def grailsVersion = "2.1 > *"
 	def pluginExcludes = [
 			"web-app/css/**",
@@ -82,7 +85,7 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 	}
 
 	def doWithSpring = {
-		// Register atmosphereConfigurationHolder bean
+	// Register atmosphereConfigurationHolder bean
 		atmosphereConfigurationHolder(AtmosphereConfigurationHolder) { bean ->
 			bean.factoryMethod = "getInstance"
 		}
@@ -91,13 +94,14 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 			bean.autowire = "byName"
 		}
 	}
-
+	
 	def doWithWebDescriptor = { webXml ->
 		def config = AtmosphereConfigurationHolder.atmosphereMeteorConfig
 		
 		if (config) {
 			config.servlets.each { name, parameters ->
-				log.debug "doWithWebDescriptor: $name -> $parameters"
+				// TODO not working
+				log.debug "doWithWebDescriptor: $name, $parameters"
 				def initParams = parameters.initParams
 				
 				appendToWebDescriptor(webXml, "servlet", {
@@ -163,8 +167,8 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 	}
 
 	protected static printConfigurationErrors() {
+		def Logger log = LoggerFactory.getLogger("org.grails.plugins.atmosphere_meteor.AtmosphereMeteorGrailsPlugin")
 		def serverInfo = serverInfo()
-		Log log = LogFactory.getLog(this)
 		def settings = BuildSettingsHolder.settings
 		def tomcatNio = settings?.config?.grails?.tomcat?.nio
 		def tomcatErrors = false

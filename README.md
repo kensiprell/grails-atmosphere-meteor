@@ -70,7 +70,7 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:1.0.0"
+    compile ":atmosphere-meteor:1.0.1"
     // other plugins
 }
 ```
@@ -234,13 +234,21 @@ You can update the Atmosphere Javascript files by running the script below. This
 grails update-atmosphere-meteor-javascript
 ```
 
-### Log Level
+### Logging
 
 You can change the Atmosphere log level by adding a line to your application's ```grails-app/conf/Config.groovy``` in the appropriate place. For example, to set the level to warn:
 
 ```
 warn "org.atmosphere"
 ```
+
+You can change the plugin log level by adding a a line to your application's ```grails-app/conf/Config.groovy``` in the appropriate place. For example, to set the level to debug:
+
+```
+debug "org.grails.plugins.atmosphere_meteor"
+```
+
+
 ### Message Brokers
 
 #### Hazelcast
