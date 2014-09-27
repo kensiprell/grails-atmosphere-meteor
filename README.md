@@ -70,7 +70,7 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:1.0.2"
+    compile ":atmosphere-meteor:1.0.3"
     // other plugins
 }
 ```
