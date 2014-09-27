@@ -35,7 +35,7 @@
 
     "use strict";
 
-    var version = "2.2.4-javascript",
+    var version = "2.2.5-javascript",
         atmosphere = {},
         guid,
         requests = [],
@@ -190,6 +190,7 @@
                 },
                 ackInterval: 0,
                 closeAsync: false,
+                reconnectOnServerError: true,
                 onError: function (response) {
                 },
                 onClose: function (response) {
@@ -1723,7 +1724,7 @@
                 } else if (rq.isReopen) {
                     rq.isReopen = false;
                     _open('re-opening', rq.transport, rq);
-                } else if (_response.state === 'messageReceived'){
+                } else if (_response.state === 'messageReceived' && (rq.transport === 'jsonp' || rq.transport === 'long-polling')) {
                     _openAfterResume(_response);
                 }
             }
@@ -1852,6 +1853,11 @@
                                 status = ajaxRequest.status > 1000 ? 0 : ajaxRequest.status;
                             }
 
+                            if (!rq.reconnectOnServerError && (status >= 300 && status < 600)) {
+                                _onError(status, ajaxRequest.statusText);
+                                return;
+                            }
+
                             if (status >= 300 || status === 0) {
                                 disconnected();
                                 return;
@@ -1885,7 +1891,7 @@
                             if (atmosphere.util.trim(responseText).length === 0 && rq.transport === 'long-polling') {
                                 // For browser that aren't support onabort
                                 if (!ajaxRequest.hasData) {
-                                    disconnected();
+                                    _reconnect(ajaxRequest, rq, rq.pollingInterval);
                                 } else {
                                     ajaxRequest.hasData = false;
                                 }
@@ -2092,6 +2098,7 @@
             function _openAfterResume(response) {
                 response.state = 'openAfterResume';
                 _invokeFunction(response);
+                response.state = 'messageReceived';
             }
 
             function _ieXDR(request) {

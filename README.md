@@ -6,9 +6,9 @@
 
 The plugin has been tested in the following environment, using the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script):
 
-* atmosphere-runtime 2.2.0
+* atmosphere-runtime 2.2.1
 
-* OSX 10.9.4
+* OSX 10.10
 
 * JDK 1.7.0_67
 
@@ -70,7 +70,7 @@ Edit your BuildConfig.groovy:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:1.0.1"
+    compile ":atmosphere-meteor:1.0.2"
     // other plugins
 }
 ```
