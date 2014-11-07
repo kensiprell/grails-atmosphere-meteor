@@ -6,15 +6,17 @@
 
 The plugin has been tested in the following environment, using the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script):
 
-* atmosphere-runtime 2.2.1
+* atmosphere-runtime 2.2.3 although the current plugin uses 2.2.1 by default
 
 * OSX 10.10
 
-* JDK 1.7.0_67
+* JDK 1.7.0_71
 
-* Grails versions 2.1.5, 2.2.4, 2.3.9, and 2.4.3
+* Grails versions 2.1.5, 2.2.4, 2.3.9, and 2.4.4
 
 * Tomcat 7.0.27 through 7.0.54 (version depends on Grails version)
+
+* Tomcat 8.0.14
 
 * Jetty plugin version 3.0.0, available in Grails 2.3.7 or greater
 
@@ -65,7 +67,7 @@ Each URL pattern can be differentiated using a combination of request headers, p
 ## Plugin Installation, Configuration, and Use
 
 ### Installation
-Edit your BuildConfig.groovy:
+Edit your ```BuildConfig.groovy```:
 
 ```
 plugins {
@@ -80,7 +82,7 @@ plugins {
 The plugin works with the Jetty plugin version 3.0.0 (Jetty 9) or greater, which can be used with Grails versions 2.3.7 and greater. See the [Jetty Page](https://github.com/kensiprell/grails-atmosphere-meteor/wiki/Jetty) for workarounds with Jetty 8.
 
 ### Tomcat 7
-Your BuildConfig.groovy must be configured to use the Servlet 3.0 API and the Tomcat NIO connector.
+Your ```BuildConfig.groovy``` must be configured to use the Servlet 3.0 API and the Tomcat NIO connector.
 
 ```
 grails.servlet.version = "3.0"
@@ -89,7 +91,13 @@ grails.tomcat.nio = true
 
 ### Tomcat 8
 
-Search the [BuildConfig.groovy](https://github.com/kensiprell/grails-atmosphere-meteor-sample/blob/master/grails-app/conf/BuildConfig.groovy) for the sample app for "tomcat8" for configuring Tomcat 8.
+You do not need to modify your ```BuildConfig.groovy``` if using Tomcat 8. It will default to the NIO connector and Servlet API 3.1. Use the ```tomcat``` plugin and not the ```tomcat8``` one. For example, in your ```BuildConfig.groovy```:
+
+```
+    plugins {
+        build ":tomcat:8.0.14.1" 
+        // other plugins
+```
 
 ### MeteorServlet
 
@@ -226,7 +234,24 @@ or
 <r:require module="atmosphere-meteor-jquery"/>
 ```
 
-#### Update
+### Update atmosphere-runtime and JavaScript Library
+
+You can update the atmosphere-runtime version and the Atmosphere JavaScript library your application uses without having to wait on a plugin update.
+
+#### atmosphere-runtime
+
+Edit your ```BuildConfig.groovy``` and add ```atmosphere-runtime``` to the ```grails.project.dependency.resolution.dependencies``` closure. For example, to use version 2.2.3 your file should look like this.
+
+```
+    dependencies {
+        compile "org.atmosphere:atmosphere-runtime:2.2.3", {
+            excludes "slf4j-api"
+        }
+        // other dependencies
+```
+
+
+#### JavaScript
 
 You can update the Atmosphere Javascript files by running the script below. This will allow you to update the client files without having to wait on a plugin release.
 
@@ -254,37 +279,4 @@ debug "org.grails.plugins.atmosphere_meteor"
 #### Hazelcast
 
 See [Hazelcast Broadcaster](https://github.com/kensiprell/grails-atmosphere-meteor/wiki/Hazelcast-Broadcaster).
-
-### Atmosphere Runtime Native
-
-The plugin no longer uses atmosphere-runtime-native. If you prefer using it over atmosphere-runtime, insert the lines below in the dependencies section of your BuildConfig.groovy.
-
-```
-dependencies {
-	compile "org.atmosphere:atmosphere-runtime-native:2.1.1", {
-		excludes "slf4j-api"
-	}
-
-	// other dependencies 
-}
-```
-You must also add ```"org.atmosphere.useWebSocketAndServlet3": "false"``` to your init params in grails-app/conf/AtmosphereMeteorConfig.groovy if using atmosphere-runtime-native. See the example below.
-
-```
-defaultInitParams = [
-		"org.atmosphere.useWebSocketAndServlet3": "false",
-		"org.atmosphere.cpr.broadcasterCacheClass": "org.atmosphere.cache.UUIDBroadcasterCache",
-		"org.atmosphere.cpr.AtmosphereInterceptor": """
-			org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor,
-			org.atmosphere.interceptor.HeartbeatInterceptor
-		"""
-]
-```
-
-See [Installing-AtmosphereServlet-with-or-without-native-support](https://github.com/Atmosphere/atmosphere/wiki/Installing-AtmosphereServlet-with-or-without-native-support) for more information.
-
-
-
-
-
 
