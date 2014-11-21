@@ -2,8 +2,6 @@ import grails.util.BuildSettingsHolder
 import grails.util.Environment
 import grails.util.Holders
 
-import javax.servlet.ServletContext
-
 import org.grails.plugins.atmosphere_meteor.AtmosphereConfigurationHolder
 import org.grails.plugins.atmosphere_meteor.AtmosphereMeteor
 import org.grails.plugins.atmosphere_meteor.MeteorHandlerArtefactHandler
@@ -14,9 +12,9 @@ import org.slf4j.LoggerFactory
 
 class AtmosphereMeteorGrailsPlugin {
 	
-	private Logger log = LoggerFactory.getLogger("org.grails.plugins.atmosphere_meteor.AtmosphereMeteorGrailsPlugin")
+	private Logger logger = LoggerFactory.getLogger("org.grails.plugins.atmosphere_meteor.AtmosphereMeteorGrailsPlugin")
 	
-	def version = "1.0.3"
+	def version = "1.0.4"
 	def grailsVersion = "2.1 > *"
 	def pluginExcludes = [
 			"web-app/css/**",
@@ -100,8 +98,7 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 		
 		if (config) {
 			config.servlets.each { name, parameters ->
-				// TODO not working
-				log.debug "doWithWebDescriptor: $name, $parameters"
+				logger.debug "doWithWebDescriptor: $name, $parameters"
 				def initParams = parameters.initParams
 				
 				appendToWebDescriptor(webXml, "servlet", {
@@ -123,7 +120,7 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 				appendToWebDescriptor(webXml, "servlet-mapping", ["servlet-name": name, "url-pattern": parameters.mapping])
 			}
 		} else {
-			log.error("AtmosphereConfigurationHolder.atmosphereMeteorConfig: config not found.")
+			logger.error("AtmosphereConfigurationHolder.atmosphereMeteorConfig: config not found.")
 		}
 	}
 
@@ -167,7 +164,7 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 	}
 
 	protected static printConfigurationErrors() {
-		def Logger log = LoggerFactory.getLogger("org.grails.plugins.atmosphere_meteor.AtmosphereMeteorGrailsPlugin")
+		Logger logger = LoggerFactory.getLogger("org.grails.plugins.atmosphere_meteor.AtmosphereMeteorGrailsPlugin")
 		def serverInfo = serverInfo()
 		def settings = BuildSettingsHolder.settings
 		def tomcatNio = settings?.config?.grails?.tomcat?.nio
@@ -175,16 +172,21 @@ This plugin incorporates the [Atmosphere Framework|https://github.com/Atmosphere
 		def tomcatErrorNio = ""
 		def tomcatErrorApi = ""
 
+		if (!serverInfo) {
+			logger.warn("Could not determine server information")
+			return
+		}
+
 		// Tomcat errors
 		if (serverInfo.serverName == "tomcat" && serverInfo.serverVersion.startsWith("7")) {
 			if (tomcatNio != true) {
-				log.error("The atmosphere-meteor plugin requires in your BuildConfig.groovy: grails.tomcat.nio = true")
+				logger.error("The atmosphere-meteor plugin requires in your BuildConfig.groovy: grails.tomcat.nio = true")
 				tomcatErrors = true
 				tomcatErrorNio = """
 * grails.tomcat.nio = true					 *"""
 			}
 			if (serverInfo.apiVersion < 3) {
-				log.error("The atmosphere-meteor plugin requires in your BuildConfig.groovy:  grails.servlet.version = '3.0'")
+				logger.error("The atmosphere-meteor plugin requires in your BuildConfig.groovy:  grails.servlet.version = '3.0'")
 				tomcatErrors = true
 				tomcatErrorApi = """
 * grails.servlet.version = "3.0"				   *"""
