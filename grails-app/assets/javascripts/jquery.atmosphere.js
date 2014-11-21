@@ -56,6 +56,7 @@
     jQuery(window).bind("online", function () {
         if (jQuery.atmosphere.requests.length > 0) {
             for (var i = 0; i < jQuery.atmosphere.requests.length; i++) {
+                jQuery.atmosphere.requests[i].init();
                 jQuery.atmosphere.requests[i].execute();
             }
         }
@@ -77,7 +78,7 @@
     };
 
     jQuery.atmosphere = {
-        version: "2.2.5-jquery",
+        version: "2.2.6-jquery",
         uuid : 0,
         requests: [],
         callbacks: [],
@@ -318,6 +319,20 @@
             var _requestCount = 0;
 
             /**
+             * The Heartbeat interval send by the server.
+             * @type {int}
+             * @private
+             */
+            var _heartbeatInterval = 0;
+
+            /**
+             * The Heartbeat bytes send by the server.
+             * @type {string}
+             * @private
+             */
+            var _heartbeatPadding = ' ';
+
+            /**
              * {boolean} If request is currently aborded.
              *
              * @private
@@ -388,6 +403,25 @@
             }
 
             /**
+             * Returns true if the given level is equal or above the configured log level.
+             *
+             * @private
+             */
+            function _canLog(level) {
+                if (level == 'debug') {
+                    return _request.logLevel === 'debug';
+                } else if (level == 'info') {
+                    return _request.logLevel === 'info' || _request.logLevel === 'debug';
+                } else if (level == 'warn') {
+                    return _request.logLevel === 'warn' || _request.logLevel === 'info' || _request.logLevel === 'debug';
+                } else if (level == 'error') {
+                    return _request.logLevel === 'error' || _request.logLevel === 'warn' || _request.logLevel === 'info' || _request.logLevel === 'debug';
+                } else {
+                    return false;
+                }
+            }
+
+            /**
              * Subscribe request using request transport. <br>
              * If request is currently opened, this one will be closed.
              *
@@ -436,7 +470,7 @@
                 if (_request.shared) {
                     _localStorageService = _local(_request);
                     if (_localStorageService != null) {
-                        if (_request.logLevel === 'debug') {
+                        if (_canLog('debug')) {
                             jQuery.atmosphere.debug("Storage service available. All communication will be local");
                         }
 
@@ -446,7 +480,7 @@
                         }
                     }
 
-                    if (_request.logLevel === 'debug') {
+                    if (_canLog('debug')) {
                         jQuery.atmosphere.debug("No Storage service available.");
                     }
                     // Wasn't local or an error occurred
@@ -800,7 +834,7 @@
                 storageService = servers.storage() || servers.windowref();
                 storageService.init();
 
-                if (_request.logLevel === 'debug') {
+                if (_canLog('debug')) {
                     jQuery.atmosphere.debug("Installed StorageService " + storageService);
                 }
 
@@ -935,6 +969,7 @@
                                 if (rq.executeCallbackBeforeReconnect) {
                                     _reconnect(_jqxhr, rq, rq.pollingInterval);
                                 }
+                                _timeout(rq);
                             } else {
                                 jQuery.atmosphere.log(_request.logLevel, ["JSONP reconnect maximum try reached " + _request.requestCount]);
                                 _onError(0, "maxRequest reached");
@@ -1069,7 +1104,7 @@
 
                 var location = _buildSSEUrl(_request.url);
 
-                if (_request.logLevel === 'debug') {
+                if (_canLog('debug')) {
                     jQuery.atmosphere.debug("Invoking executeSSE");
                     jQuery.atmosphere.debug("Using URL: " + location);
                 }
@@ -1101,7 +1136,7 @@
 
                 _sse.onopen = function (event) {
                     _timeout(_request);
-                    if (_request.logLevel === 'debug') {
+                    if (_canLog('debug')) {
                         jQuery.atmosphere.debug("SSE successfully opened");
                     }
 
@@ -1149,7 +1184,9 @@
                         clearTimeout(_request.heartbeatTimer);
                     }
 
-                    if (_response.closedByClientTimeout) return;
+                    if (_response.closedByClientTimeout) {
+                        return;
+                    }
 
                     _invokeClose(sseOpened);
                     _clearState();
@@ -1188,7 +1225,7 @@
                 _response.transport = "websocket";
 
                 var location = _buildWebSocketUrl(_request.url);
-                if (_request.logLevel === 'debug') {
+                if (_canLog('debug')) {
                     jQuery.atmosphere.debug("Invoking executeWebSocket");
                     jQuery.atmosphere.debug("Using URL: " + location);
                 }
@@ -1227,7 +1264,7 @@
 
                 _websocket.onopen = function (message) {
                     _timeout(_request);
-                    if (_request.logLevel === 'debug') {
+                    if (_canLog('debug')) {
                         jQuery.atmosphere.debug("Websocket successfully opened");
                     }
 
@@ -1328,7 +1365,7 @@
                         }
                     }
 
-                    if (_request.logLevel === 'warn') {
+                    if (_canLog('warn')) {
                         jQuery.atmosphere.warn("Websocket closed, reason: " + reason);
                         jQuery.atmosphere.warn("Websocket closed, wasClean: " + message.wasClean);
                     }
@@ -1363,7 +1400,7 @@
                             }
                         } else {
                             jQuery.atmosphere.log(_request.logLevel, ["Websocket reconnect maximum try reached " + _request.requestCount]);
-                            if (_request.logLevel === 'warn') {
+                            if (_canLog('warn')) {
                                 jQuery.atmosphere.warn("Websocket error, reason: " + message.reason);
                             }
                             _onError(0, "maxReconnectOnClose reached");
@@ -1405,16 +1442,8 @@
                             "Also note that atmosphere-runtime 2.2+ should be used."]);
                     }
 
-                    var interval = parseInt(jQuery.trim(messages[pos + 1]), 10);
-                    var paddingData = messages[pos + 2];
-
-                    if (!isNaN(interval) && interval > 0) {
-                        var _pushHeartbeat = function () {
-                            _push(paddingData);
-                            request.heartbeatTimer = setTimeout(_pushHeartbeat, interval);
-                        };
-                        request.heartbeatTimer = setTimeout(_pushHeartbeat, interval);
-                    }
+                    _heartbeatInterval = parseInt(jQuery.trim(messages[pos + 1]), 10);
+                    _heartbeatPadding = messages[pos + 2];
 
                     b = false;
                     if (request.transport !== 'long-polling') {
@@ -1499,39 +1528,41 @@
 
                     var messages = [];
                     var messageStart = message.indexOf(request.messageDelimiter);
-                    while (messageStart !== -1) {
-                        var str = message.substring(0, messageStart);
-                        var messageLength = parseInt(str, 10);
-                        if (isNaN(messageLength))
-                            throw 'message length "' + str + '" is not a number';
-                        messageStart += request.messageDelimiter.length;
-                        if (messageStart + messageLength > message.length) {
-                            // message not complete, so there is no trailing messageDelimiter
-                            messageStart = -1;
-                        } else {
-                            // message complete, so add it
-                            messages.push(message.substring(messageStart, messageStart + messageLength));
-                            // remove consumed characters
-                            message = message.substring(messageStart + messageLength, message.length);
-                            messageStart = message.indexOf(request.messageDelimiter);
+                    if (messageStart != -1) {
+                        while (messageStart !== -1) {
+                            var str = message.substring(0, messageStart);
+                            var messageLength = parseInt(str, 10);
+                            if (isNaN(messageLength))
+                                throw 'message length "' + str + '" is not a number';
+                            messageStart += request.messageDelimiter.length;
+                            if (messageStart + messageLength > message.length) {
+                                // message not complete, so there is no trailing messageDelimiter
+                                messageStart = -1;
+                            } else {
+                                // message complete, so add it
+                                messages.push(message.substring(messageStart, messageStart + messageLength));
+                                // remove consumed characters
+                                message = message.substring(messageStart + messageLength, message.length);
+                                messageStart = message.indexOf(request.messageDelimiter);
+                            }
                         }
-                    }
 
-                    /* keep any remaining data */
-                    response.partialMessage = message;
+                        /* keep any remaining data */
+                        response.partialMessage = message;
 
-                    if (messages.length !== 0) {
-                        response.responseBody = messages.join(request.messageDelimiter);
-                        response.messages = messages;
-                        return false;
-                    } else {
-                        response.responseBody = "";
-                        response.messages = [];
-                        return true;
-                    }
-                } else {
-                    response.responseBody = message;
+                        if (messages.length !== 0) {
+                            response.responseBody = messages.join(request.messageDelimiter);
+                            response.messages = messages;
+                            return false;
+                        } else {
+                            response.responseBody = "";
+                            response.messages = [];
+                            return true;
+                        }
+                    } 
                 }
+                response.responseBody = message;
+                response.messages = [message];
                 return false;
             }
 
@@ -1633,6 +1664,27 @@
                 } else if (rq.isReopen) {
                     rq.isReopen = false;
                     _open('re-opening', rq.transport, rq);
+                } else {
+                     return;
+                }
+
+                _startHeartbeat(rq);
+            }
+
+            function _startHeartbeat(rq) {
+                if (rq.heartbeatTimer != null) {
+                    clearTimeout(rq.heartbeatTimer);
+                }
+
+                if (!isNaN(_heartbeatInterval) && _heartbeatInterval > 0) {
+                    var _pushHeartbeat = function () {
+                        if (_canLog('debug')) {
+                            atmosphere.util.debug("Sending heartbeat");
+                        }
+                        _push(_heartbeatPadding);
+                        rq.heartbeatTimer = setTimeout(_pushHeartbeat, _heartbeatInterval);
+                    };
+                    rq.heartbeatTimer = setTimeout(_pushHeartbeat, _heartbeatInterval);
                 }
             }
 
@@ -1900,6 +1952,8 @@
             }
 
             function _reconnectOnMaxStreamingLength(ajaxRequest, rq) {
+                _response.messages = [];
+                rq.isReopen = true;
                 _close();
                 _abordingConnection = false;
                 _reconnect(ajaxRequest, rq, 500);
@@ -1966,6 +2020,11 @@
             }
 
             function _reconnect(ajaxRequest, request, reconnectInterval) {
+
+                if (_response.closedByClientTimeout) {
+                    return;
+                }
+
                 if (request.reconnect || (request.suspend && _subscribed)) {
                     var status = 0;
                     if (ajaxRequest.readyState > 1) {
@@ -2019,6 +2078,7 @@
                 var reconnect = function () {
                     if (rq.transport === "long-polling" && (rq.reconnect && (rq.maxRequest === -1 || rq.requestCount++ < rq.maxRequest))) {
                         xdr.status = 200;
+                        _open('re-connecting', request.transport, request);
                         _ieXDR(rq);
                     }
                 };
@@ -2593,7 +2653,8 @@
                         _localSocketF(_response.responseBody);
                     }
 
-                    if (_response.responseBody.length === 0 && _response.state === "messageReceived") {
+                    if ((_response.responseBody.length === 0 ||
+                        (isString && _heartbeatPadding === _response.responseBody)) && _response.state === "messageReceived") {
                         continue;
                     }
 
@@ -2601,7 +2662,7 @@
 
                     // Invoke global callbacks
                     if (jQuery.atmosphere.callbacks.length > 0) {
-                        if (_request.logLevel === 'debug') {
+                        if (_canLog('debug')) {
                             jQuery.atmosphere.debug("Invoking " + jQuery.atmosphere.callbacks.length + " global callbacks: " + _response.state);
                         }
                         try {
@@ -2613,7 +2674,7 @@
 
                     // Invoke request callback
                     if (typeof (_request.callback) === 'function') {
-                        if (_request.logLevel === 'debug') {
+                        if (_canLog('debug')) {
                             jQuery.atmosphere.debug("Invoking request callbacks");
                         }
                         try {
@@ -2804,6 +2865,10 @@
             this.enableProtocol = function (message) {
                 return _request.enableProtocol;
             };
+
+            this.init = function () {
+                _init();
+            }
 
             this.request = _request;
             this.response = _response;
