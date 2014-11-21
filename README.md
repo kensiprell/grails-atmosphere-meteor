@@ -16,7 +16,7 @@ The plugin has been tested in the following environment, using the [grails-atmos
 
 * Tomcat 7.0.27 through 7.0.54 (version depends on Grails version)
 
-* Tomcat 8.0.14
+* Tomcat 8.0.15
 
 * Jetty plugin version 3.0.0, available in Grails 2.3.7 or greater
 
@@ -72,7 +72,7 @@ Edit your ```BuildConfig.groovy```:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:1.0.3"
+    compile ":atmosphere-meteor:1.0.4"
     // other plugins
 }
 ```
@@ -95,7 +95,7 @@ You do not need to modify your ```BuildConfig.groovy``` if using Tomcat 8. It wi
 
 ```
     plugins {
-        build ":tomcat:8.0.14.1" 
+        build ":tomcat:8.0.15" 
         // other plugins
 ```
 
