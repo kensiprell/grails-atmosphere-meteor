@@ -19,20 +19,20 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		compile "org.atmosphere:atmosphere-runtime:2.2.3", {
+		compile "org.atmosphere:atmosphere-runtime:2.3.2", {
 			excludes "slf4j-api"
 		}
 		compile "org.codehaus.jackson:jackson-core-asl:1.9.13"
 	}
 
 	plugins {
-		build ":release:3.0.1", ":rest-client-builder:2.0.3", {
+		build ":release:3.0.1", ":rest-client-builder:2.1.1", {
 			export = false
 		}
-		compile ":asset-pipeline:1.9.9", {
+		compile ":asset-pipeline:2.2.3", {
 			export = false
 		}
-		runtime ":resources:1.2.13", {
+		runtime ":resources:1.2.14", {
 			export = false
 		}
 	}
