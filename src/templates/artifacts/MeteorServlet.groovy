@@ -22,7 +22,7 @@ class @artifact.name@ extends MeteorServlet {
 
 		ReflectorServletProcessor rsp = new ReflectorServletProcessor()
 		rsp.setServletClassName(handlerClass)
-		framework.addAtmosphereHandler(mapping, rsp)
+		framework().addAtmosphereHandler(mapping, rsp)
 		logger.info "Added AtmosphereHandler: $handlerClass mapped to $mapping"
 	}
 }

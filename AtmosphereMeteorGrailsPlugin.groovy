@@ -14,7 +14,7 @@ class AtmosphereMeteorGrailsPlugin {
 	
 	private Logger logger = LoggerFactory.getLogger("org.grails.plugins.atmosphere_meteor.AtmosphereMeteorGrailsPlugin")
 	
-	def version = "1.0.4"
+	def version = "1.0.5"
 	def grailsVersion = "2.1 > *"
 	def pluginExcludes = [
 			"web-app/css/**",

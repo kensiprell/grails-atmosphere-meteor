@@ -12,7 +12,7 @@ class AtmosphereConfigurationHolder {
 
 	@Deprecated
 	static AtmosphereFramework framework
-	
+
 	static ConfigObject getPluginConfig() {
 		GroovyClassLoader classLoader = new GroovyClassLoader()
 		def slurper = new ConfigSlurper(Environment.current.name)
@@ -32,7 +32,7 @@ class AtmosphereConfigurationHolder {
 			config = slurper.parse(classLoader.loadClass("AtmosphereMeteorConfig"))
 		}
 		catch (e) {
-			config = slurper.parse(classLoader.loadClass("AtmosphereMeteorDefaultConfig"))			
+			config = slurper.parse(classLoader.loadClass("AtmosphereMeteorDefaultConfig"))
 			log.warn "AtmosphereMeteorConfig not found: using AtmosphereMeteorDefaultConfig."
 		}
 		return config

@@ -6,17 +6,17 @@
 
 The plugin has been tested in the following environment, using the [grails-atmosphere-meteor-sample](https://github.com/kensiprell/grails-atmosphere-meteor-sample) application and [grails-plugin-test-script](https://github.com/kensiprell/grails-plugin-test-script):
 
-* atmosphere-runtime 2.2.3 although the current plugin uses 2.2.1 by default
+* atmosphere-runtime 2.3.2
 
 * OSX 10.10
 
-* JDK 1.7.0_71
+* JDK 1.7.0_75
 
-* Grails versions 2.1.5, 2.2.4, 2.3.9, and 2.4.4
+* Grails versions 2.1.5, 2.2.4, 2.3.9, 2.4.5, and 2.5.0
 
 * Tomcat 7.0.27 through 7.0.54 (version depends on Grails version)
 
-* Tomcat 8.0.15
+* Tomcat 8.0.22
 
 * Jetty plugin version 3.0.0, available in Grails 2.3.7 or greater
 
@@ -72,7 +72,7 @@ Edit your ```BuildConfig.groovy```:
 ```
 plugins {
     // other plugins
-    compile ":atmosphere-meteor:1.0.4"
+    compile ":atmosphere-meteor:1.0.5"
     // other plugins
 }
 ```
@@ -244,7 +244,7 @@ Edit your ```BuildConfig.groovy``` and add ```atmosphere-runtime``` to the ```gr
 
 ```
     dependencies {
-        compile "org.atmosphere:atmosphere-runtime:2.2.3", {
+        compile "org.atmosphere:atmosphere-runtime:2.3.3", {
             excludes "slf4j-api"
         }
         // other dependencies
