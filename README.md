@@ -1,3 +1,5 @@
+## This plugin is no longer maintained.
+
 ## Grails plugin for integrating the Atmosphere Framework
 
 [Atmosphere Wiki](https://github.com/Atmosphere/atmosphere/wiki)
